@@ -1,140 +1,227 @@
+<div align="center">
+
 # ai-behavior
 
-Especificación mínima para operar con IA en proyectos reales: conservar contexto (bitácora), capturar reglas existentes, describir el stack y producir entregables consistentes. Patrón: cada campo usa `description` (qué es) y `$comment` (cómo operar). Versión: JSON Schema 2020-12.
+**[English](README.md) | [Español](README.es.md) | [Português](README.pt.md)**
 
-## Instalación (copy/paste)
-- Crea en el root del proyecto:
-  - `.ai_files/schemas/`
-  - `.ai_files/profiles/` (opcional)
-- Copia los schemas a `.ai_files/schemas/`:
+</div>
+
+## What is it?
+A working protocol for AI agents (`Claude Code`, `Codex`, `Gemini CLI`) compatible with all types of software projects, based on a set of `.json` files (json_schema) that provide guidance for operating and generating contexts to work accurately on real projects.
+
+**Pattern:** Each `json_schema` contains the following for each object in the structure:
+- `description` = Description of the field/property, so the LLM clearly understands what content to generate.
+- `$comment` = How the LLM should operate on that field, without inference and improving result precision.
+
+## Proven Results
+These schemas have been used and refined with `Claude Code`, `Codex`, and `Gemini CLI`* and are capable of:
+
+**1. Generate and work with global project context**
+- Generate a structured project manifest (language, framework, architecture, layer patterns, features, etc).
+- Generate coding rules (Patterns and standards) and follow them.
+- Follow the workflow style of the user in charge.
+
+**2. Generate and work with focused context on tasks/tickets/stories**
+- Generation of "focused" context per development ticket that can be extended across multiple LLMs and sessions (logbook).
+- Produce code following project rules (previously generated).
+- Create a structured resolution comment per ticket based on the ticket logbook.
+
+**Note: Gemini CLI** In many tests, it was proven that `Gemini CLI` works better producing results in `.md` format because in `.json` it often has problems with anchors for adding and modifying elements in the `.json`.
+
+## 🛠️ Installation
+
+### Option 1: Homebrew (Recommended for macOS/Linux)
+```bash
+brew tap exovian-developments/tap
+brew install ai-behavior
+
+# From your project root
+ai-behavior
+```
+
+### Option 2: Installation Script
+```bash
+# Download the script first (ALWAYS inspect scripts before running them)
+curl -O https://raw.githubusercontent.com/exovian-developments/ai-behavior/main/install.sh
+
+# Inspect the content
+cat install.sh
+
+# If it looks safe, run it from your project root
+bash install.sh
+```
+
+⚠️ **Security Note:** Never run scripts from the internet without reviewing them first.
+
+### Option 3: Manual Installation
+
+**1.** Checkout the `ai-behavior` repository.
+```bash
+git clone https://github.com/exovian-developments/ai-behavior.git
+```
+
+**2.** In your project root, create the `ai_files` directory and the following subdirectories:
+```bash
+mkdir -p ai_files/{schemas,logbooks}
+```
+
+**3.** Copy the schemas located in `ai-behavior/schemas/` to the `ai_files/schemas/` directory of your project:
+```bash
+cp ai-behavior/schemas/*.json ai_files/schemas/
+```
+
+Included schemas:
   - `logbook_schema.json`
   - `project_manifest_schema.json`
   - `project_rules_schema.json`
   - `ticket_resolution_schema.json`
-  - `user_pref.json` (opcional, si usas perfiles)
-- Opcional: copia tu YAML de preferencias a `.ai_files/profiles/user_interaction_pref.yaml` con:
-  - `$schema: "https://exovian.dev/schemas/user_pref.schema.json"`
+  - `user_pref_schema.json`
 
-## Cuándo usarlo
-- Proyectos iniciados (OnGoing-Projects): extrae manifiesto y reglas desde el código; luego usa la bitácora y el esquema de resolución de tickets.
-- Proyectos nuevos (Greenfield): define manifiesto y reglas base; evoluciona conforme el código crece.
-
-## Flujo — Proyectos Iniciados
-
-1) Project Manifest
-- Archivo: `project_manifest.json`
-- Esquema: `.ai_files/schemas/project_manifest_schema.json`
-- Prompt:
+**4.** Add the following section at the beginning of your agent file `CLAUDE.md`, `AGENT.md`, `GEMINI.md`.
 ```
-Inspecciona el repo y produce project_manifest.json validando contra
-.ai_files/schemas/project_manifest_schema.json. Usa solo hechos observables
-(lenguaje, framework, build, arquitectura, features). Mantén descripciones
-conscisas. Devuelve solo JSON válido.
-```
+# Key files to review on session start:
+  required_reading:
+    - path: "ai_files/project_manifest.json"
+      description: "Detailed explanation about structure, technologies, architecture and features of the current project"
+      when: "always"
 
-2) Project Rules (por capas + pruebas)
-- Archivo: `project_rules.json`
-- Esquema: `.ai_files/schemas/project_rules_schema.json`
-- Recomendación: prompts separados por cada `layer` de `manifest.technical_details.architecture_identified` y otro para pruebas (unit/integration/e2e).
-- Reglas del schema: `id` entero incremental (>=1), `created_at` (UTC) requerido, `updated_at` opcional, `description` ≤ 280 chars.
-- Prompt (por capa):
-```
-Analiza la capa <layer> según el manifiesto y el código. Extrae reglas de
-arquitectura, naming, acoplamientos y límites. Actualiza project_rules.json
-siguiendo .ai_files/schemas/project_rules_schema.json. Agrega reglas con
-id=max(id)+1, created_at=UTC actual; updated_at solo si editas. Evita
-duplicados y valida.
-Devuelve JSON válido.
-```
-- Prompt (testing):
-```
-Analiza los tests (unit/integration/e2e) y extrae patrones de naming,
-organización, herramientas y aserciones. Agrega reglas en la sección
-"testing" respetando .ai_files/schemas/project_rules_schema.json.
-Valida y devuelve JSON válido.
-```
+    - path: "ai_files/project_rules.json"
+      description: "This file contains the coding expectation, always follow these coding rules to keep the code consistency and cohesion"
+      when: "always"
 
-3) Conectar al agente
-- En `AGENTS.md`/`CLAUDE.md`/`GEMINI.md` del proyecto:
-  - Indica: “Usa `.ai_files/schemas/` y respeta `$comment` (prepend, truncado, inmutabilidad, etc.).”
-  - Referencia explícita a `project_manifest.json` y `project_rules.json` como contexto.
-  - Si no son enormes, puedes pegarlos minificados (ej. toon) directamente en el `.md` del agente.
+    - path: "ai_files/user_pref.json"
+      description: "This file contains the user interaction preferences when working, always follow this instructions"
+      when: "always"
 
-4) Mantenimiento
-- Repite Manifest + Rules cuando el proyecto crezca para mantener el contexto actualizado.
+    - path: "ai_files/logbooks/"
+      description: "Directory to create and read logbooks related to development tickets. Ask for the logbook to read or create"
+      when: "always"
 
-## Flujo — Proyectos Nuevos
-1) Manifiesto inicial
-- Crea `project_manifest.json` con el stack previsto. Usa `llm_notes` para supuestos y confirma después.
+    - path: "ai_files/schemas/project_manifest_schema.json"
+      description: "Json file with structure and guidance about how to create or update a project manifest"
+      when: "when_user_ask"
 
-2) Reglas base
-- Crea `project_rules.json` con SOPs mínimos (naming, testing, arquitectura prevista). Usa `id` incremental y `created_at` requerido.
+    - path: "ai_files/schemas/project_rules_schema.json"
+      description: "Json file with structure and guidance about how to create coding rules, standards and criterias"
+      when: "when_user_ask"
 
-3) Evolución
-- A medida que hay código, re-ejecuta Manifest y enriquece Rules desde el repo (como en OnGoing).
+    - path: "ai_files/schemas/logbook_schema.json"
+      description: "Json file with structure and guidance about how to create a logbook to track and maintain conversational context for long-term memory and task tracking."
+      when: "when_user_ask"
 
-## Flujo — Bitácora (tickets/historias)
-- Archivo sugerido: `.ai_files/logs/logbook.json`
-- Esquema: `.ai_files/schemas/logbook_schema.json`
+    - path: "ai_files/schemas/ticket_resolution_schema.json"
+      description: "Json file with structure and guidance about how to create a summary of the resolution of the work done"
+      when: "when_user_ask"
 
-1) Iniciar sesión de trabajo
-- Prompt:
-```
-Crea/actualiza .ai_files/logs/logbook.json siguiendo .ai_files/schemas/logbook_schema.json.
-Completa ticket.title, ticket.url y ticket.description con contenido del ticket.
-(Si hay MCP/Jira, puedes leer el ticket directamente.) No modifiques entradas previas.
+    - path: "ai_files/schemas/user_pref_schema.json"
+      description: "Json file with structure and guidance about how to create a profile with guidance about how the interaction between the agent and the user"
+      when: "when_user_ask"
+
 ```
 
-2) Rastrear y planificar
-- Prompt:
-```
-Según el ticket, rastrea archivos/clases/constantes/tests relevantes en el repo.
-Usa el manifiesto para guiar por capas. Genera una lista de acciones ordenada
-para cumplir el objetivo. Preséntala para revisión humana.
+**5.** _(Optional)_ Add the `ai_files/logbooks/` directory to your `.gitignore` to avoid committing work logbooks:
+```bash
+echo "ai_files/logbooks/" >> .gitignore
 ```
 
-3) Confirmar plan (revisión humana)
-- El usuario ajusta y aprueba; solicita versión “confirmada”.
+## 🧭 When to Use It
+- Ongoing Projects: Start by creating the manifest and rules from code; then use the logbook and ticket resolution schema for daily work with development tickets.
 
-4) Crear/actualizar bitácora
-- Prompt:
-```
-Inicializa/actualiza .ai_files/logs/logbook.json. Registra el plan aprobado en
-recent_context (prepend en índice 0); respeta maxItems y las reglas de resumen.
-```
+- Greenfield Projects: Use the schemas to generate a manifest and base rules for your project; evolve as the code grows.
 
-5) Iterar durante el desarrollo
-- En cada checkpoint:
-  - Prepend a `recent_context` con avances/hallazgos.
-  - Si excede `maxItems`, resume la más antigua (≤140) y muévela a `history_summary` con `id` incremental y `created_at`.
-  - Verifica objetivos cumplidos; mueve a `objectives_past` con `status`.
-- Prompt (iterativo):
+> [!IMPORTANT] About Prompts:
+> The prompts included are proven guides that you can copy and use directly. You can also create your own prompts while maintaining or improving the idea according to your context.
+
+## 🌎 How to Create the Global Context
+
+**1.** Create your interaction preferences:
+- Resulting file: `user_pref.json`
+- Schema: `ai_files/schemas/user_pref_schema.json`
+- Prompt _(Copy and paste in the conversation with your agent)_:
 ```
-Actualiza .ai_files/logs/logbook.json: agrega entrada en recent_context (índice 0).
-Si excede maxItems, resume la última (≤140) y muévela a history_summary (nuevo id y created_at).
-Actualiza objetivos según corresponda. Devuelve JSON válido.
+Analyze the entire user_pref_schema.json file and based on the structure and description of each property and object in the file, ask me questions to generate the ai_files/user_pref.json file. Once the questions are finished, generate the file fulfilling the semantic objective of each property indicated in the schema. Be the conversation moderator, be concise in the questions, don't modify the final object and if you see that I deviate from any question, be proactive and resume the conversation thread to generate the file.
 ```
 
-6) Cierre de ticket
-- Archivo: `ticket_resolution.json`
-- Esquema: `.ai_files/schemas/ticket_resolution_schema.json`
-- Prompt:
+**2.** Create the Project Manifest (Update from time to time)
+- Resulting file: `project_manifest.json`
+- Schema: `ai_files/schemas/project_manifest_schema.json`
+- Prompt _(Copy and paste in the conversation with your agent)_:
 ```
-Genera ticket_resolution.json cumpliendo .ai_files/schemas/ticket_resolution_schema.json
-con narrativa problema → causas → fixes → detalles técnicos → validación → resultado.
-Mantén límites de longitud. Llena files_modified con rutas relativas y resúmenes.
-Devuelve JSON válido y luego el documento Markdown final listo para pegar.
+Analyze the entire project_manifest_schema.json file, then based on the structure and description of each property and object in the file, analyze the current project and strictly identify what is requested in the file; to do the analysis, go to each directory and file in the project; don't ignore paths or files because they may be relevant to discover patterns, architecture or project features. Finally generate the ai_files/project_manifest.json file fulfilling the semantic objective of each property indicated in the schema.
 ```
 
-## Validación rápida
+**3.** Create Project Rules: Whether it's an ongoing project or a new one, it's recommended to create rules by layers, so that you can create or identify rules according to the specific good practices of the layer and address particularities with attention. It's recommended to have support or experience to avoid over-engineering in this process.
+- Resulting file: `project_rules.json`
+- Schema: `ai_files/schemas/project_rules_schema.json`
+- Recommendation: Send a separate prompt for each `layer` of `project_manifest.technical_details.architecture_identified`.
+- Risks: Over-engineering was detected, but if you reinforce the YAGNI principle in the prompt it makes a good improvement.
+- Prompt _(indicate layer to analyze according to what was detected in the `project_manifest`)_:
+```
+Analyze the entire project_rules_schema.json file, then analyze the <layer> layer and everything related according to ai_files/project_manifest.json and then go to the project code and search for related classes, objects, functions and methods, trace everything related and according to the content found identify patterns, generate architecture rules that have been applied, extract and generate naming conventions, class structure conventions, even consider patterns that are not good practice but have been implemented throughout the analyzed content. Always follow the criteria indicated in project_rules_schema.json when you create a rule and always apply the YAGNI principle. Finally update the ai_files/project_rules.json file following the instructions in ai_files/schemas/project_rules_schema.json, if the project_rules.json file doesn't exist yet, then create it based on the structure indicated in project_rules_schema.json and the analyzed content.
+```
+
+## 🎯 Focused Context - The Real Power!
+**The Logbook**
+
+The ticket/story logbook is the `.json` file that contains the context focused on primary, secondary objectives and records of findings/progress/problems encountered as you work, the result is a universal file useful for any agent, reusable by any LLM, you can even start with one agent (for example `claude code`) and switch to `codex` if it doesn't solve a problem correctly.
+
+You can have two sessions open with different agents as long as they are not modifying files at the same turn/time, you can work simultaneously, the important thing is that each agent adds its records to the recent context array of the logbook.
+- Resulting file: `ai_files/logbooks/{logbookName}.json`
+- Schema: `ai_files/schemas/logbook_schema.json`
+
+**1.** Start work session with your agent: `claude`, `codex` or `gemini`.
+
+**2.** Provide a prompt with ticket/story details to develop. _(Copy/Paste the content or connect MCP tool and paste the ticket URL to the agent)_.
+- __Example prompt__:
+```
+(This is an example prompt) We will be working on creating a new endpoint so that frontend applications (web and mobile) can get product details, this is the schema we must comply with: ...[API technical content] ... and these are the ticket acceptance criteria: ...[Acceptance criteria]..., do you have any questions?
+```
+
+**3.** Track related code and plan work:
+- Prompt _(Copy and paste in the conversation with your agent)_:
+```
+According to the ticket I shared with you, go to the code and trace files/classes/functions/methods/constants/tests related to the ticket. Use ai_files/project_manifest as a high-level initial guide. Then generate a list of actions to achieve the objective, order it in dependency resolution order first. Present it for review, adjustment and human confirmation.
+```
+
+**4.** Confirm plan _(human review)_:
+- User adjusts the list, removing or adding details for clean execution prepared for the modifications in question.
+- User requests to see the "confirmed" version of the action list. Confirms that the steps have a logical order.
+
+**5.** Create logbook _(File name to be created must be indicated)_
+- Prompt _(Adjust this prompt, copy and paste in the conversation with your agent)_:
+```
+Analyze the entire ai_files/schemas/logbook_schema.json file, then based on the action list that was reviewed and approved, create the logbook ai_files/logbooks/{fileName}.json fulfilling the semantic objective of each property of the schema. From now on you will be the moderator that keeps the logbook objectives updated, therefore, if you detect that a new objective appears (primary or secondary) add it or if any is completed, move it to its respective structure.
+```
+
+**6.** Every so often or progress _(Like saving progress in a video game)_:
+- Prompt (iterative):
+```
+Based on the progress, findings and problems we have had, update the logbook according to the schema rules and create concise comments in the recent context, update the objectives and bring it up to date.
+```
+
+## When Finishing a Development Ticket/Story (Optional)
+
+**Technical Resolution Comment**
+
+It has become good practice to leave a rich summary of the work done to close each ticket, for this:
+
+**1.** Creating the ticket resolution comment:
+- File: Not applicable - A comment is delivered on screen.
+- Schema: `ai_files/schemas/ticket_resolution_schema.json`
+- Prompt _(Logbook name to analyze must be indicated)_:
+```
+Analyze the ai_files/schemas/ticket_resolution_schema.json file and based on the ai_files/logbooks/{logbookName}.json logbook create a resolution comment in Markdown format to copy and paste on the platform where we manage development tickets.
+```
+
+## ✅ Quick Validation
 - Node (AJV): `npx ajv validate -s .ai_files/schemas/<schema>.json -d <data>.json`
 - Python: `python -c "import json,sys,jsonschema as j; j.validate(json.load(open(sys.argv[2])), json.load(open(sys.argv[1])))" .ai_files/schemas/<schema>.json <data>.json`
 
-## Convenciones
-- IDs: `integer` con `minimum: 1`, estables una vez creados.
-- Tiempos: `created_at` (UTC ISO 8601) inmutable; `updated_at` (UTC) solo cuando cambie el contenido.
-- Respeta `$comment`: prepend, límites, resúmenes, inmutabilidad.
+## 🧩 Conventions
+- IDs: `integer` with `minimum: 1`, stable once created.
+- Times: `created_at` (UTC ISO 8601) immutable; `updated_at` (UTC) only when content changes.
+- Respect `$comment`: prepend, limits, summaries, immutability.
 
-## Licencia
-- Código y schemas: Apache-2.0 (ver `LICENSE`).
-- Documentación: puedes optar por CC BY 4.0 si separas la licencia de docs.
+## 📜 License
+- Code and schemas: Apache-2.0 (see `LICENSE`).
+- Documentation: you can opt for CC BY 4.0 if you separate the docs license.

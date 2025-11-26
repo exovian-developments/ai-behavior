@@ -1,0 +1,76 @@
+{
+  "ticket": {
+    "title": "CALC-001: Build Basic Calculator App",
+    "url": "https://jira.example.com/CALC-001",
+    "description": "Create a simple calculator mobile app with basic arithmetic operations (add, subtract, multiply, divide) and calculation history. Must support decimal numbers and have a clean, responsive UI."
+  },
+  "recent_context": [
+    {
+      "id": 5,
+      "created_at": "2024-11-14T14:30:00Z",
+      "content": "Implemented calculation history feature. Added HistoryRepository to store calculations locally using SharedPreferences. Created history screen with list of past calculations. Users can tap to restore a previous calculation."
+    },
+    {
+      "id": 4,
+      "created_at": "2024-11-14T13:15:00Z",
+      "content": "Completed all four arithmetic operations with proper decimal handling. Fixed edge case where dividing by zero now shows error message instead of crashing. Added clear (C) and all-clear (AC) buttons."
+    },
+    {
+      "id": 3,
+      "created_at": "2024-11-14T11:45:00Z",
+      "content": "Built calculator UI using Material Design. Created button grid with proper spacing. Implemented display widget that shows current input and result. Used ConsumerWidget to connect UI with CalculatorNotifier."
+    },
+    {
+      "id": 2,
+      "created_at": "2024-11-14T10:20:00Z",
+      "content": "Set up project structure following Clean Architecture. Created three layers: presentation (UI + StateNotifiers), domain (calculation logic), data (history repository). Configured Riverpod providers."
+    },
+    {
+      "id": 1,
+      "created_at": "2024-11-14T09:00:00Z",
+      "content": "Analyzed requirements and created technical plan. Decided on Flutter + Riverpod for state management. Will use Clean Architecture with 3 layers. Estimated 1 day for implementation."
+    }
+  ],
+  "history_summary": [],
+  "objectives_present": {
+    "main": [],
+    "secondary": []
+  },
+  "objectives_past": {
+    "main": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T09:00:00Z",
+        "content": "Implement basic arithmetic operations (add, subtract, multiply, divide)",
+        "status": "achieved"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T09:00:00Z",
+        "content": "Create responsive calculator UI with Material Design",
+        "status": "achieved"
+      },
+      {
+        "id": 3,
+        "created_at": "2024-11-14T09:00:00Z",
+        "content": "Add calculation history feature",
+        "status": "achieved"
+      }
+    ],
+    "secondary": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T09:00:00Z",
+        "content": "Handle decimal numbers correctly",
+        "status": "achieved"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T09:00:00Z",
+        "content": "Prevent division by zero errors",
+        "status": "achieved"
+      }
+    ]
+  },
+  "future_reminders": []
+}

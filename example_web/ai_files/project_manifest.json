@@ -1,0 +1,56 @@
+{
+  "project": {
+    "name": "calculator_web",
+    "description": "Simple calculator web application with basic arithmetic operations and calculation history. Built with React and TypeScript demonstrating component-based architecture.",
+    "creation_date": "2024-11-01",
+    "last_updated": "2024-11-14"
+  },
+  "platform_info": {
+    "language": "TypeScript",
+    "language_version": "5.5.3",
+    "framework": "React",
+    "framework_version": "18.3.1",
+    "build_system": "Vite 5.4.0"
+  },
+  "technical_details": {
+    "is_modular_project": false,
+    "modules": [],
+    "architecture_identified": [
+      {
+        "layer": "components",
+        "pattern": "Component-Based Architecture",
+        "common_technologies": [
+          "React Functional Components",
+          "React Hooks (useState, useEffect, useCallback)",
+          "TypeScript Interfaces",
+          "CSS Modules"
+        ]
+      },
+      {
+        "layer": "hooks",
+        "pattern": "Custom Hooks",
+        "common_technologies": [
+          "useCalculator (business logic)",
+          "useHistory (localStorage integration)",
+          "React Hooks API"
+        ]
+      },
+      {
+        "layer": "services",
+        "pattern": "Service Layer",
+        "common_technologies": [
+          "Calculation Engine",
+          "Local Storage Service",
+          "Type Definitions"
+        ]
+      }
+    ]
+  },
+  "features": [
+    "Basic arithmetic operations (add, subtract, multiply, divide)",
+    "Decimal number support",
+    "Calculation history with localStorage",
+    "Responsive design",
+    "Keyboard support"
+  ]
+}

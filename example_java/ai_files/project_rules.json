@@ -1,0 +1,75 @@
+{
+  "project_name": "auth_service",
+  "project_description": "Spring Boot JWT authentication microservice",
+  "language": "java",
+  "type": "backend",
+  "rules": {
+    "architecture": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Follow layered architecture: Controller → Service → Repository, controllers only handle HTTP, business logic in services"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Use DTOs for API requests/responses, never expose entity classes directly to clients"
+      }
+    ],
+    "naming_conventions": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Classes: PascalCase, methods/variables: camelCase, constants: UPPER_SNAKE_CASE, packages: lowercase"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Controllers end with 'Controller', Services with 'Service', Repositories with 'Repository', DTOs with 'DTO' or 'Request'/'Response'"
+      }
+    ],
+    "api_layer": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Use @RestController for REST endpoints, return ResponseEntity with proper HTTP status codes"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Validate input using @Valid annotation and proper exception handling with @ControllerAdvice"
+      }
+    ],
+    "data_layer": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Extend JpaRepository for database operations, use @Entity for domain models with proper JPA annotations"
+      }
+    ],
+    "infra": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Use BCryptPasswordEncoder for password hashing, never store plain text passwords"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Configure SecurityFilterChain for endpoint protection, use JWT filter for token validation"
+      }
+    ],
+    "testing": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Write unit tests for services using @SpringBootTest, mock dependencies with @MockBean"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Test REST endpoints with @WebMvcTest and MockMvc"
+      }
+    ]
+  }
+}

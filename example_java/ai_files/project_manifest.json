@@ -1,0 +1,68 @@
+{
+  "project": {
+    "name": "auth_service",
+    "description": "JWT-based authentication microservice providing login, logout, and token refresh capabilities. Built with Spring Boot and Spring Security for secure user authentication.",
+    "creation_date": "2024-11-01",
+    "last_updated": "2024-11-14"
+  },
+  "platform_info": {
+    "language": "Java",
+    "language_version": "17",
+    "framework": "Spring Boot",
+    "framework_version": "3.2.0",
+    "build_system": "Maven 3.9+"
+  },
+  "technical_details": {
+    "is_modular_project": false,
+    "modules": [],
+    "architecture_identified": [
+      {
+        "layer": "controller",
+        "pattern": "REST Controller Layer",
+        "common_technologies": [
+          "@RestController",
+          "@RequestMapping",
+          "ResponseEntity",
+          "DTO Pattern"
+        ]
+      },
+      {
+        "layer": "service",
+        "pattern": "Service Layer",
+        "common_technologies": [
+          "@Service",
+          "Business Logic",
+          "JWT Token Generation",
+          "User Authentication"
+        ]
+      },
+      {
+        "layer": "repository",
+        "pattern": "Spring Data JPA",
+        "common_technologies": [
+          "JpaRepository",
+          "Entity Management",
+          "H2 Database"
+        ]
+      },
+      {
+        "layer": "security",
+        "pattern": "Spring Security with JWT",
+        "common_technologies": [
+          "SecurityFilterChain",
+          "JwtAuthenticationFilter",
+          "PasswordEncoder (BCrypt)",
+          "JWT Token Validation"
+        ]
+      }
+    ]
+  },
+  "features": [
+    "User registration with encrypted passwords",
+    "Login with JWT token generation",
+    "Token refresh mechanism",
+    "Logout with token invalidation",
+    "Secure endpoints with JWT validation",
+    "Role-based access control (RBAC)"
+  ]
+}

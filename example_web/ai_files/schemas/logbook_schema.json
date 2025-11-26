@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LLM Bitacora Schema",
+  "description": "This schema defines the structure of a dynamic logbook used by an LLM to track and maintain conversational context. It supports long-term memory, task tracking, emotional state capture, and summarization.",
+  "type": "object",
+  "properties": {
+    "ticket": {
+      "type": "object",
+      "description": "Metadata of the ticket or task that anchors this logbook.",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Title of the ticket or task."
+        },
+        "url": {
+          "type": "string",
+          "description": "Direct URL to the ticket or task in an external system."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed explanation and context provided in the ticket."
+        }
+      },
+      "required": [
+        "title",
+        "description"
+      ]
+    },
+    "recent_context": {
+      "type": "array",
+      "maxItems": 20,
+      "description": "A running log of the most recent interactions. **Rule: Always prepend new entries to the beginning of this array (index 0).** Do not replace the entire array. Existing entries should be pushed down. The array is ordered with the most recent entry at index 0.",
+      "$comment": "To add a new entry, prepend it to the array. If the array then exceeds the 'maxItems' limit, remove the last (oldest) entry from the end of the array. This maintains a sliding window of the most recent context.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "$comment": "Unique identifier for the recent context entries",
+            "description": "Unique identifier for the message entry. Should follow a digit format starting at 1 and incrementing by 1 for each new entry (e.g., 1, 2, 3). This field is created and should never modified again, even when the logbook is synced or updated."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp in UTC when the message was created (e.g., 2025-06-25T10:43:12). This field is created and should never modified again, even when the logbook is synced or updated."
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 1200,
+            "description": "Message content. Should include meaningful actions, decisions, or analysis."
+          },
+          "mood": {
+            "type": "string",
+            "description": "User emotional state during the message (if known).",
+            "examples": [
+              "focused",
+              "frustrated",
+              "excited",
+              "uncertain"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "content"
+        ]
+      }
+    },
+    "history_summary": {
+      "type": "array",
+      "maxItems": 10,
+      "description": "Compact summaries (max 140 characters) of messages removed from recent_context. Used to preserve continuity when short-term memory is full.",
+      "$comment": "Summaries are stored with the newest first. Index 0 is most recent. LLM should write to this field only when truncating recent_context. Do not include new messages here directly. LLMs can scan top-down to understand recent shifts.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Numeric identifier for the summary entry. Stable and never modified.",
+            "$comment": "Start at 1 and increment by 1 for each new entry."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp in UTC when the summary was created.",
+            "$comment": "This field is created and should never be modified again, even when the logbook is synced or updated."
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 140,
+            "description": "Short summary of a previously removed message."
+          },
+          "mood": {
+            "type": "string",
+            "description": "User's emotional state at the time of the summarized entry (optional)."
+          }
+        },
+        "required": [
+          "id",
+          "content"
+        ]
+      }
+    },
+    "objectives_present": {
+      "type": "object",
+      "description": "List of active goals the user is currently pursuing. Split into primary (main) and supporting (secondary) categories.",
+      "$comment": "LLM can use this list to prioritize answers or maintain task focus. It should never modify this list directly unless explicitly instructed.",
+      "properties": {
+        "main": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "$comment": "Unique identifier for the recent context entries",
+                "description": "Unique identifier for the message entry. Should follow a digit format starting at 1 and incrementing by 1 for each new entry (e.g., 1, 2, 3). This field is created and should never modified again, even when the logbook is synced or updated."
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp in UTC when the message was created (e.g., 2025-06-25T10:43:12). This field is created and should never modified again, even when the logbook is synced or updated."
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 180,
+                "description": "Brief description of a primary goal actively being pursued."
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "not_started",
+                  "active"
+                ],
+                "description": "Current progress status of the primary goal."
+              },
+              "mood": {
+                "type": "string",
+                "description": "Optional sentiment associated with this goal (if known)."
+              }
+            },
+            "required": [
+              "id",
+              "content",
+              "status"
+            ]
+          }
+        },
+        "secondary": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/objectives_present/properties/main/items"
+          }
+        }
+      },
+      "required": [
+        "main",
+        "secondary"
+      ]
+    },
+    "objectives_past": {
+      "type": "object",
+      "description": "Goals that have been achieved, abandoned or discarded. Capped at 10 per group to minimize memory usage.",
+      "$comment": "LLM may reference this list when explaining previous decisions or user history, but should not add new items.",
+      "properties": {
+        "main": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "$comment": "Unique identifier for the recent context entries",
+                "description": "Unique identifier for the message entry. Should follow a digit format starting at 1 and incrementing by 1 for each new entry (e.g., 1, 2, 3). This field is created and should never modified again, even when the logbook is synced or updated."
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp in UTC when the message was created (e.g., 2025-06-25T10:43:12). This field is created and should never modified again, even when the logbook is synced or updated."
+              },
+              "content": {
+                "type": "string",
+                "maxLength": 180,
+                "description": "Brief description of the completed/abandoned goal."
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "achieved",
+                  "abandoned",
+                  "removed"
+                ],
+                "description": "Final disposition of the goal once it leaves the active list."
+              },
+              "mood": {
+                "type": "string",
+                "description": "Optional sentiment recorded for this goal at completion time."
+              }
+            },
+            "required": [
+              "id",
+              "content",
+              "status"
+            ]
+          }
+        },
+        "secondary": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/properties/objectives_past/properties/main/items"
+          }
+        }
+      },
+      "required": [
+        "main",
+        "secondary"
+      ]
+    },
+    "future_reminders": {
+      "type": "array",
+      "description": "A list of user-created reminders, specifying when and what to notify.",
+      "$comment": "LLM may read this section to generate follow-ups but must not write here unless user explicitly instructs to create a reminder.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "$comment": "Unique identifier for the recent context entries",
+            "description": "Unique identifier for the message entry. Should follow a digit format starting at 1 and incrementing by 1 for each new entry (e.g., 1, 2, 3). This field is created and should never modified again, even when the logbook is synced or updated."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp in UTC when the message was created (e.g., 2025-06-25T10:43:12). This field is created and should never modified again, even when the logbook is synced or updated."
+          },
+          "content": {
+            "type": "string",
+            "description": "Reminder message or instruction to be surfaced at the specified time."
+          },
+          "when": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Exact UTC time when the reminder should be triggered."
+          },
+          "mood": {
+            "type": "string",
+            "description": "Optional sentiment when the reminder was created."
+          }
+        },
+        "required": [
+          "id",
+          "content",
+          "when"
+        ]
+      }
+    }
+  },
+  "required": [
+    "ticket",
+    "objectives_present",
+    "objectives_past",
+    "recent_context",
+    "history_summary",
+    "future_reminders"
+  ]
+}

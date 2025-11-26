@@ -1,0 +1,63 @@
+{
+  "project_name": "calculator_app",
+  "project_description": "Simple calculator mobile app with Clean Architecture",
+  "language": "dart",
+  "type": "frontend",
+  "rules": {
+    "architecture": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Follow Clean Architecture: presentation layer depends on domain, domain is independent, data implements domain interfaces"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Use Riverpod for all state management, avoid StatefulWidget for business logic"
+      }
+    ],
+    "naming_conventions": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Files: lowercase_with_underscores.dart, Classes: PascalCase, variables/functions: camelCase"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Providers end with 'Provider', StateNotifiers end with 'Notifier', widgets end with 'Widget' or 'Screen'"
+      }
+    ],
+    "presentation_layer": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Use ConsumerWidget for widgets that read providers, keep widgets small and focused on single responsibility"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Extract reusable UI components into separate widget files, avoid business logic in widgets"
+      }
+    ],
+    "data_layer": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Use Repository pattern for data access, repositories implement interfaces defined in domain layer"
+      }
+    ],
+    "testing": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Write unit tests for business logic and use cases, mock dependencies with mocktail"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Use widget tests for UI components, test user interactions and state changes"
+      }
+    ]
+  }
+}

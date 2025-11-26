@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "llm_guidance": {
+    "explain_before_answering": true,
+    "ask_before_assuming": true,
+    "suggest_multiple_options": false,
+    "allow_self_correction": true,
+    "persistent_personality": true,
+    "feedback_loop_enabled": true
+  },
+  "user_profile": {
+    "name": "Developer",
+    "communication_tone": "professional",
+    "emoji_usage": "minimal",
+    "preferred_language": "en",
+    "technical_background": "senior",
+    "explanation_style": "concise",
+    "learning_style": "example-driven"
+  },
+  "output_preferences": {
+    "code_blocks": {
+      "include_comments": true,
+      "language_hints": true,
+      "full_context": false
+    },
+    "responses": {
+      "max_length": "medium",
+      "include_alternatives": true,
+      "include_trade_offs": true
+    },
+    "formatting": {
+      "use_markdown": true,
+      "use_code_highlighting": true,
+      "use_tables": true
+    }
+  }
+}

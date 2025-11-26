@@ -1,0 +1,65 @@
+{
+  "ticket": {
+    "title": "CALC-001: Build Calculator Web App with React",
+    "url": "https://jira.example.com/CALC-001",
+    "description": "Create a calculator web application using React and TypeScript. Implement basic arithmetic operations, decimal support, and calculation history stored in localStorage."
+  },
+  "recent_context": [
+    {
+      "id": 4,
+      "created_at": "2024-11-14T15:00:00Z",
+      "content": "Completed calculator implementation. Added keyboard support so users can type numbers and operators. Tested across Chrome, Firefox, and Safari - all working correctly. Ready for deployment."
+    },
+    {
+      "id": 3,
+      "created_at": "2024-11-14T13:30:00Z",
+      "content": "Implemented history feature using localStorage. Created useHistory custom hook to manage history state. Added History component to display past calculations. Users can clear history."
+    },
+    {
+      "id": 2,
+      "created_at": "2024-11-14T11:00:00Z",
+      "content": "Built Calculator component and useCalculator hook. Hook handles all calculation logic (add, subtract, multiply, divide). Component renders button grid and display. Proper handling of decimals and division by zero."
+    },
+    {
+      "id": 1,
+      "created_at": "2024-11-14T09:30:00Z",
+      "content": "Set up React + TypeScript + Vite project. Created folder structure: components/, hooks/, services/. Configured TypeScript strict mode. Installed Vitest for testing."
+    }
+  ],
+  "history_summary": [],
+  "objectives_present": {
+    "main": [],
+    "secondary": []
+  },
+  "objectives_past": {
+    "main": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T09:30:00Z",
+        "content": "Create React app with Vite and TypeScript",
+        "status": "achieved"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T09:30:00Z",
+        "content": "Implement calculator logic with custom hook",
+        "status": "achieved"
+      },
+      {
+        "id": 3,
+        "created_at": "2024-11-14T09:30:00Z",
+        "content": "Add localStorage-based calculation history",
+        "status": "achieved"
+      }
+    ],
+    "secondary": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T09:30:00Z",
+        "content": "Add keyboard support",
+        "status": "achieved"
+      }
+    ]
+  },
+  "future_reminders": []
+}

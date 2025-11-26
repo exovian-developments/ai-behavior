@@ -1,0 +1,56 @@
+{
+  "project_name": "calculator_web",
+  "project_description": "React web calculator with TypeScript",
+  "language": "typescript",
+  "type": "frontend",
+  "rules": {
+    "architecture": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Use functional components with hooks, avoid class components"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Extract business logic into custom hooks, keep components focused on presentation"
+      }
+    ],
+    "naming_conventions": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Components: PascalCase (Calculator.tsx), hooks: camelCase with 'use' prefix (useCalculator.ts), services: camelCase"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "TypeScript interfaces: PascalCase with 'I' prefix or descriptive names (CalculatorState, HistoryEntry)"
+      }
+    ],
+    "presentation_layer": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "One component per file, keep components small and reusable"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Use TypeScript for all component props, avoid 'any' type"
+      }
+    ],
+    "testing": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Write unit tests for custom hooks and services using Vitest"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T10:00:00Z",
+        "description": "Test component rendering and user interactions"
+      }
+    ]
+  }
+}

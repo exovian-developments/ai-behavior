@@ -1,0 +1,82 @@
+{
+  "ticket": {
+    "title": "AUTH-001: Implement JWT Authentication System",
+    "url": "https://jira.example.com/AUTH-001",
+    "description": "Create a JWT-based authentication microservice with login, logout, and refresh token endpoints. Use Spring Boot 3 and Spring Security. Support user registration, password encryption, and role-based access control."
+  },
+  "recent_context": [
+    {
+      "id": 5,
+      "created_at": "2024-11-14T16:00:00Z",
+      "content": "Completed all endpoints and tested with Postman. Login returns JWT access token and refresh token. Refresh endpoint validates old token and issues new one. Logout invalidates tokens. All endpoints properly secured. Added integration tests."
+    },
+    {
+      "id": 4,
+      "created_at": "2024-11-14T14:30:00Z",
+      "content": "Implemented refresh token mechanism. Created RefreshTokenService to manage token lifecycle. Added /api/auth/refresh endpoint. Tokens stored in database with expiration. Proper validation before issuing new access token."
+    },
+    {
+      "id": 3,
+      "created_at": "2024-11-14T12:45:00Z",
+      "content": "Built authentication endpoints: /api/auth/register, /api/auth/login, /api/auth/logout. Created AuthController and AuthService. Login generates JWT with user details and roles. Password validation with BCrypt. Proper error handling for invalid credentials."
+    },
+    {
+      "id": 2,
+      "created_at": "2024-11-14T11:00:00Z",
+      "content": "Configured Spring Security with JWT filter. Created JwtAuthenticationFilter to intercept requests and validate tokens. Set up SecurityFilterChain to protect endpoints. Public endpoints: /api/auth/**. All others require valid JWT."
+    },
+    {
+      "id": 1,
+      "created_at": "2024-11-14T09:30:00Z",
+      "content": "Set up Spring Boot project with Maven. Added dependencies: spring-boot-starter-web, spring-boot-starter-security, spring-boot-starter-data-jpa, jjwt for JWT. Created project structure with controller, service, repository, security, and dto packages. Configured H2 in-memory database for development."
+    }
+  ],
+  "history_summary": [],
+  "objectives_present": {
+    "main": [],
+    "secondary": []
+  },
+  "objectives_past": {
+    "main": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T09:30:00Z",
+        "content": "Set up Spring Boot project with security dependencies",
+        "status": "achieved"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T09:30:00Z",
+        "content": "Configure Spring Security with JWT authentication",
+        "status": "achieved"
+      },
+      {
+        "id": 3,
+        "created_at": "2024-11-14T09:30:00Z",
+        "content": "Implement login and registration endpoints",
+        "status": "achieved"
+      },
+      {
+        "id": 4,
+        "created_at": "2024-11-14T09:30:00Z",
+        "content": "Add refresh token mechanism",
+        "status": "achieved"
+      }
+    ],
+    "secondary": [
+      {
+        "id": 1,
+        "created_at": "2024-11-14T09:30:00Z",
+        "content": "Add logout functionality with token invalidation",
+        "status": "achieved"
+      },
+      {
+        "id": 2,
+        "created_at": "2024-11-14T09:30:00Z",
+        "content": "Write integration tests for auth endpoints",
+        "status": "achieved"
+      }
+    ]
+  },
+  "future_reminders": []
+}
