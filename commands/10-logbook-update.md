@@ -8,7 +8,9 @@
 
 **Purpose:** Update an existing logbook with progress, findings, objective status changes, and context entries.
 
-**Schema:** `ai_files/schemas/logbook_schema.json`
+**Schema (detected from project_type):**
+- Software → `ai_files/schemas/logbook_software_schema.json`
+- General → `ai_files/schemas/logbook_general_schema.json`
 
 **Input/Output:** `ai_files/logbooks/[filename].json`
 
@@ -20,6 +22,7 @@
 - Automatic history compaction when recent_context exceeds 20 items
 - Support for adding new objectives discovered during work
 - Reminder management
+- **Schema-aware:** Validates against correct schema based on project_type
 
 ---
 
@@ -298,7 +301,7 @@
 31. USER selects type
 
 **═══════════════════════════════════════════════════════════════════**
-**OPERATION 3A: Add Main Objective**
+**OPERATION 3A: Add Main Objective (adapts to project_type)**
 **═══════════════════════════════════════════════════════════════════**
 
 32. MAIN AGENT:
@@ -319,6 +322,8 @@
 
 35. USER: Provides context
 
+**IF project_type === "software":**
+
 36. MAIN AGENT:
     ```
     ¿Cuáles son los archivos de referencia? (uno por línea, Enter vacío para terminar)
@@ -335,7 +340,7 @@
 
 39. USER: Provides rule IDs or skips
 
-40. MAIN AGENT: Create main objective
+40. MAIN AGENT: Create main objective (SOFTWARE)
     ```json
     {
       "id": [next_main_id],
@@ -350,10 +355,43 @@
     }
     ```
 
-41. Go to step 45
+**IF project_type === "general":**
+
+36. MAIN AGENT:
+    ```
+    ¿Qué materiales de referencia aplican? (uno por línea, Enter vacío para terminar)
+    (Ejemplo: Capítulo 2 en Google Docs, Brief del cliente, https://reference.com)
+    ```
+
+37. USER: Provides references
+
+38. MAIN AGENT:
+    ```
+    ¿Qué estándares o guías aplican? (uno por línea, o Enter para ninguno)
+    (Ejemplo: APA 7ma edición, Brand guidelines, ISO 27001)
+    ```
+
+39. USER: Provides standards or skips
+
+40. MAIN AGENT: Create main objective (GENERAL)
+    ```json
+    {
+      "id": [next_main_id],
+      "created_at": "[now_utc]",
+      "content": "[user_content]",
+      "context": "[user_context]",
+      "scope": {
+        "references": ["[references_array]"],
+        "standards": ["[standards_array]"]
+      },
+      "status": "not_started"
+    }
+    ```
+
+41. Go to step 48
 
 **═══════════════════════════════════════════════════════════════════**
-**OPERATION 3B: Add Secondary Objective**
+**OPERATION 3B: Add Secondary Objective (adapts to project_type)**
 **═══════════════════════════════════════════════════════════════════**
 
 42. MAIN AGENT:
@@ -366,10 +404,29 @@
 
 43. USER: Provides content
 
+**IF project_type === "software":**
+
 44. MAIN AGENT:
     ```
     Proporciona la guía de completación (uno por línea, Enter vacío para terminar):
-    (Referencia archivos específicos, patrones, reglas)
+    (Referencia archivos específicos, patrones, números de línea, reglas)
+
+    Ejemplo:
+    • Usar patrón de src/services/UserService.ts:45
+    • Aplicar regla #3: validación de inputs
+    ```
+
+**IF project_type === "general":**
+
+44. MAIN AGENT:
+    ```
+    Proporciona la guía de completación (uno por línea, Enter vacío para terminar):
+    (Referencia documentos, secciones, ejemplos, estándares)
+
+    Ejemplo:
+    • Seguir estructura del Capítulo 2
+    • Aplicar formato APA para citas
+    • Revisar feedback del tutor (notas 15-nov)
     ```
 
 45. USER: Provides completion_guide items
@@ -495,7 +552,9 @@
 **STEP SAVE: Save and Exit**
 **═══════════════════════════════════════════════════════════════════**
 
-64. MAIN AGENT: Validate JSON against schema
+64. MAIN AGENT: Validate JSON against appropriate schema
+    - IF `project_type === "software"` → Validate against `logbook_software_schema.json`
+    - IF `project_type === "general"` → Validate against `logbook_general_schema.json`
 
 65. MAIN AGENT: Save to `ai_files/logbooks/[filename].json`
 

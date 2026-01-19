@@ -25,13 +25,13 @@ mkdir -p ai_files/{schemas,logbooks}
 
 # Determine if we're running from local clone or need to download
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [ -f "$SCRIPT_DIR/schemas/logbook_schema.json" ]; then
+if [ -f "$SCRIPT_DIR/schemas/logbook_software_schema.json" ]; then
     echo "📋 Copying schemas from local installation..."
     cp "$SCRIPT_DIR/schemas/"*.json ai_files/schemas/
 else
     echo "📥 Downloading schemas from GitHub..."
     BASE_URL="https://raw.githubusercontent.com/exovian-developments/ai-behavior/main/schemas"
-    for schema in logbook_schema.json project_manifest_schema.json project_rules_schema.json ticket_resolution_schema.json user_pref_schema.json; do
+    for schema in logbook_software_schema.json software_manifest_schema.json project_rules_schema.json ticket_resolution_schema.json user_pref_schema.json; do
         echo "  - Downloading $schema..."
         curl -fsSL "$BASE_URL/$schema" -o "ai_files/schemas/$schema"
     done
@@ -80,7 +80,7 @@ required_reading:
     description: "Directory to create and read logbooks related to development tickets. Ask for the logbook to read or create"
     when: "always"
 
-  - path: "ai_files/schemas/project_manifest_schema.json"
+  - path: "ai_files/schemas/software_manifest_schema.json"
     description: "Json file with structure and guidance about how to create or update a project manifest"
     when: "when_user_ask"
 
@@ -88,7 +88,7 @@ required_reading:
     description: "Json file with structure and guidance about how to create coding rules, standards and criterias"
     when: "when_user_ask"
 
-  - path: "ai_files/schemas/logbook_schema.json"
+  - path: "ai_files/schemas/logbook_software_schema.json"
     description: "Json file with structure and guidance about how to create a logbook to track and maintain conversational context for long-term memory and task tracking."
     when: "when_user_ask"
 
@@ -154,7 +154,7 @@ required_reading:
     description: "Directory to create and read logbooks related to development tickets. Ask for the logbook to read or create"
     when: "always"
 
-  - path: "ai_files/schemas/project_manifest_schema.json"
+  - path: "ai_files/schemas/software_manifest_schema.json"
     description: "Json file with structure and guidance about how to create or update a project manifest"
     when: "when_user_ask"
 
@@ -162,7 +162,7 @@ required_reading:
     description: "Json file with structure and guidance about how to create coding rules, standards and criterias"
     when: "when_user_ask"
 
-  - path: "ai_files/schemas/logbook_schema.json"
+  - path: "ai_files/schemas/logbook_software_schema.json"
     description: "Json file with structure and guidance about how to create a logbook to track and maintain conversational context for long-term memory and task tracking."
     when: "when_user_ask"
 

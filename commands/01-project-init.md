@@ -11,14 +11,14 @@
 **Schema:** `ai_files/schemas/user_pref_schema.json` (extended with project context fields)
 
 **Output:**
-- `ai_files/user_pref.json` (enhanced with project type and familiarity)
+- `ai_files/user_pref.json` (enhanced with project type, familiarity, and project state)
 - Updated `CLAUDE.md` (prepends user preferences reference)
 
 **Parameters:** None (always interactive)
 
 ---
 
-## Configuration + Essential Questions (5 questions total)
+## Configuration + Essential Questions (6 questions total)
 
 **Configuration (not counted as question):**
 - **Language** - User types preferred language (free text with examples)
@@ -27,8 +27,9 @@
 1. **Name + Role** - User name and role in project (with fallback if role not provided)
 2. **Project Type** - Software or General (non-software)
 3. **Project Familiarity** - Known or Unknown to user
-4. **Communication Tone** - Free text with examples
-5. **Explanation Style** - Free text with examples
+4. **Project State** - New (from scratch) or Existing (codebase present)
+5. **Communication Tone** - Free text with examples
+6. **Explanation Style** - Free text with examples
 
 ---
 
@@ -115,7 +116,7 @@ Output Preferences:
    📘 Comando: /ai-behavior:project-init
 
    Este comando configura tus preferencias esenciales para trabajar con ai-behavior.
-   Te haré 5 preguntas para configurar cómo interactúo contigo y entender tu proyecto.
+   Te haré 6 preguntas para configurar cómo interactúo contigo y entender tu proyecto.
 
    ¿Deseas continuar? (Si/No)
    ```
@@ -129,9 +130,10 @@ Output Preferences:
     Resumen de ejecución:
     1. Proporcionar tu nombre y rol
     2. Especificar tipo de proyecto y familiaridad
-    3. Elegir tono de comunicación y estilo de explicación
-    4. Generar user_pref.json con valores por defecto inteligentes
-    5. Actualizar CLAUDE.md para referenciar preferencias
+    3. Indicar si el proyecto es nuevo (desde cero) o existente
+    4. Elegir tono de comunicación y estilo de explicación
+    5. Generar user_pref.json con valores por defecto inteligentes
+    6. Actualizar CLAUDE.md para referenciar preferencias
 
     Este comando creará: ai_files/user_pref.json + CLAUDE.md actualizado
     ```
@@ -214,10 +216,30 @@ Output Preferences:
     - If "2" → `is_project_known_by_user = false`
 
 **═══════════════════════════════════════════════════════════════════**
-**QUESTION 4: Communication Tone (IN USER'S LANGUAGE)**
+**QUESTION 4: Project State (IN USER'S LANGUAGE)**
 **═══════════════════════════════════════════════════════════════════**
 
 21. SUBAGENT (en español):
+    ```
+    🆕 ¿Este proyecto es nuevo (desde cero) o existente (ya tiene código)?
+
+    1. Proyecto nuevo / desde cero (sin base de código)
+    2. Proyecto existente (ya tiene código)
+
+    Elige 1 o 2:
+    ```
+
+22. USER: "1" or "2"
+
+23. SUBAGENT: Stores `is_project_from_scratch`
+    - If "1" → `is_project_from_scratch = true`
+    - If "2" → `is_project_from_scratch = false`
+
+**═══════════════════════════════════════════════════════════════════**
+**QUESTION 5: Communication Tone (IN USER'S LANGUAGE)**
+**═══════════════════════════════════════════════════════════════════**
+
+24. SUBAGENT (en español):
     ```
     💬 ¿Cómo prefieres que me comunique contigo?
 
@@ -230,17 +252,17 @@ Output Preferences:
     Escribe tu preferencia:
     ```
 
-22. USER: "Amistoso con humor" or "friendly but professional" or custom description
+25. USER: "Amistoso con humor" or "friendly but professional" or custom description
 
-23. SUBAGENT: Stores `communication_tone`
+26. SUBAGENT: Stores `communication_tone`
     - Parse and normalize user input
     - Store as-is or map to known values (formal, friendly_with_sarcasm, strict, custom)
 
 **═══════════════════════════════════════════════════════════════════**
-**QUESTION 5: Explanation Style (IN USER'S LANGUAGE)**
+**QUESTION 6: Explanation Style (IN USER'S LANGUAGE)**
 **═══════════════════════════════════════════════════════════════════**
 
-24. SUBAGENT (en español):
+30. SUBAGENT (en español):
     ```
     📚 ¿Qué nivel de detalle prefieres en mis explicaciones?
 
@@ -253,9 +275,9 @@ Output Preferences:
     Escribe tu preferencia:
     ```
 
-25. USER: "Balanceado" or "explain but keep it concise" or custom description
+28. USER: "Balanceado" or "explain but keep it concise" or custom description
 
-26. SUBAGENT: Stores `explanation_style`
+29. SUBAGENT: Stores `explanation_style`
     - Parse and normalize user input
     - Store as-is or map to known values (direct, balanced, teaching_mode, custom)
 
@@ -293,23 +315,24 @@ Output Preferences:
       • response_structure: [explanation, options_if_applicable, code_or_solution, summary_or_next_step]
     ```
 
-28. SUBAGENT: Auto-detect `code_language` from project files (if software project)
+31. SUBAGENT: Auto-detect `code_language` from project files (if software project)
 
-29. SUBAGENT: Generate `ai_files/user_pref.json` with:
-    - User's answers (language + 5 questions)
+32. SUBAGENT: Generate `ai_files/user_pref.json` with:
+    - User's answers (language + 6 questions)
     - Smart defaults for remaining fields
     - **NEW:** `project_type` (software/general)
     - **NEW:** `is_project_known_by_user` (true/false)
+    - **NEW:** `is_project_from_scratch` (true/false)
 
-30. SUBAGENT: Validate against schema
+33. SUBAGENT: Validate against schema
 
 **═══════════════════════════════════════════════════════════════════**
 **STEP 5: Update CLAUDE.md**
 **═══════════════════════════════════════════════════════════════════**
 
-31. SUBAGENT: Check if `CLAUDE.md` exists
+34. SUBAGENT: Check if `CLAUDE.md` exists
 
-32. IF EXISTS:
+35. IF EXISTS:
     - Read current contents
     - Prepend user preferences reference at the top:
       ```markdown
@@ -322,7 +345,7 @@ Output Preferences:
       [Original CLAUDE.md content continues below...]
       ```
 
-33. IF NOT EXISTS:
+36. IF NOT EXISTS:
     - Create new `CLAUDE.md` with:
       ```markdown
       # User Preferences
@@ -334,9 +357,9 @@ Output Preferences:
 **STEP 6: Success Message and Next Steps**
 **═══════════════════════════════════════════════════════════════════**
 
-34. SUBAGENT returns to MAIN AGENT
+37. SUBAGENT returns to MAIN AGENT
 
-35. MAIN AGENT (en español):
+38. MAIN AGENT (en español):
     ```
     ✅ ¡Configuración completada!
 
@@ -349,6 +372,7 @@ Output Preferences:
       • Rol: Senior Frontend Developer
       • Idioma: Español
       • Tipo de proyecto: Software
+      • Estado: Nuevo (desde cero)
       • Familiaridad: Nuevo para ti
       • Tono: Amistoso + Humor negro
       • Explicaciones: Con contexto técnico
@@ -367,7 +391,7 @@ Output Preferences:
 **STEP 7: Final Summary and Next Command (Standard Pattern)**
 **═══════════════════════════════════════════════════════════════════**
 
-36. MAIN AGENT (en español):
+39. MAIN AGENT (en español):
     ```
     ✅ Resultado: Preferencias de usuario configuradas y listas para usar.
 
@@ -402,6 +426,8 @@ Tu configuración:
   • Nombre: Alex
   • Rol: Senior Frontend Developer
   • Idioma: Español
+  • Tipo de proyecto: Software
+  • Estado: Nuevo (desde cero)
   • Tono: Amistoso + Humor negro
   • Explicaciones: Con contexto técnico
   • Lenguaje del proyecto: TypeScript (detectado)
@@ -434,7 +460,8 @@ Después de reiniciar, continúa con:
   "output_preferences": { ... },
   "project_context": {
     "project_type": "software",
-    "is_project_known_by_user": false
+    "is_project_known_by_user": false,
+    "is_project_from_scratch": true
   }
 }
 ```
@@ -446,7 +473,7 @@ Después de reiniciar, continúa con:
 **Subagent:** `project-initializer`
 - **Tools:** Read, Write, Bash
 - **Responsibilities:**
-  - Conduct 6 essential questions (2 new: project_type, familiarity)
+  - Conduct 7 essential prompts (language + 6 questions; 3 project context: type, familiarity, state)
   - Switch language after Q1
   - Auto-detect code_language (if software project)
   - Generate JSON with smart defaults + project context

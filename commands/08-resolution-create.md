@@ -2,17 +2,23 @@
 
 **Status:** ✅ DESIGNED
 
+**Applies to:** Software projects only
+
 ---
 
 ## Overview
 
-**Purpose:** Generate a resolution document from a logbook, documenting what was accomplished and key learnings.
+**Purpose:** Generate a resolution document from a software development logbook, documenting what was accomplished, code changes, and technical learnings.
 
-**Input:** Logbook file (parameter or selection)
+**Schema:** `ai_files/schemas/ticket_resolution_schema.json`
+
+**Input:** Logbook file (parameter or selection) - must be from a software project
 
 **Output:** Resolution markdown file in `ai_files/resolutions/`
 
 **Parameters:** `[logbook]` (optional) - Logbook filename to use
+
+**Note:** For general projects, the logbook itself serves as documentation. Use `/ai-behavior:logbook-update` to mark objectives as achieved and add final context entries.
 
 ---
 
@@ -103,24 +109,19 @@ Resolution: bug-fix-login-resolution.md
 
 ---
 
-## Resolution for General Projects
+## Prerequisites
 
-For non-software projects, adapt sections:
+1. Check `user_pref.json` exists
+2. Check `project_context.project_type === "software"`
+   - IF NOT software → Show message:
+     ```
+     ⚠️ Este comando es solo para proyectos de software.
 
-**Academic:**
-- Chapters completed
-- Research findings
-- Methodology notes
-
-**Creative:**
-- Deliverables completed
-- Design decisions
-- Asset inventory
-
-**Business:**
-- Milestones achieved
-- Decisions made
-- Next steps
+     Para proyectos generales, tu bitácora ya documenta el progreso.
+     Usa /ai-behavior:logbook-update para marcar objetivos como completados
+     y agregar entradas finales de contexto.
+     ```
+     → **EXIT COMMAND**
 
 ---
 

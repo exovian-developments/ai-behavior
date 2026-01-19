@@ -71,8 +71,8 @@ cp ai-behavior/schemas/*.json ai_files/schemas/
 ```
 
 Schemas incluidos:
-  - `logbook_schema.json`
-  - `project_manifest_schema.json`
+  - `logbook_software_schema.json`
+  - `software_manifest_schema.json`
   - `project_rules_schema.json`
   - `ticket_resolution_schema.json`
   - `user_pref_schema.json`
@@ -97,7 +97,7 @@ Schemas incluidos:
       description: "Directory to create and read logbooks related to development tickets. Ask for the logbook to read or create"
       when: "always"
 
-    - path: "ai_files/schemas/project_manifest_schema.json"
+    - path: "ai_files/schemas/software_manifest_schema.json"
       description: "Json file with structure and guidance about how to create or update a project manifest"
       when: "when_user_ask"
 
@@ -105,7 +105,7 @@ Schemas incluidos:
       description: "Json file with structure and guidance about how to create coding rules, standards and criterias"
       when: "when_user_ask"
 
-    - path: "ai_files/schemas/logbook_schema.json"
+    - path: "ai_files/schemas/logbook_software_schema.json"
       description: "Json file with structure and guidance about how to create a logbook to track and maintain conversational context for long-term memory and task tracking."
       when: "when_user_ask"
 
@@ -144,10 +144,10 @@ Analiza todo el archivo user_pref_schema.json y basado en la estructura y descri
 
 **2.** Crea el Project Manifest (Actualiza de vez en cuando)
 - Archivo resultante: `project_manifest.json`
-- Esquema: `ai_files/schemas/project_manifest_schema.json`
+- Esquema: `ai_files/schemas/software_manifest_schema.json`
 - Prompt _(Copia y pega en la conversación con tu agente)_:
 ```
-Analiza todo el archivo project_manifest_schema.json, luego basado en la estructura y descripción de cada propiedad y objeto del archivo, analiza el proyecto actual e identifica estrictamente lo que se pide en el archivo; para hacer el análisis, ve a cada directorio y archivo del proyecto; no ignores rutas ni archivos porque pueden ser relevantes para descubrir patrones, arquitectura o features del proyecto. Al final genera el archivo ai_files/project_manifest.json cumpliendo el objetivo semántico de cada propiedad indicada en el schema.
+Analiza todo el archivo software_manifest_schema.json, luego basado en la estructura y descripción de cada propiedad y objeto del archivo, analiza el proyecto actual e identifica estrictamente lo que se pide en el archivo; para hacer el análisis, ve a cada directorio y archivo del proyecto; no ignores rutas ni archivos porque pueden ser relevantes para descubrir patrones, arquitectura o features del proyecto. Al final genera el archivo ai_files/project_manifest.json cumpliendo el objetivo semántico de cada propiedad indicada en el schema.
 ```
 
 **3.** Crea el Project Rules: Ya sea que sea un proyecto iniciado o uno nuevo, se recomienda crear las reglas por capas, de manera que se puedan crear o identificar reglas según las buenas prácticas específicas de la capa y que se puedan abordar con atención las particularidades. Se recomienda tener apoyo o experiencia para evitar sobreingeniería en este proceso. 
@@ -167,7 +167,7 @@ La bitácora del ticket / historia es el archivo `.json` que contiene el context
 
 Puedes tener abiertas dos sesiones con agentes diferentes que siempre que no estén modificando archivos al mismo turno / tiempo, se puede trabajar en simultáneo, lo importante es que cada agente agregue sus registros al arreglo del contexto reciente de la bitácora.
 - Archivo resultante: `ai_files/logbooks/{logbookName}.json`
-- Esquema: `ai_files/schemas/logbook_schema.json`
+- Esquema: `ai_files/schemas/logbook_software_schema.json`
 
 **1.** Iniciar sesión de trabajo con tu agente: `claude`, `codex` o `gemini`.
 
@@ -190,7 +190,7 @@ Según el ticket que te he compartido, ve al código y rastrea archivos/clases/f
 **5.** Crear bitácora _(Se debe indicar el nombre del archivo a ser creado)_
 - Prompt _(Ajusta este prompt, copia y pega en la conversación con tu agente)_:
 ```
-Analiza todo el archivo ai_files/schemas/logbook_schema.json, luego basado en la lista de acciones que fue revisada y aprobada, crea la bitácora ai_files/logbooks/{nombreArchivo}.json cumpliendo el objetivo semántico de cada propiedad del schema. De ahora en adelante serás el moderador que mantiene los objetivos de la bitácora actualizados, por lo tanto, si detectas que aparece un nuevo objetivo (primario o secundario) agrégalo o sise cumple alguno, muévelo a su respectiva estructura.
+Analiza todo el archivo ai_files/schemas/logbook_software_schema.json, luego basado en la lista de acciones que fue revisada y aprobada, crea la bitácora ai_files/logbooks/{nombreArchivo}.json cumpliendo el objetivo semántico de cada propiedad del schema. De ahora en adelante serás el moderador que mantiene los objetivos de la bitácora actualizados, por lo tanto, si detectas que aparece un nuevo objetivo (primario o secundario) agrégalo o sise cumple alguno, muévelo a su respectiva estructura.
 ```
 
 **6.** Cada cierto tiempo o avance _(Cómo si guardaras el avance en un videojuego)_:

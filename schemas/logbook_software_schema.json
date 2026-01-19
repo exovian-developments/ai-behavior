@@ -167,6 +167,58 @@
     }
   },
 
+  "recommendations": {
+      "type": "array",
+      "description": "Recommendations discovered during implementation. These are improvements or follow-ups that aren't blocking but should be considered.",
+      "$comment": "Populated by objectives-implement command when code-implementer finds opportunities for improvement. Review periodically.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Unique identifier for this recommendation."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp when recommendation was created."
+          },
+          "from_objective": {
+            "type": "string",
+            "description": "ID of the objective that generated this recommendation (e.g., '1.1')."
+          },
+          "type": {
+            "type": "string",
+            "enum": ["refactor", "security", "performance", "documentation", "testing", "technical_debt"],
+            "description": "Category of the recommendation."
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Detailed description of the recommendation."
+          },
+          "affected_files": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Files that would be affected by implementing this recommendation."
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "Priority level for addressing this recommendation."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "accepted", "declined", "implemented"],
+            "description": "Current status of the recommendation."
+          }
+        },
+        "required": ["id", "created_at", "type", "description", "priority", "status"]
+      }
+    }
+  },
+
   "required": ["ticket", "objectives", "recent_context", "history_summary", "future_reminders"],
 
   "$defs": {

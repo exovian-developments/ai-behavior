@@ -1,7 +1,7 @@
 # ai-behavior: Implementation Guide
 **Version:** 1.0.0
 **Date:** 2025-11-21
-**Status:** IN PROGRESS - Command Design Phase
+**Status:** ✅ DESIGN COMPLETE - Ready for Implementation Phase
 
 ---
 
@@ -400,6 +400,34 @@ When user runs `ai-behavior update`:
 
 ---
 
+### **6. `/ai-behavior:user-pref-create`** ✅ DESIGNED
+
+**Purpose:** Create complete user preferences file with ALL options from schema (advanced setup)
+
+**📄 Full Design:** [`commands/06-user-pref-create.md`](commands/06-user-pref-create.md)
+
+**Quick Summary:**
+- **Input:** User answers to guided questions
+- **Output:** `ai_files/user_pref.json` (complete)
+- **Parameters:** None
+- **Difference from project-init:** ALL preferences, detailed configuration (vs 5 essential questions)
+
+---
+
+### **7. `/ai-behavior:user-pref-update`** ✅ DESIGNED
+
+**Purpose:** Allow user to update preferences by opening the file in system's default editor
+
+**📄 Full Design:** [`commands/07-user-pref-update.md`](commands/07-user-pref-update.md)
+
+**Quick Summary:**
+- **Input:** Existing `ai_files/user_pref.json`
+- **Output:** User-modified `ai_files/user_pref.json`
+- **Parameters:** None
+- **Key feature:** Opens in system editor (VS Code, TextEdit, nano, vim)
+
+---
+
 ### **9. `/ai-behavior:logbook-create [filename]`** ✅ DESIGNED
 
 **Purpose:** Create a new development logbook with structured objectives and actionable guidance
@@ -419,9 +447,10 @@ When user runs `ai-behavior update`:
 - Secondary objectives with `completion_guide` based on deep analysis
 - User validation at key checkpoints (analysis, main objectives, secondary objectives)
 
-**Schema Changes (v2):**
-- `objectives_present/past` → `objectives` (single object with status)
-- New fields: `context`, `scope.files`, `scope.rules`, `completion_guide`
+**Schema Features:**
+- Unified `objectives` object with status field
+- Main objectives with `context`, `scope.files`, `scope.rules`
+- Secondary objectives with `completion_guide`
 - Status enum: `not_started`, `active`, `blocked`, `achieved`, `abandoned`
 
 ---
@@ -469,9 +498,9 @@ When user runs `ai-behavior update`:
 - **Parameters:** `[logbook]` (optional)
 
 **Key Features:**
+- **Software projects only** (general projects use logbook as documentation)
 - Extracts objectives, findings, decisions from logbook
 - Generates structured resolution document
-- Adaptable sections for different project types (Software, Academic, Creative, Business)
 
 ---
 
@@ -553,12 +582,25 @@ All 10 commands have been designed:
 - 1-8: Core commands (project-init through resolution-create)
 - 9-10: Logbook commands with improved schema (logbook-create, logbook-update)
 
-**Schema Improvements (logbook_schema.json v2):**
+**Schema Improvements (logbook_software_schema.json):**
 - Unified `objectives` object (replaced `objectives_present/past`)
 - Main objectives with `context`, `scope.files`, `scope.rules`
 - Secondary objectives with `completion_guide`
 - 5-state status enum: `not_started`, `active`, `blocked`, `achieved`, `abandoned`
 - YAGNI principle integrated in `$comment` instructions
+
+**Schemas Available:**
+
+| Schema | Project Type | Used By |
+|--------|--------------|---------|
+| `user_pref_schema.json` | Both | project-init, user-pref-create/update |
+| `software_manifest_schema.json` | Software | manifest-create/update |
+| `general_manifest_schema.json` | General | manifest-create/update |
+| `project_rules_schema.json` | Software | rules-create/update |
+| `project_standards_schema.json` | General | rules-create/update |
+| `logbook_software_schema.json` | Software | logbook-create/update |
+| `logbook_general_schema.json` | General | logbook-create/update |
+| `ticket_resolution_schema.json` | Software only | resolution-create |
 
 **Next Phase: Implementation**
 1. Create workflow files for each command
@@ -661,11 +703,11 @@ All agents will read this file and:
 ```
 ai_files/schemas/
   v1/
-    logbook_schema.json
-    project_manifest_schema.json
+    logbook_software_schema.json
+    software_manifest_schema.json
     ...
   v2/
-    logbook_schema.json  (breaking changes)
+    logbook_software_schema.json  (breaking changes)
     ...
 ```
 

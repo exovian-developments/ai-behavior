@@ -9,18 +9,12 @@
 **Purpose:** Analyze project and create manifest file based on project type (software or general)
 
 **Schemas:**
-- Software → `ai_files/schemas/project_manifest_schema.json`
-- Academic → `ai_files/schemas/research_manifest_schema.json`
-- Creative → `ai_files/schemas/creative_manifest_schema.json`
-- Business → `ai_files/schemas/business_manifest_schema.json`
-- General → `ai_files/schemas/general_manifest_schema.json`
+- Software → `ai_files/schemas/software_manifest_schema.json`
+- General (all types) → `ai_files/schemas/general_manifest_schema.json`
 
-**Outputs (depending on project type):**
+**Outputs:**
 - Software → `ai_files/project_manifest.json` + `ai_files/architecture_map.json` (if existing project)
-- Academic → `ai_files/research_manifest.json`
-- Creative → `ai_files/creative_manifest.json`
-- Business → `ai_files/business_manifest.json`
-- General → `ai_files/general_manifest.json`
+- General → `ai_files/general_manifest.json` (open schema, adapts to academic/creative/business/other)
 
 **Parameters:** None (always interactive, uses context from `user_pref.json`)
 
@@ -164,21 +158,32 @@
 **STEP 3A: FORK 2 - New vs Existing Project (IN USER'S LANGUAGE)**
 **═══════════════════════════════════════════════════════════════════**
 
-11. MAIN AGENT (example in Spanish):
+11. MAIN AGENT: Read `project_context.is_project_from_scratch` from `ai_files/user_pref.json` (default to false if missing) and ask for reconfirmation (example in Spanish):
     ```
-    🎯 ¿Es este un proyecto nuevo o existente?
+    🎯 Según tus preferencias detecté:
+    • Estado del proyecto: [Nuevo (desde cero) | Existente]
 
-    1. Proyecto nuevo - Voy a empezar a desarrollar desde cero
-    2. Proyecto existente - Ya tiene código y estructura
+    ¿Es correcto?
 
-    Elige 1 o 2:
+    1. Confirmar (usar detectado)
+    2. Cambiar (seleccionar manualmente)
     ```
 
 12. USER: "1" or "2"
 
-13. MAIN AGENT: Store selection
-    - IF "1" → Go to **FLUJO A1: Software Nuevo**
-    - IF "2" → Go to **STEP 4A2: FORK 3**
+13. MAIN AGENT:
+    - IF "1" → Use detected value:
+        - If detected = nuevo → Go to **FLUJO A1: Software Nuevo**
+        - If detected = existente → Go to **STEP 4A2: FORK 3**
+    - IF "2" → Ask:
+      ```
+      1. Proyecto nuevo - Voy a empezar a desarrollar desde cero
+      2. Proyecto existente - Ya tiene código y estructura
+
+      Elige 1 o 2:
+      ```
+      - IF "1" → Go to **FLUJO A1: Software Nuevo**
+      - IF "2" → Go to **STEP 4A2: FORK 3**
 
 ---
 
@@ -947,21 +952,32 @@
 **STEP 4B: FORK 5 - New vs Existing General Project (IN USER'S LANGUAGE)**
 **═══════════════════════════════════════════════════════════════════**
 
-77. MAIN AGENT (example in Spanish):
+77. MAIN AGENT: Read `project_context.is_project_from_scratch` from `ai_files/user_pref.json` (default to false if missing) and ask for reconfirmation (example in Spanish):
     ```
-    📂 ¿Es este un proyecto nuevo o ya tienes archivos/contenido existente?
+    📂 Según tus preferencias detecté:
+    • Estado del proyecto: [Nuevo (desde cero) | Existente]
 
-    1. Proyecto nuevo - Voy a empezar desde cero
-    2. Proyecto existente - Ya tengo archivos, documentos o contenido
+    ¿Es correcto?
 
-    Elige 1 o 2:
+    1. Confirmar (usar detectado)
+    2. Cambiar (seleccionar manualmente)
     ```
 
 78. USER: "1" or "2"
 
-79. MAIN AGENT: Route based on selection
-    - IF "1" → Go to appropriate NEW flow (B1, B2, B3, B4 based on subtype)
-    - IF "2" → Go to **FLUJO BE: General Existente Discovery**
+79. MAIN AGENT:
+    - IF "1" → Use detected value:
+        - If nuevo → Go to NEW flow (B1, B2, B3, B4 based on subtype)
+        - If existente → Go to **FLUJO BE: General Existente Discovery**
+    - IF "2" → Ask:
+      ```
+      1. Proyecto nuevo - Voy a empezar desde cero
+      2. Proyecto existente - Ya tengo archivos, documentos o contenido
+
+      Elige 1 o 2:
+      ```
+      - IF "1" → Go to NEW flow (B1, B2, B3, B4 based on subtype)
+      - IF "2" → Go to **FLUJO BE: General Existente Discovery**
 
 ---
 
@@ -2202,29 +2218,13 @@
 ---
 
 **═══════════════════════════════════════════════════════════════════**
-**TODO: SCHEMAS PENDIENTES DE CREAR**
+**SCHEMAS DISPONIBLES**
 **═══════════════════════════════════════════════════════════════════**
 
-The following schemas need to be created based on existing `project_manifest_schema.json`:
+| Schema | Project Type | Notes |
+|--------|--------------|-------|
+| `software_manifest_schema.json` | Software | Full technical analysis |
+| `general_manifest_schema.json` | General (all types) | Open schema, adapts to academic/creative/business/other |
 
-1. **`research_manifest_schema.json`** - For academic/research projects
-   - Based on: FLUJO B1 structure
-   - Key fields: research topic, methodology, theoretical framework, milestones, citation format
-
-2. **`creative_manifest_schema.json`** - For creative/design projects
-   - Based on: FLUJO B2 structure
-   - Key fields: concept, visual style, color palette, assets, deliverables
-
-3. **`business_manifest_schema.json`** - For business/startup projects
-   - Based on: FLUJO B3 structure
-   - Key fields: Business Model Canvas (9 blocks), KPIs, metrics
-
-4. **`general_manifest_schema.json`** - For generic/other projects
-   - Based on: FLUJO B4 structure
-   - Key fields: objectives, deliverables, milestones
-
-5. **`architecture_map_schema.json`** - For software architecture documentation
-   - Based on: FLUJO A2.1/A2.2 output
-   - Key fields: layers, patterns, routes, endpoints, cross-references
-
-**Action:** Run schema creation command to generate these based on the flow designs above.
+**Pending:**
+- `architecture_map_schema.json` - For software architecture documentation (FLUJO A2.1/A2.2 output)

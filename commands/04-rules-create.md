@@ -10,14 +10,11 @@
 
 **Schemas:**
 - Software → `ai_files/schemas/project_rules_schema.json`
-- General → `ai_files/schemas/project_standards_schema.json` [TODO: Create]
+- General → `ai_files/schemas/project_standards_schema.json`
 
 **Outputs:**
 - Software → `ai_files/project_rules.json`
-- Academic → `ai_files/academic_standards.json`
-- Creative → `ai_files/creative_standards.json`
-- Business → `ai_files/business_rules.json`
-- General → `ai_files/project_standards.json`
+- General (all types) → `ai_files/project_standards.json` (open schema, adapts to academic/creative/business/other)
 
 **Parameters:**
 - Software: `[layer]` (optional) - Specific layer to analyze (architecture, presentation_layer, data_layer, api_layer, infra, testing, naming_conventions)

@@ -6,9 +6,11 @@
 
 ## Overview
 
-**Purpose:** Create a new development logbook for a ticket/task with structured objectives and actionable guidance.
+**Purpose:** Create a new logbook for a ticket/task with structured objectives and actionable guidance.
 
-**Schema:** `ai_files/schemas/logbook_schema.json`
+**Schema (selected by project_type):**
+- Software → `ai_files/schemas/logbook_software_schema.json`
+- General → `ai_files/schemas/logbook_general_schema.json`
 
 **Output:** `ai_files/logbooks/[filename].json`
 
@@ -16,9 +18,8 @@
 
 **Key Features:**
 - Interactive ticket/task clarification
-- Code tracing to identify related files
-- Main objectives with scope (files + rules)
-- Secondary objectives with completion_guide based on deep analysis
+- **Software:** Code tracing, main objectives with scope (files + rules), secondary with completion_guide referencing code
+- **General:** Main objectives with scope (references + standards), secondary with completion_guide referencing documents/practices
 - User validation at key checkpoints
 
 ---
@@ -293,39 +294,84 @@
 ---
 
 **═══════════════════════════════════════════════════════════════════**
-**FLUJO B: GENERAL PROJECT**
+**FLUJO B: GENERAL PROJECT (uses logbook_general_schema.json)**
 **═══════════════════════════════════════════════════════════════════**
 
+**Schema:** `ai_files/schemas/logbook_general_schema.json`
+
+**Key Differences from Software:**
+- `scope.files` → `scope.references` (documents, URLs, assets)
+- `scope.rules` → `scope.standards` (style guides, regulations, methodologies)
+- `completion_guide` references documents/practices instead of code
+
 **═══════════════════════════════════════════════════════════════════**
-**STEP B1: Generate Objectives (No Code Analysis)**
+**STEP B1: Gather References and Standards**
 **═══════════════════════════════════════════════════════════════════**
 
-35. MAIN AGENT: Based on ticket description, generate main objectives
+35. MAIN AGENT:
+    ```
+    📚 Para crear objetivos efectivos, necesito conocer:
+
+    ¿Qué materiales de referencia tienes disponibles?
+    (Documentos, URLs, ejemplos, trabajo previo)
+
+    Ejemplos:
+    • "Capítulo 2 ya completado en Google Docs"
+    • "Brief del cliente en PDF"
+    • "https://competitor.com/landing para inspiración"
+    ```
+
+36. USER: Provides references
+
+37. MAIN AGENT:
+    ```
+    ¿Hay estándares o guías que debas seguir?
+    (Guías de estilo, normativas, metodologías)
+
+    Ejemplos:
+    • "APA 7ma edición para citas"
+    • "Brand guidelines de la empresa"
+    • "ISO 27001 para documentación"
+    • Ninguno específico (Enter para omitir)
+    ```
+
+38. USER: Provides standards or skips
+
+**═══════════════════════════════════════════════════════════════════**
+**STEP B2: Generate Main Objectives**
+**═══════════════════════════════════════════════════════════════════**
+
+39. MAIN AGENT: Based on ticket and references, generate main objectives
+    - Each objective has: content, context, scope (references + standards)
     - Focus on deliverables and milestones
-    - No scope.files or scope.rules (empty arrays)
 
-36. MAIN AGENT: Present main objectives
+40. MAIN AGENT: Present main objectives
     ```
     🎯 Objetivos principales propuestos:
 
     OBJETIVO 1:
     ├─ Contenido: Capítulo 3 de la tesis completado con análisis de resultados
-    └─ Contexto: Requerido para revisión del tutor antes del 15 de diciembre
+    ├─ Contexto: Requerido para revisión del tutor antes del 15 de diciembre
+    ├─ Referencias:
+    │  • Capítulo 2 (estructura a seguir)
+    │  • Datos de encuesta en Excel
+    │  • Notas de reunión con tutor (15-nov)
+    └─ Estándares: APA 7ma edición
 
     ¿Apruebas estos objetivos? (Si/No/Ajustar)
     ```
 
-37. USER: Validates or adjusts
+41. USER: Validates or adjusts
 
 **═══════════════════════════════════════════════════════════════════**
-**STEP B2: Generate Secondary Objectives**
+**STEP B3: Generate Secondary Objectives**
 **═══════════════════════════════════════════════════════════════════**
 
-38. MAIN AGENT: Generate secondary objectives
+42. MAIN AGENT: Generate secondary objectives
     - Break down main objectives into actionable steps
-    - completion_guide contains general guidance (no code references)
+    - completion_guide references documents, examples, standards
 
-39. MAIN AGENT: Present secondary objectives
+43. MAIN AGENT: Present secondary objectives
     ```
     📋 Objetivos secundarios:
 
@@ -333,21 +379,29 @@
     ┌─────────────────────────────────────────────────────────────┐
     │ 1.1 Tablas de datos procesadas y formateadas               │
     │     Guía:                                                  │
-    │     • Revisar formato APA 7ma edición para tablas          │
+    │     • Usar formato de tabla del Capítulo 2 como referencia │
+    │     • Aplicar APA 7ma edición para títulos y notas         │
     │     • Incluir fuente de datos en pie de tabla              │
     ├─────────────────────────────────────────────────────────────┤
     │ 1.2 Análisis estadístico completado                        │
     │     Guía:                                                  │
+    │     • Revisar metodología acordada en notas del 15-nov     │
     │     • Usar prueba t-student para comparación de grupos     │
     │     • Documentar p-value y nivel de significancia          │
+    ├─────────────────────────────────────────────────────────────┤
+    │ 1.3 Narrativa de resultados redactada                      │
+    │     Guía:                                                  │
+    │     • Seguir estructura de Capítulo 2 sección de hallazgos │
+    │     • Conectar cada tabla con interpretación en texto      │
+    │     • Incluir limitaciones mencionadas por el tutor        │
     └─────────────────────────────────────────────────────────────┘
 
     ¿Apruebas? (Si/No/Ajustar)
     ```
 
-40. USER: Validates or adjusts
+44. USER: Validates or adjusts
 
-41. Go to **STEP FINAL: Generate and Save Logbook**
+45. Go to **STEP FINAL: Generate and Save Logbook**
 
 ---
 
@@ -361,7 +415,7 @@
     (Ejemplo: TICKET-123.json, feature-auth.json)
     ```
 
-43. MAIN AGENT: Generate logbook JSON structure
+47. MAIN AGENT: Generate logbook JSON structure
     - ticket: from user input
     - objectives.main: approved main objectives (status: "not_started")
     - objectives.secondary: approved secondary objectives (status: "not_started")
@@ -369,11 +423,13 @@
     - history_summary: empty array
     - future_reminders: empty array
 
-44. MAIN AGENT: Validate against schema
+48. MAIN AGENT: Validate against appropriate schema
+    - IF `project_type === "software"` → Validate against `logbook_software_schema.json`
+    - IF `project_type === "general"` → Validate against `logbook_general_schema.json`
 
-45. MAIN AGENT: Save to `ai_files/logbooks/[filename].json`
+49. MAIN AGENT: Save to `ai_files/logbooks/[filename].json`
 
-46. MAIN AGENT: Create initial recent_context entry:
+50. MAIN AGENT: Create initial recent_context entry:
     ```json
     {
       "id": 1,
