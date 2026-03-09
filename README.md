@@ -8,16 +8,49 @@
 
 ## What is it?
 
-A working protocol for AI agents (`Claude Code`, `Codex`, `Gemini CLI`) that provides **interactive slash commands** and **structured JSON schemas** to manage project context, coding rules, and development logbooks.
+ai-behavior is a structured protocol that guides AI agents through the **entire lifecycle of a product** — from the first idea to production code. It works with `Claude Code`, `Codex`, and `Gemini CLI` through interactive slash commands and structured JSON schemas.
 
-**Three ways to use it:**
-1. **Cowork Plugin (Recommended)** - Install the plugin in Claude desktop for full GUI experience
-2. **Slash Commands** - Interactive commands for Claude Code CLI
-3. **Manual Prompts** - Copy/paste prompts to generate files from schemas
+Instead of giving your AI agent a blank prompt and hoping for the best, ai-behavior walks it through a clear process: first understand if the idea is viable, then define what to build, then plan in what order, and finally write the code — with full context at every step.
 
-**Pattern:** Each `json_schema` contains:
+### The Product Lifecycle
+
+ai-behavior organizes work into five levels, where each level builds on the previous one:
+
+**1. Feasibility** → *Can we build this? Should we?*
+You describe your idea in plain language. The agent acts as a business consultant: it analyzes the market, identifies competitors, builds revenue projections with Monte Carlo simulations, and gives you honest numbers on whether this can work. The output is a feasibility analysis with real data — not opinions.
+
+**2. Foundation** → *What did we learn?*
+The feasibility might produce thousands of simulations across multiple scenarios. The foundation compacts all of that into a clean executive summary: the validated problem, who your users are, your revenue model with unit economics, a SWOT analysis, the essential capabilities needed, timeline constraints, and a clear go/no-go signal. This is the bridge between research and product definition.
+
+**3. Blueprint** → *What are we building, and why?*
+Using the foundation as input, you define the product: its capabilities (what users can do), the user flows (how they do it), design principles, product rules, success metrics, and tech stack. Every section connects back to the business case. Nothing speculative — every capability traces to a revenue stream, every rule traces to a principle.
+
+**4. Roadmap** → *When do we build it, and in what order?*
+The roadmap takes the blueprint's capabilities and organizes them into phases with milestones, dependencies, and decision points. It answers questions like: what goes in the MVP? What can wait? What blocks what?
+
+**5. Logbook** → *How do we implement this specific piece?*
+For each ticket or task, a logbook breaks the work into main objectives and secondary objectives with completion guides. The agent implements them continuously, updates progress in real time, and preserves full context between sessions so no knowledge is lost.
+
+```
+feasibility → foundation → blueprint → roadmap → logbook
+ CAN WE?    WHAT DID WE   WHAT/WHY?   WHEN?      HOW?
+             LEARN?
+```
+
+Each level feeds the next. You can start at any level — if you already have a product and just need logbooks for day-to-day coding, start there. The full pipeline is for when you're building something from scratch.
+
+### Three ways to use it
+
+1. **Cowork Plugin (Recommended)** — Install the plugin in Claude desktop for full GUI experience
+2. **Slash Commands** — Interactive commands for Claude Code CLI
+3. **Manual Prompts** — Copy/paste prompts to generate files from schemas
+
+### How the schemas work
+
+Each JSON schema uses a dual-instruction pattern:
+
 - `description` = What the field represents, so the LLM understands what content to generate
-- `$comment` = How the LLM should operate on that field, improving precision
+- `$comment` = How the LLM should operate on that field, improving precision and consistency
 
 ---
 
@@ -233,31 +266,6 @@ your-project/
 │  (preferences)  │     │ (define project) │     │  (track tasks)  │
 └─────────────────┘     └──────────────────┘     └─────────────────┘
 ```
-
----
-
-## Product Artifact Hierarchy
-
-For product-level planning, ai-behavior provides a 5-level artifact chain:
-
-```
-feasibility-analyze        CAN WE? / SHOULD WE?
-    ↓                      Market analysis, Monte Carlo, Bayesian
-    ↓
-[product_foundation]       WHAT DID WE LEARN?
-    ↓                      Compacted facts, SWOT, validated model
-    ↓
-product-blueprint-create   WHAT / WHY?
-    ↓                      Capabilities, flows, rules, decisions
-    ↓
-roadmap-create             WHEN / IN WHAT ORDER?
-    ↓                      Phases, milestones, dependencies
-    ↓
-logbook-create             HOW?
-                           Objectives, code, auditing, context
-```
-
-Each level consumes the one above. The **foundation** is the compaction point — it distills a full feasibility analysis into validated facts that the blueprint can consume without re-processing thousands of simulations.
 
 ---
 
