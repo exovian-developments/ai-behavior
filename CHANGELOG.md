@@ -28,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Projection scenarios with Monte Carlo variables, results, and Bayesian analysis
   - Kill criteria and critical assumptions per scenario
 
+- **Product Foundation Schema** (`product_foundation_schema.json`)
+  - Compaction point between feasibility analysis and product blueprint
+  - Consolidates: validated problem, target users, competitive landscape, revenue model, financial benchmarks (Monte Carlo + Bayesian summaries), SWOT analysis, essential capabilities, flow drafts, timeline constraints, proactive insights, remaining unknowns, and blueprint readiness gate
+  - 13 top-level sections with full `description` + `$comment` pattern
+  - Artifact hierarchy updated: feasibility → **foundation** → blueprint → roadmap → logbook
+
 - **Command design doc** (`commands/14-feasibility-analyze.md`)
   - 12-step flow from idea discovery to save
   - Interpretable graphics design (4 chart types for non-technical users)
@@ -58,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Hierarchy Update
 
-New artifact hierarchy: feasibility (CAN WE?) → blueprint (WHAT/WHY) → roadmap (WHEN/ORDER) → logbook (HOW)
+New artifact hierarchy: feasibility (CAN WE?) → **foundation (WHAT DID WE LEARN?)** → blueprint (WHAT/WHY) → roadmap (WHEN/ORDER) → logbook (HOW)
 
 ## [0.2.1] - 2026-03-08
 

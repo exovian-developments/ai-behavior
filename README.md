@@ -176,6 +176,7 @@ Update progress, change objective statuses, add new objectives discovered during
 | `ticket_resolution_schema.json` | Ticket closure summary | Software |
 | `logbook_roadmap_schema.json` | Product-level roadmap with phases and milestones | Both |
 | `feasibility_analysis_schema.json` | Pre-blueprint feasibility analysis with projections | Both |
+| `product_foundation_schema.json` | Compacted feasibility → blueprint bridge | Both |
 
 ---
 
@@ -232,6 +233,31 @@ your-project/
 │  (preferences)  │     │ (define project) │     │  (track tasks)  │
 └─────────────────┘     └──────────────────┘     └─────────────────┘
 ```
+
+---
+
+## Product Artifact Hierarchy
+
+For product-level planning, ai-behavior provides a 5-level artifact chain:
+
+```
+feasibility-analyze        CAN WE? / SHOULD WE?
+    ↓                      Market analysis, Monte Carlo, Bayesian
+    ↓
+[product_foundation]       WHAT DID WE LEARN?
+    ↓                      Compacted facts, SWOT, validated model
+    ↓
+product-blueprint-create   WHAT / WHY?
+    ↓                      Capabilities, flows, rules, decisions
+    ↓
+roadmap-create             WHEN / IN WHAT ORDER?
+    ↓                      Phases, milestones, dependencies
+    ↓
+logbook-create             HOW?
+                           Objectives, code, auditing, context
+```
+
+Each level consumes the one above. The **foundation** is the compaction point — it distills a full feasibility analysis into validated facts that the blueprint can consume without re-processing thousands of simulations.
 
 ---
 
