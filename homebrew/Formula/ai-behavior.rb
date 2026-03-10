@@ -1,7 +1,7 @@
 class AiBehavior < Formula
   desc "Structured context protocol for AI agents — Claude, Codex, Gemini CLI"
   homepage "https://github.com/exovian-developments/ai-behavior"
-  url "https://github.com/exovian-developments/ai-behavior/archive/refs/tags/v0.3.0.tar.gz"
+  url "https://github.com/exovian-developments/ai-behavior/archive/refs/tags/1.0.0.tar.gz"
   sha256 "PLACEHOLDER_SHA256"
   license "AGPL-3.0-or-later"
 
