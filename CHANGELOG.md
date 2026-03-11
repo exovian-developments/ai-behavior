@@ -5,6 +5,49 @@ All notable changes to ai-behavior will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-03-11
+
+### Added
+
+- **Foundation Create Command** (`/ai-behavior:foundation-create`)
+  - Compacts feasibility analysis into validated facts for blueprint consumption
+  - 13-step flow: enriched problem → target users → competitive landscape → revenue model → financial benchmarks → SWOT synthesis → capability re-classification → flow expansion → timeline constraints → proactive insights → blueprint readiness gate
+  - Key transformation: re-classifies capabilities from revenue-impact (blocking/enabling/expansion) to operational criticality (essential/important/desired)
+  - Scope feasibility check against runway and available hours
+  - No subagent delegation — all steps executed directly by main agent
+
+- **Blueprint Create Command** (`/ai-behavior:blueprint-create`)
+  - Transforms foundation into complete product architecture
+  - 17-step flow with product owner validation at every section
+  - Progressive refinement: foundation fields evolve to higher specificity
+  - New fields: product hypothesis, mission, vision (not in foundation)
+  - Design principles → product rules traceability
+  - Dual-signal success metrics (success_signal + failure_signal)
+  - Supports standard and autonomous entity blueprint types
+  - No subagent delegation — all steps executed directly by main agent
+
+- **Design docs** for both commands (`commands/15-foundation-create.md`, `commands/16-blueprint-create.md`)
+
+### Changed
+
+- **Wave naming convention** for roadmap files
+  - New pattern: `roadmap_w0.json` (foundation/agnostic), `roadmap_w1.json`+ (business waves)
+  - Legacy pattern `*_roadmap.json` supported as fallback
+  - Updated across all commands: roadmap-create, roadmap-update, logbook-create, objectives-implement
+  - Updated plugin commands and SKILL.md
+  - Updated `bin/ai-behavior` preserved files list
+
+- **Roadmap Create** (`/ai-behavior:roadmap-create`)
+  - Context priority order: blueprint > foundation > feasibility > manifest > rules
+  - Wave number auto-detection with user confirmation
+  - Output filename uses wave convention
+
+- **SKILL.md** command flow updated with full lifecycle: feasibility → foundation → blueprint → roadmap → logbook
+
+### Pipeline Update
+
+Complete product lifecycle: feasibility (CAN WE?) → foundation (WHAT DID WE LEARN?) → **blueprint (WHAT/WHY)** → roadmap (WHEN/ORDER) → logbook (HOW)
+
 ## [1.0.0] - 2026-03-10
 
 ### Added
