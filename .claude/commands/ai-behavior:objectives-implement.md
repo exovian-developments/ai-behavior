@@ -256,7 +256,7 @@ Display:
 4. **Load additional product context files (if not already loaded in logbook creation):**
    - Search for `ai_files/technical_guide.md` → Extract relevant sections
    - Search for `ai_files/*_feasibility.json` → Extract relevant buyer personas, essential capabilities
-   - Search for `ai_files/*_roadmap.json` → Extract current phase context
+   - Search for roadmap files: `ai_files/roadmap_w*.json` (wave convention) and `ai_files/*_roadmap.json` (legacy) → Extract current phase context from the most relevant roadmap
    - For each file NOT found: Skip silently. Do NOT stop or error.
 
 5. **Parse completion guide:**

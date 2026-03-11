@@ -48,7 +48,7 @@ project/
 │   ├── user_pref.json              # User preferences
 │   ├── project_manifest.json       # Project analysis
 │   ├── project_rules.json          # Coding rules
-│   ├── *_roadmap.json              # Product-level roadmaps (phases and milestones)
+│   ├── roadmap_w*.json             # Product roadmaps as waves (w0=foundation, w1+=business)
 │   └── *_logbook.json              # Detailed logbooks (per milestone)
 └── CLAUDE.md                       # Updated with preferences reference
 ```
@@ -59,12 +59,18 @@ project/
 project-init
   → manifest-create
     → rules-create
-      → roadmap-create
-        → logbook-create
-          → logbook-update
-            → resolution-create
+      → feasibility-analyze
+        → foundation-create
+          → blueprint-create
+            → roadmap-create
+              → logbook-create
+                → logbook-update
+                  → resolution-create
 
 (roadmap-update operates in parallel with logbook-update to track phase progress)
+
+Product lifecycle: feasibility (CAN WE?) → foundation (WHAT DID WE LEARN?)
+  → blueprint (WHAT/WHY) → roadmap (WHEN/ORDER) → logbook (HOW)
 ```
 
 Each command is an orchestrator that dispatches to specialized agents for heavy analysis work. The main thread stays lean — it handles user interaction and file writing while agents do the deep reading/analysis.
@@ -131,7 +137,7 @@ LOGBOOK (HOW + DETAIL)
 | **Scope** | Product-wide | Phase-wide | Milestone-specific |
 | **Detail** | Business & vision | Strategy & sequencing | Implementation & code |
 | **Audience** | Stakeholders | Product team | Dev team |
-| **File Type** | manifest.json | *_roadmap.json | *_logbook.json |
+| **File Type** | manifest.json | roadmap_w*.json | *_logbook.json |
 | **Update Frequency** | Once/project | Weekly/monthly | Per work session |
 
 **Relationship:**

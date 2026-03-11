@@ -496,7 +496,7 @@ cmd_update() {
     for feas in ai_files/*_feasibility.json; do
         [ -f "$feas" ] && echo -e "  ${CYAN}✓${NC} $(basename "$feas")"
     done
-    for road in ai_files/*_roadmap.json; do
+    for road in ai_files/*_roadmap.json ai_files/roadmap_w*.json; do
         [ -f "$road" ] && echo -e "  ${CYAN}✓${NC} $(basename "$road")"
     done
 

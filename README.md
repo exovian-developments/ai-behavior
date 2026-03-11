@@ -190,6 +190,8 @@ Update progress, change objective statuses, add new objectives discovered during
 | `/ai-behavior:roadmap-create` | Create product-level roadmap with phases and milestones | 🟢 Ready |
 | `/ai-behavior:roadmap-update` | Update roadmap progress, decisions, and phases | 🟢 Ready |
 | `/ai-behavior:feasibility-analyze` | Pre-blueprint feasibility analysis with Monte Carlo and Bayesian projections | 🟢 Ready |
+| `/ai-behavior:foundation-create` | Compact feasibility into validated facts, re-classified capabilities, and financial benchmarks | 🟢 Ready |
+| `/ai-behavior:blueprint-create` | Create complete product blueprint from foundation with owner validation | 🟢 Ready |
 
 **Legend:** 🟢 Ready
 

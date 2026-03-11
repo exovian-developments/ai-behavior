@@ -23,10 +23,10 @@ If missing, ask user to run `project-init` first.
 
 ## Step 2: Select Roadmap File
 
-List available roadmap files:
+List available roadmap files (both wave convention and legacy):
 
 ```bash
-ls -1 ai_files/*_roadmap.json 2>/dev/null | while read f; do basename "$f"; done
+ls -1 ai_files/roadmap_w*.json ai_files/*_roadmap.json 2>/dev/null | sort -u | while read f; do basename "$f"; done
 ```
 
 If none found:

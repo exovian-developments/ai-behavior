@@ -13,14 +13,17 @@ You are the main orchestrator for roadmap updates. You will present the current 
 ## Step -1: Prerequisites Check (CRITICAL)
 
 - Check if `ai_files/user_pref.json` exists. EXIT if missing.
-- Verify at least one `*_roadmap.json` file exists in `ai_files/` directory. EXIT if none found with message: "No roadmap files found. Create one first with `/ai-behavior:roadmap-create`."
+- Verify at least one roadmap file exists in `ai_files/` directory. Search for both patterns: `roadmap_w*.json` (wave convention) and `*_roadmap.json` (legacy). EXIT if none found with message: "No roadmap files found. Create one first with `/ai-behavior:roadmap-create`."
 - Extract `preferred_language` from user_pref.json for all user interactions
 
 ## Step 0: Select Roadmap
 
-- If product-name parameter provided: Find matching `[product-name]_roadmap.json` in ai_files/
+- If parameter provided: Find matching roadmap in ai_files/. Try these patterns in order:
+  1. Exact match: `ai_files/[parameter]` (if ends with `.json`)
+  2. Wave match: `ai_files/roadmap_w[parameter].json` (if parameter is a number)
+  3. Legacy match: `ai_files/[parameter]_roadmap.json`
 - If not provided:
-  - List all `*_roadmap.json` files in ai_files/ with their product names and current status
+  - List all roadmap files in ai_files/ matching both `roadmap_w*.json` and `*_roadmap.json` patterns, with their product names, wave number, and current status
   - Ask user to select one by number or name
 - Read selected roadmap file completely into memory
 

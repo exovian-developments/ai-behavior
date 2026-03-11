@@ -201,12 +201,21 @@ Apply timestamps to the roadmap JSON:
 - `created_at`: Current UTC timestamp (ISO 8601)
 - `last_updated`: Current UTC timestamp (ISO 8601)
 
-Construct filename:
+Construct filename using wave convention:
+- Scan `ai_files/` for existing `roadmap_w*.json` files
+- If none exist: use `w0` (foundation wave — agnostic capabilities)
+- If some exist: use next sequential wave number
+- Ask user to confirm wave number
+
 ```
-ai_files/{product_name_lowercase_with_underscores}_roadmap.json
+ai_files/roadmap_w{N}.json
 ```
 
-Example: `ai_files/myapp_roadmap.json`
+Example: `ai_files/roadmap_w0.json`, `ai_files/roadmap_w1.json`
+
+Wave types:
+- w0 = Foundation — agnostic capabilities not in any base project
+- w1+ = Business waves — vertical-specific capabilities
 
 Write the roadmap JSON to the file.
 

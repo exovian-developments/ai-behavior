@@ -185,7 +185,7 @@
     - `ai_files/product_blueprint.json` → IF EXISTS: Extract relevant capabilities, flows, design principles, product rules
     - `ai_files/technical_guide.md` → IF EXISTS: Extract relevant technical guidelines, architecture decisions
     - `ai_files/*_feasibility.json` → IF EXISTS: Extract relevant revenue context, buyer personas, essential capabilities
-    - `ai_files/*_roadmap.json` → IF EXISTS: Extract current phase, milestones, relevant decisions
+    - Roadmap files: `ai_files/roadmap_w*.json` (wave convention) and `ai_files/*_roadmap.json` (legacy) → IF ANY EXIST: Extract current phase, milestones, relevant decisions
     - For each file found: Extract only sections relevant to the ticket. Store as `product_context`.
     - For each file NOT found: Note in report but DO NOT stop. Continue normally.
 

@@ -10,9 +10,14 @@
 
 **Schema:** `ai_files/schemas/logbook_roadmap_schema.json`
 
-**Output:** `ai_files/[product-name]_roadmap.json`
+**Output:** `ai_files/roadmap_w[N].json` (wave convention: w0 = foundation, w1+ = business waves)
 
 **Parameters:** `[product-name]` (optional)
+
+**Wave Naming Convention:**
+- `roadmap_w0.json` — Foundation wave: agnostic capabilities not in any base project (e.g., phone auth with SMS/WhatsApp, new payment processor integration). Not specific to any business vertical.
+- `roadmap_w1.json`, `roadmap_w2.json`, etc. — Business waves: each delivers a cohesive set of vertical-specific capabilities.
+- The command auto-detects the next wave number by scanning existing `roadmap_w*.json` files.
 
 **Key Features:** Vision gathering, phase planning, milestone definition, checkpoint validation, context entry creation
 
@@ -59,9 +64,6 @@
 
 4. IF parameter provided:
    - Store as `requested_product_name`
-   - Check if file `ai_files/[product-name]_roadmap.json` already exists
-   - If exists → Warn user: "Roadmap already exists. Use /ai-behavior:roadmap-update instead"
-   - If not exists → Continue to STEP 1
 
 5. IF parameter NOT provided:
    - MAIN AGENT (example in Spanish):
@@ -71,7 +73,17 @@
 
      Or leave it empty and I'll guide you through the vision questions.
      ```
-   - Continue to STEP 1 (will set product_name in Step 2)
+
+6. **Wave number detection:**
+   - Scan `ai_files/` for existing `roadmap_w*.json` files
+   - If none exist → default to `w0` (foundation wave)
+   - If some exist → suggest next sequential wave number
+   - Ask user to confirm or override wave number
+   - Store as `wave_number`
+   - Check if `ai_files/roadmap_w[wave_number].json` already exists
+   - If exists → Warn: "Wave [N] roadmap already exists. Use /ai-behavior:roadmap-update instead"
+
+7. Continue to STEP 1
 
 ---
 
@@ -79,13 +91,16 @@
 **STEP 1: Detect Context**
 **═══════════════════════════════════════════════════════════════════**
 
-6. MAIN AGENT: Check for existing project context files:
+6. MAIN AGENT: Check for existing project context files (in priority order):
+   - Check if `ai_files/product_blueprint.json` exists (richest context: capabilities, flows, rules, metrics)
+   - Check if `ai_files/product_foundation.json` exists (validated facts, financial benchmarks, SWOT)
+   - Check if `ai_files/*_feasibility.json` exists (raw research, Monte Carlo, Bayesian)
    - Check if `ai_files/project_manifest.json` exists (software) or other manifest
    - Check if `ai_files/*_rules.json` exists (coding/project rules)
-   - Check if `ai_files/*_blueprint.json` exists (architecture blueprint)
 
 7. IF any context files found → Set `flow = A` (existing context flow)
-   - Log what context was detected (manifest, rules, blueprint)
+   - Log what context was detected (blueprint > foundation > feasibility > manifest > rules)
+   - Use highest-priority artifact as primary context source
    - Continue to STEP 2A
 
 8. IF NO context files found → Set `flow = B` (from scratch flow)
@@ -468,7 +483,7 @@
 
 43. SUBAGENT: Validate against `logbook_roadmap_schema.json`
 
-44. SUBAGENT: Write to `ai_files/[product-name]_roadmap.json`
+44. SUBAGENT: Write to `ai_files/roadmap_w[N].json` (where N is the wave_number from STEP 0)
 
 ---
 
@@ -481,7 +496,7 @@
     ✅ ¡Roadmap creado exitosamente!
 
     📁 Archivo generado:
-      • ai_files/[product-name]_roadmap.json
+      • ai_files/roadmap_w[N].json
 
     📊 Resumen del roadmap:
       • Producto: [product-name]
@@ -504,7 +519,7 @@
       decisiones y hallazgos durante la ejecución.
 
     💡 Tip: Actualiza el roadmap según progresa:
-      /ai-behavior:roadmap-update [product-name]_roadmap.json
+      /ai-behavior:roadmap-update roadmap_w[N].json
     ```
 
 ---

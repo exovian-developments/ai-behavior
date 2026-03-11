@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Logbook Roadmap Schema",
   "description": "Product-level roadmap with rolling context. Orchestrates phases and milestones that spawn individual logbooks. Sits above logbook_software_schema and logbook_general_schema in the artifact hierarchy: blueprint (WHAT/WHY) → roadmap (WHEN/ORDER) → logbook (HOW).",
-  "$comment": "One per product. This is the strategic orchestrator — it tracks phases, milestones, and decisions at the product level. Detailed implementation lives in individual logbooks referenced via milestones[].logbook_ref. Do NOT duplicate logbook-level detail (completion_guides, scope.files, recommendations) here.",
+  "$comment": "Multiple roadmaps per product, organized as waves. Naming convention: roadmap_w0.json, roadmap_w1.json, roadmap_w2.json, etc. W0 is foundation — agnostic capabilities that do not exist in any base project or package (e.g., phone auth with SMS/WhatsApp, a new payment processor integration). W0 capabilities are not specific to any business vertical; they are infrastructure that enables business features. W1+ are business waves — each wave delivers a cohesive set of business-specific capabilities. A product may have only W1 (no foundation needed) or W0+W1+W2+... as it evolves. This is the strategic orchestrator — it tracks phases, milestones, and decisions at the wave level. Detailed implementation lives in individual logbooks referenced via milestones[].logbook_ref. Do NOT duplicate logbook-level detail (completion_guides, scope.files, recommendations) here.",
   "type": "object",
   "properties": {
     "product": {

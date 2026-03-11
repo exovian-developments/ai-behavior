@@ -232,7 +232,7 @@ Uses schema: `ai_files/schemas/logbook_software_schema.json`
    - Search for `ai_files/product_blueprint.json` → IF EXISTS: Read and extract relevant capabilities, flows, design principles, and product rules that relate to the ticket
    - Search for `ai_files/technical_guide.md` → IF EXISTS: Read and extract relevant technical guidelines, architecture decisions, and implementation patterns
    - Search for `ai_files/*_feasibility.json` → IF EXISTS: Read and extract relevant revenue model context, buyer personas, and essential capabilities
-   - Search for `ai_files/*_roadmap.json` → IF EXISTS: Read and extract current phase, milestones, and relevant decisions
+   - Search for roadmap files: `ai_files/roadmap_w*.json` (wave convention) and `ai_files/*_roadmap.json` (legacy) → IF ANY EXIST: Read and extract current phase, milestones, and relevant decisions. If multiple roadmaps found, prioritize the one with the highest wave number (latest wave) or the one most relevant to the ticket.
 
    **For each file found:** Extract only the sections relevant to the ticket description. Store as `product_context`.
 

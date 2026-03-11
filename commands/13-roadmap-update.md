@@ -51,7 +51,7 @@
    → **EXIT COMMAND**
 
 2. MAIN AGENT: Check if at least one roadmap file exists in `ai_files/`
-   - Pattern: `*_roadmap.json`
+   - Search both patterns: `roadmap_w*.json` (wave convention) and `*_roadmap.json` (legacy)
 
 3. IF NO roadmap files exist:
    ```
@@ -77,9 +77,10 @@
 5. MAIN AGENT: Check if `[roadmap-file]` parameter was provided
 
 6. IF parameter provided:
-   - Try to resolve to actual file path:
-     - If `[roadmap-file]` ends with `.json` → Use as-is: `ai_files/[roadmap-file]`
-     - If `[roadmap-file]` doesn't end with `.json` → Try: `ai_files/[roadmap-file]_roadmap.json`
+   - Try to resolve to actual file path in order:
+     1. Exact match: `ai_files/[parameter]` (if ends with `.json`)
+     2. Wave match: `ai_files/roadmap_w[parameter].json` (if parameter is a number)
+     3. Legacy match: `ai_files/[parameter]_roadmap.json`
    - Check if resolved file exists
    - IF exists → Store as `selected_roadmap_path`
    - IF not exists → MAIN AGENT (example in Spanish):
@@ -87,25 +88,26 @@
      ⚠️ Roadmap not found: ai_files/[roadmap-file]
 
      Available roadmaps:
-     • ai_files/my-product_roadmap.json
-     • ai_files/backend-api_roadmap.json
+     • ai_files/roadmap_w0.json (Foundation)
+     • ai_files/roadmap_w1.json (Business Wave 1)
      [...]
 
-     Try again with correct name:
-     /ai-behavior:roadmap-update my-product
+     Try again with correct name or wave number:
+     /ai-behavior:roadmap-update 0        (by wave number)
+     /ai-behavior:roadmap-update roadmap_w0.json  (by filename)
      ```
      → **EXIT COMMAND**
 
 7. IF parameter NOT provided:
-   - MAIN AGENT: List all roadmaps in `ai_files/`:
+   - MAIN AGENT: List all roadmaps in `ai_files/` (both `roadmap_w*.json` and `*_roadmap.json`):
      ```
      🗂️ Available roadmaps:
 
-     1. my-product_roadmap.json
-     2. backend-api_roadmap.json
-     3. mobile-app_roadmap.json
+     1. roadmap_w0.json (Foundation)
+     2. roadmap_w1.json (Business Wave 1)
+     3. roadmap_w2.json (Business Wave 2)
 
-     Which roadmap do you want to update? (Enter number or name):
+     Which roadmap do you want to update? (Enter number, wave number, or filename):
      ```
    - USER: Selects option
    - Store as `selected_roadmap_path`
@@ -702,13 +704,13 @@
 
 64. SUBAGENT: Manage context compaction:
     - IF `recent_context.length > 20`:
-      - Archive oldest 10 entries to separate file: `ai_files/[product-name]_roadmap_archive.json`
+      - Archive oldest 10 entries to separate file: `ai_files/roadmap_w[N]_archive.json`
       - Keep most recent 10 in main roadmap
       - Add pointer to archive in main file
 
 65. SUBAGENT: Validate entire roadmap against `logbook_roadmap_schema.json`
 
-66. SUBAGENT: Write updated roadmap to `ai_files/[product-name]_roadmap.json`
+66. SUBAGENT: Write updated roadmap to `ai_files/roadmap_w[N].json`
 
 ---
 
@@ -721,7 +723,7 @@
     ✅ ¡Roadmap actualizado exitosamente!
 
     📁 Archivo actualizado:
-      • ai_files/[product-name]_roadmap.json
+      • ai_files/roadmap_w[N].json
 
     📊 Cambios aplicados:
       • Hitos actualizados: 2
@@ -755,14 +757,14 @@
     /ai-behavior:logbook-create [product-name]-phase-3
 
     O transiciona en el roadmap:
-    /ai-behavior:roadmap-update [product-name]_roadmap.json
+    /ai-behavior:roadmap-update roadmap_w[N].json
     (selecciona opción 4: "Transicionar a siguiente fase")
     ```
 
 70. Standard tip:
     ```
     💡 Tip: Mantén el roadmap sincronizado conforme avanzas:
-      /ai-behavior:roadmap-update [product-name]_roadmap.json
+      /ai-behavior:roadmap-update roadmap_w[N].json
     ```
 
 ---
