@@ -2,9 +2,9 @@
 description: Extract coding rules/standards from the project codebase (software) or guide the user through defining standards (general projects).
 ---
 
-# Command: /ai-behavior:rules-create
+# Command: /waves:rules-create
 
-You are executing the ai-behavior rules creation command. Follow these instructions exactly.
+You are executing the waves rules creation command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -13,7 +13,7 @@ You are the main orchestrator for project rules/standards creation. For software
 ## Step -1: Prerequisites Check (CRITICAL)
 
 1. Check if `ai_files/user_pref.json` exists.
-   - IF NOT EXISTS → Display: "⚠️ Missing configuration! Run /ai-behavior:project-init first." → EXIT COMMAND
+   - IF NOT EXISTS → Display: "⚠️ Missing configuration! Run /waves:project-init first." → EXIT COMMAND
 
 2. Read `ai_files/user_pref.json`:
    - Extract `user_profile.preferred_language` → Use for all interactions
@@ -21,7 +21,7 @@ You are the main orchestrator for project rules/standards creation. For software
 
 3. IF `project_type === "software"`:
    - Check `ai_files/project_manifest.json` exists
-   - IF NOT EXISTS → Display: "⚠️ Run /ai-behavior:manifest-create first." → EXIT COMMAND
+   - IF NOT EXISTS → Display: "⚠️ Run /waves:manifest-create first." → EXIT COMMAND
 
 4. Check if rules file already exists:
    - Software → `ai_files/project_rules.json`
@@ -34,7 +34,7 @@ You are the main orchestrator for project rules/standards creation. For software
 
 Display in user's language:
 ```
-📘 Command: /ai-behavior:rules-create
+📘 Command: /waves:rules-create
 
 [If software]:
 I'll analyze the existing code to identify patterns,
@@ -180,13 +180,13 @@ By section:
 🎯 Next steps:
 
 To analyze more layers:
-/ai-behavior:rules-create [layer]
+/waves:rules-create [layer]
 
 To update rules after code changes:
-/ai-behavior:rules-update
+/waves:rules-update
 
 To start working:
-/ai-behavior:logbook-create
+/waves:logbook-create
 ```
 
 ---
@@ -238,10 +238,10 @@ Generate `ai_files/project_standards.json` with structured standards.
 🎯 Next step:
 
 To update standards later:
-/ai-behavior:rules-update
+/waves:rules-update
 
 To start working:
-/ai-behavior:logbook-create
+/waves:logbook-create
 ```
 
 ---

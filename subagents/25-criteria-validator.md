@@ -4,8 +4,8 @@
 Validate candidate rules (patterns/conventions) against mandatory criteria before adding them to project rules. Enforce consistency, clarity, non-conflict, and YAGNI.
 
 ## Used By
-- `/ai-behavior:rules-create` (after pattern/convention/antipattern analysis)
-- `/ai-behavior:rules-update` (to revalidate rules)
+- `/waves:rules-create` (after pattern/convention/antipattern analysis)
+- `/waves:rules-update` (to revalidate rules)
 
 ## Tools Available
 - Read

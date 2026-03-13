@@ -1,6 +1,6 @@
 # Subagents Directory
 
-This directory contains the definitions for all subagents used by ai-behavior commands.
+This directory contains the definitions for all subagents used by waves commands.
 
 ## Progress Summary
 
@@ -60,20 +60,20 @@ This directory contains the definitions for all subagents used by ai-behavior co
 
 | Command | Executable | Subagents Ready | Status |
 |---------|------------|-----------------|--------|
-| `/ai-behavior:project-init` | ✅ | ✅ 1/1 | 🟢 Ready |
-| `/ai-behavior:manifest-create` | ✅ | ✅ 16/16 | 🟢 Ready |
-| `/ai-behavior:manifest-update` | ✅ | ✅ 5/5 | 🟢 Ready |
-| `/ai-behavior:rules-create` | ✅ | ✅ 5/5 | 🟢 Ready |
-| `/ai-behavior:rules-update` | ✅ | ✅ 6/6 | 🟢 Ready |
-| `/ai-behavior:user-pref-create` | ✅ | ✅ N/A | 🟢 Ready |
-| `/ai-behavior:user-pref-update` | ✅ | ✅ N/A | 🟢 Ready |
-| `/ai-behavior:logbook-create` | ✅ | ✅ 1/1 | 🟢 Ready |
-| `/ai-behavior:logbook-update` | ✅ | ✅ 1/1 | 🟢 Ready |
-| `/ai-behavior:resolution-create` | ✅ | ✅ N/A | 🟢 Ready |
-| `/ai-behavior:objectives-implement` | ✅ | ✅ 2/2 | 🟢 Ready |
-| `/ai-behavior:roadmap-create` | ✅ | ✅ 1/1 | 🟢 Ready |
-| `/ai-behavior:roadmap-update` | ✅ | ✅ 1/1 | 🟢 Ready |
-| `/ai-behavior:feasibility-analyze` | ✅ | N/A (no subagents) | 🟢 Ready |
+| `/waves:project-init` | ✅ | ✅ 1/1 | 🟢 Ready |
+| `/waves:manifest-create` | ✅ | ✅ 16/16 | 🟢 Ready |
+| `/waves:manifest-update` | ✅ | ✅ 5/5 | 🟢 Ready |
+| `/waves:rules-create` | ✅ | ✅ 5/5 | 🟢 Ready |
+| `/waves:rules-update` | ✅ | ✅ 6/6 | 🟢 Ready |
+| `/waves:user-pref-create` | ✅ | ✅ N/A | 🟢 Ready |
+| `/waves:user-pref-update` | ✅ | ✅ N/A | 🟢 Ready |
+| `/waves:logbook-create` | ✅ | ✅ 1/1 | 🟢 Ready |
+| `/waves:logbook-update` | ✅ | ✅ 1/1 | 🟢 Ready |
+| `/waves:resolution-create` | ✅ | ✅ N/A | 🟢 Ready |
+| `/waves:objectives-implement` | ✅ | ✅ 2/2 | 🟢 Ready |
+| `/waves:roadmap-create` | ✅ | ✅ 1/1 | 🟢 Ready |
+| `/waves:roadmap-update` | ✅ | ✅ 1/1 | 🟢 Ready |
+| `/waves:feasibility-analyze` | ✅ | N/A (no subagents) | 🟢 Ready |
 
 **Note:** `feasibility-analyze` executes all steps directly in the main agent (Monte Carlo via Python scripts, Bayesian calculations inline). No subagents are used, following the no-delegation pattern established in v0.2.1.
 
@@ -81,10 +81,10 @@ This directory contains the definitions for all subagents used by ai-behavior co
 
 ## Subagents by Command
 
-### `/ai-behavior:project-init` 🟢
+### `/waves:project-init` 🟢
 - `project-initializer` ✅
 
-### `/ai-behavior:manifest-create` 🟢
+### `/waves:manifest-create` 🟢
 **Orchestrators:**
 - `manifest-creator-new-software` ✅ (Flow A1)
 - `manifest-creator-known-software` ✅ (Flow A2.1)
@@ -106,47 +106,47 @@ This directory contains the definitions for all subagents used by ai-behavior co
 **Specialized Analyzers (General):**
 - `directory-analyzer` ✅
 
-### `/ai-behavior:manifest-update` 🟢
+### `/waves:manifest-update` 🟢
 - `git-history-analyzer` ✅
 - `autogen-detector` ✅
 - `manifest-change-analyzer` ✅
 - `timestamp-analyzer` ✅
 - `manifest-updater` ✅
 
-### `/ai-behavior:rules-create` 🟢
+### `/waves:rules-create` 🟢
 - `pattern-extractor` ✅
 - `convention-detector` ✅
 - `antipattern-detector` ✅
 - `criteria-validator` ✅
 - `standards-structurer` ✅
 
-### `/ai-behavior:rules-update` 🟢
+### `/waves:rules-update` 🟢
 - Reuses rules-create subagents ✅
 - `rule-comparator` ✅
 
-### `/ai-behavior:logbook-create` 🟢
+### `/waves:logbook-create` 🟢
 - `secondary-objective-generator` ✅
 
-### `/ai-behavior:logbook-update` 🟢
+### `/waves:logbook-update` 🟢
 - `context-summarizer` ✅
 
-### `/ai-behavior:user-pref-create` 🟢
+### `/waves:user-pref-create` 🟢
 - None (main agent handles all) ✅
 
-### `/ai-behavior:user-pref-update` 🟢
+### `/waves:user-pref-update` 🟢
 - None (inline editing or system editor) ✅
 
-### `/ai-behavior:resolution-create` 🟢
+### `/waves:resolution-create` 🟢
 - None (main agent handles all) ✅
 
-### `/ai-behavior:objectives-implement` 🟢
+### `/waves:objectives-implement` 🟢
 - `code-implementer` ✅
 - `code-auditor` ✅
 
-### `/ai-behavior:roadmap-create` 🟢
+### `/waves:roadmap-create` 🟢
 - `roadmap-creator` ✅
 
-### `/ai-behavior:roadmap-update` 🟢
+### `/waves:roadmap-update` 🟢
 - `roadmap-updater` ✅
 
 ---

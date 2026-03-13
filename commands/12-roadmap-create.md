@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:roadmap-create [product-name]`
+# Command: `/waves:roadmap-create [product-name]`
 
 **Status:** ✅ DESIGNED
 
@@ -45,7 +45,7 @@
    The file ai_files/user_pref.json was not found.
 
    Please run first:
-   /ai-behavior:project-init
+   /waves:project-init
 
    This command will configure your preferences and project context,
    which are required before creating a roadmap.
@@ -69,7 +69,7 @@
    - MAIN AGENT (example in Spanish):
      ```
      💡 Tip: You can specify the product name directly:
-     /ai-behavior:roadmap-create my-product
+     /waves:roadmap-create my-product
 
      Or leave it empty and I'll guide you through the vision questions.
      ```
@@ -81,7 +81,7 @@
    - Ask user to confirm or override wave number
    - Store as `wave_number`
    - Check if `ai_files/roadmap_w[wave_number].json` already exists
-   - If exists → Warn: "Wave [N] roadmap already exists. Use /ai-behavior:roadmap-update instead"
+   - If exists → Warn: "Wave [N] roadmap already exists. Use /waves:roadmap-update instead"
 
 7. Continue to STEP 1
 
@@ -116,7 +116,7 @@
 
 9. MAIN AGENT (example in Spanish):
    ```
-   📘 Comando: /ai-behavior:roadmap-create
+   📘 Comando: /waves:roadmap-create
 
    Voy a ayudarte a crear un roadmap para tu producto. Primero necesito
    entender tu visión con 4 preguntas. Puedes responder en detalle o
@@ -246,7 +246,7 @@
 
 28. MAIN AGENT (example in Spanish):
     ```
-    📘 Comando: /ai-behavior:roadmap-create
+    📘 Comando: /waves:roadmap-create
 
     Detecté que ya tienes contexto de tu proyecto:
     • Manifiesto encontrado: ai_files/project_manifest.json
@@ -513,13 +513,13 @@
     🎯 Próximo paso:
 
       Crea un logbook para la primera fase:
-      /ai-behavior:logbook-create [product-name]-phase-1
+      /waves:logbook-create [product-name]-phase-1
 
       El logbook te ayudará a registrar el progreso,
       decisiones y hallazgos durante la ejecución.
 
     💡 Tip: Actualiza el roadmap según progresa:
-      /ai-behavior:roadmap-update roadmap_w[N].json
+      /waves:roadmap-update roadmap_w[N].json
     ```
 
 ---

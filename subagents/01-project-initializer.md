@@ -6,7 +6,7 @@ Conducts interactive setup to create user preferences (`user_pref.json`) with es
 
 ## Used By
 
-- `/ai-behavior:project-init`
+- `/waves:project-init`
 
 ## Tools Available
 

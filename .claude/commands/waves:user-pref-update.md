@@ -2,9 +2,9 @@
 description: Update existing user preferences. View current settings and modify individual fields or open in editor.
 ---
 
-# Command: /ai-behavior:user-pref-update
+# Command: /waves:user-pref-update
 
-You are executing the ai-behavior user preferences update command. Follow these instructions exactly.
+You are executing the waves user preferences update command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -13,7 +13,7 @@ You help the user modify their existing preferences through either inline editin
 ## Step 0: Prerequisites Check
 
 1. Check if `ai_files/user_pref.json` exists.
-   - IF NOT EXISTS → Display: "⚠️ No preferences found. Run /ai-behavior:project-init first." → EXIT COMMAND
+   - IF NOT EXISTS → Display: "⚠️ No preferences found. Run /waves:project-init first." → EXIT COMMAND
 
 2. Read `ai_files/user_pref.json`.
 3. Extract `preferred_language`.

@@ -1,4 +1,4 @@
-# Claude Code (keep .claude/commands/ tracked — distributed with ai-behavior)
+# Claude Code (keep .claude/commands/ tracked — distributed with waves)
 .claude/*
 !.claude/commands/
 

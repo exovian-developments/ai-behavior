@@ -2,9 +2,9 @@
 description: Generate a product foundation by compacting feasibility analysis into validated facts, enriched problem statements, re-classified capabilities, and financial benchmarks. Bridges feasibility → blueprint.
 ---
 
-# Command: /ai-behavior:foundation-create
+# Command: /waves:foundation-create
 
-You are executing the ai-behavior foundation creation command. Follow these instructions exactly.
+You are executing the waves foundation creation command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -16,14 +16,14 @@ You are the compaction engine. You read a completed feasibility analysis and dis
 
 Check if `ai_files/user_pref.json` exists.
 - If found: Extract `preferred_language` for all interactions
-- If not found: EXIT with message: "user_pref.json not found. Please run /ai-behavior:project-init first."
+- If not found: EXIT with message: "user_pref.json not found. Please run /waves:project-init first."
 
 **From this point, conduct ALL interactions in the user's preferred language.**
 
 ## Step 0: Locate Feasibility Analysis
 
 1. Scan `ai_files/` for `*_feasibility.json` files
-2. IF none found → EXIT: "No feasibility analysis found. Run /ai-behavior:feasibility-analyze first."
+2. IF none found → EXIT: "No feasibility analysis found. Run /waves:feasibility-analyze first."
 3. IF one found → Auto-select it
 4. IF multiple found → List all with analysis_name, last_updated, iteration_count. Ask user to select.
 5. Read the selected feasibility file completely into memory
@@ -216,7 +216,7 @@ For each unknown, assess:
 - `recommended_next_step` → specific action (e.g., "Return to feasibility and run with adjusted pricing")
 
 **If ready:**
-- `recommended_next_step` → "Run /ai-behavior:blueprint-create with this foundation as input"
+- `recommended_next_step` → "Run /waves:blueprint-create with this foundation as input"
 
 ## Step 12: Generate & Save Foundation JSON
 
@@ -252,7 +252,7 @@ For each unknown, assess:
 
 🎯 Next step:
 [If ready:]
-  /ai-behavior:blueprint-create
+  /waves:blueprint-create
   The blueprint will consume this foundation as primary input.
 
 [If not ready:]

@@ -1,6 +1,6 @@
 # Spring Boot Authentication Service Example
 
-This directory demonstrates how **ai-behavior** schemas work in a Java Spring Boot microservice.
+This directory demonstrates how **waves** schemas work in a Java Spring Boot microservice.
 
 ## About This Example
 
@@ -47,5 +47,5 @@ example_java/
 
 ---
 
-**Part of ai-behavior examples**
-https://github.com/exovian-developments/ai-behavior
+**Part of waves examples**
+https://github.com/exovian-developments/waves

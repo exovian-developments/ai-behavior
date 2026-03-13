@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:project-init`
+# Command: `/waves:project-init`
 
 **Status:** ✅ DESIGNED (UPDATED with project context)
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-**Purpose:** Quick essential setup - Create `ai_files/user_pref.json` with interaction preferences AND project context for ai-behavior commands
+**Purpose:** Quick essential setup - Create `ai_files/user_pref.json` with interaction preferences AND project context for waves commands
 
 **Schema:** `ai_files/schemas/user_pref_schema.json` (extended with project context fields)
 
@@ -67,7 +67,7 @@ Output Preferences:
 
 1. MAIN AGENT (in English):
    ```
-   👋 Welcome to ai-behavior!
+   👋 Welcome to waves!
 
    🌍 What language do you prefer for our conversations?
 
@@ -102,7 +102,7 @@ Output Preferences:
 
    Elige 1 o 2:
    ```
-   - IF "1" → Exit with message: "No se efectuaron cambios en la configuración existente. Usa /ai-behavior:user-pref-create para ajustes más avanzados."
+   - IF "1" → Exit with message: "No se efectuaron cambios en la configuración existente. Usa /waves:user-pref-create para ajustes más avanzados."
    - IF "2" → Continue to next step
 
 7. IF NOT EXISTS → Continue to next step (no message needed)
@@ -113,9 +113,9 @@ Output Preferences:
 
 8. MAIN AGENT (en español):
    ```
-   📘 Comando: /ai-behavior:project-init
+   📘 Comando: /waves:project-init
 
-   Este comando configura tus preferencias esenciales para trabajar con ai-behavior.
+   Este comando configura tus preferencias esenciales para trabajar con waves.
    Te haré 6 preguntas para configurar cómo interactúo contigo y entender tu proyecto.
 
    ¿Deseas continuar? (Si/No)
@@ -290,7 +290,7 @@ Output Preferences:
     ⚙️ Generando tu configuración...
 
     Las siguientes preferencias se configuran con valores por defecto.
-    Puedes ajustarlas después con: /ai-behavior:user-pref-create
+    Puedes ajustarlas después con: /waves:user-pref-create
 
     📋 Valores por defecto aplicados:
 
@@ -382,7 +382,7 @@ Output Preferences:
       • LLM Behavior: All enabled
       • Output: Code with comments, highlight gotchas
 
-    💡 Tip: Ajusta preferencias avanzadas con /ai-behavior:user-pref-create
+    💡 Tip: Ajusta preferencias avanzadas con /waves:user-pref-create
 
     ⚠️ IMPORTANTE: Reinicia tu sesión de Claude Code para cargar las nuevas preferencias.
     ```
@@ -402,7 +402,7 @@ Output Preferences:
     🎯 Paso siguiente:
 
       Después de reiniciar Claude Code, ejecuta:
-      /ai-behavior:manifest-create
+      /waves:manifest-create
 
       Este comando analizará tu proyecto y creará un manifiesto completo
       con su estructura, tecnologías y arquitectura.
@@ -435,12 +435,12 @@ Tu configuración:
 📋 Preferencias por defecto aplicadas:
   [Lista completa de defaults...]
 
-💡 Tip: Ajusta preferencias avanzadas con /ai-behavior:user-pref-create
+💡 Tip: Ajusta preferencias avanzadas con /waves:user-pref-create
 
 ⚠️ IMPORTANTE: Reinicia tu sesión de Claude Code para cargar las nuevas preferencias.
 
 Después de reiniciar, continúa con:
-  /ai-behavior:manifest-create
+  /waves:manifest-create
 ```
 
 **Enhanced user_pref.json Structure (NEW FIELDS):**

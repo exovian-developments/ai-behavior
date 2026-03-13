@@ -2,9 +2,9 @@
 description: Analyze project and create structured manifest. Supports software projects (with code analysis) and general projects (academic, creative, business).
 ---
 
-# Command: /ai-behavior:manifest-create
+# Command: /waves:manifest-create
 
-You are executing the ai-behavior manifest creation command. Follow these instructions exactly.
+You are executing the waves manifest creation command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -21,7 +21,7 @@ IF NOT EXISTS, display:
 The file ai_files/user_pref.json was not found.
 
 Please run first:
-/ai-behavior:project-init
+/waves:project-init
 
 This command will configure your preferences and project context,
 which are required before creating the manifest.
@@ -41,7 +41,7 @@ If any required field is missing:
 Your ai_files/user_pref.json is missing required fields.
 
 Please run:
-/ai-behavior:project-init
+/waves:project-init
 
 to complete the configuration.
 ```
@@ -53,7 +53,7 @@ to complete the configuration.
 
 Display in user's language:
 ```
-📘 Command: /ai-behavior:manifest-create
+📘 Command: /waves:manifest-create
 
 This command will analyze your project and create a complete manifest with:
 • Project information and context
@@ -79,13 +79,13 @@ IF EXISTS:
 File found: [file_path]
 
 Options:
-1. Stop (use /ai-behavior:manifest-update instead)
+1. Stop (use /waves:manifest-update instead)
 2. Continue (overwrites existing file)
 
 Choose 1 or 2:
 ```
 
-IF "1" → Exit: "No changes made. Use /ai-behavior:manifest-update to update existing manifest."
+IF "1" → Exit: "No changes made. Use /waves:manifest-update to update existing manifest."
 IF "2" → Continue with warning: "⚠️ The file will be overwritten when complete"
 
 ## Step 2: Route to Appropriate Flow
@@ -235,7 +235,7 @@ Create `ai_files/project_manifest.json` with:
   [initialization command]
 
   Then run:
-  /ai-behavior:rules-create
+  /waves:rules-create
 
   This command will establish coding conventions and
   structure for each layer of your architecture.
@@ -417,7 +417,7 @@ Patterns detected:
 🎯 Next step:
 
   Establish code rules by layer:
-  /ai-behavior:rules-create [layer]
+  /waves:rules-create [layer]
 
   Available layers: [layer1], [layer2], [layer3]
 ```

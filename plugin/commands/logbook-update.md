@@ -356,8 +356,8 @@ Return to calling step.
 # STEP SAVE: Save and Exit
 
 **Validate JSON against appropriate schema:**
-- IF `project_type === "software"` → Validate against `${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/logbook_software_schema.json`
-- IF `project_type === "general"` → Validate against `${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/logbook_general_schema.json`
+- IF `project_type === "software"` → Validate against `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/logbook_software_schema.json`
+- IF `project_type === "general"` → Validate against `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/logbook_general_schema.json`
 
 **Save to `ai_files/logbooks/[filename].json`**
 

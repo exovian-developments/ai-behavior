@@ -1,19 +1,19 @@
-class AiBehavior < Formula
+class Waves < Formula
   desc "Structured context protocol for AI agents — Claude, Codex, Gemini CLI"
-  homepage "https://github.com/exovian-developments/ai-behavior"
-  url "https://github.com/exovian-developments/ai-behavior/archive/refs/tags/1.1.0.tar.gz"
+  homepage "https://github.com/exovian-developments/waves"
+  url "https://github.com/exovian-developments/waves/archive/refs/tags/1.1.0.tar.gz"
   sha256 "PLACEHOLDER_SHA256"
   license "AGPL-3.0-or-later"
 
   def install
     # Install the CLI binary
-    bin.install "bin/ai-behavior"
+    bin.install "bin/waves"
 
-    # Install data files to share/ai-behavior/
+    # Install data files to share/waves/
     # The binary's get_data_dir() looks for:
-    #   $(brew --prefix)/share/ai-behavior/schemas/
-    #   $(brew --prefix)/share/ai-behavior/.claude/commands/
-    data_dir = share/"ai-behavior"
+    #   $(brew --prefix)/share/waves/schemas/
+    #   $(brew --prefix)/share/waves/.claude/commands/
+    data_dir = share/"waves"
 
     # Copy schemas
     data_dir.install "schemas"
@@ -27,24 +27,24 @@ class AiBehavior < Formula
 
   def caveats
     <<~EOS
-      ai-behavior has been installed!
+      waves has been installed!
 
       To set up a new project:
         cd your-project
-        ai-behavior init claude
+        waves init claude
 
       To update an existing project:
         cd your-project
-        ai-behavior update
+        waves update
 
       After initialization, start Claude Code and run:
-        /ai-behavior:project-init
+        /waves:project-init
 
-      Documentation: https://github.com/exovian-developments/ai-behavior
+      Documentation: https://github.com/exovian-developments/waves
     EOS
   end
 
   test do
-    assert_match "ai-behavior version #{version}", shell_output("#{bin}/ai-behavior --version")
+    assert_match "waves version #{version}", shell_output("#{bin}/waves --version")
   end
 end

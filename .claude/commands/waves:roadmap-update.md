@@ -2,9 +2,9 @@
 description: Update an existing product roadmap — report progress, record decisions, resolve questions, transition phases, or restructure milestones.
 ---
 
-# Command: /ai-behavior:roadmap-update
+# Command: /waves:roadmap-update
 
-You are executing the ai-behavior roadmap update command. Follow these instructions exactly.
+You are executing the waves roadmap update command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -13,7 +13,7 @@ You are the main orchestrator for roadmap updates. You will present the current 
 ## Step -1: Prerequisites Check (CRITICAL)
 
 - Check if `ai_files/user_pref.json` exists. EXIT if missing.
-- Verify at least one roadmap file exists in `ai_files/` directory. Search for both patterns: `roadmap_w*.json` (wave convention) and `*_roadmap.json` (legacy). EXIT if none found with message: "No roadmap files found. Create one first with `/ai-behavior:roadmap-create`."
+- Verify at least one roadmap file exists in `ai_files/` directory. Search for both patterns: `roadmap_w*.json` (wave convention) and `*_roadmap.json` (legacy). EXIT if none found with message: "No roadmap files found. Create one first with `/waves:roadmap-create`."
 - Extract `preferred_language` from user_pref.json for all user interactions
 
 ## Step 0: Select Roadmap
@@ -136,10 +136,10 @@ DISPATCH TO SUBAGENT (via Task tool):
 Show what was changed in summary format (in preferred_language).
 
 Provide contextual suggestions based on update_type:
-- **If milestone completed:** "Milestone complete! Consider creating a logbook for the next milestone with `/ai-behavior:logbook-create [product] [next-milestone]`"
+- **If milestone completed:** "Milestone complete! Consider creating a logbook for the next milestone with `/waves:logbook-create [product] [next-milestone]`"
 - **If all phase milestones done:** "Phase [X] complete! Ready to transition to phase [X+1]?"
 - **If question resolved:** "Question resolved! This may unblock milestone [name] in phase [Y]."
-- **If blocked milestone:** "Milestone is blocked. Use `/ai-behavior:logbook-create` with this milestone to investigate and unblock."
+- **If blocked milestone:** "Milestone is blocked. Use `/waves:logbook-create` with this milestone to investigate and unblock."
 - **If phase transitioned:** "Transitioned to phase [X+1]. Launch first logbook for this phase to begin execution."
 
 End with: "Roadmap updated and saved."

@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:manifest-create`
+# Command: `/waves:manifest-create`
 
 **Status:** ✅ DESIGNED (All 7 flows complete)
 
@@ -60,7 +60,7 @@
    The file ai_files/user_pref.json was not found.
 
    Please run first:
-   /ai-behavior:project-init
+   /waves:project-init
 
    This command will configure your preferences and project context,
    which are required before creating the manifest.
@@ -79,7 +79,7 @@
    Your ai_files/user_pref.json is missing required fields.
 
    Please run:
-   /ai-behavior:project-init
+   /waves:project-init
 
    to complete the configuration.
    ```
@@ -98,7 +98,7 @@
 
 2. MAIN AGENT (in user's language, example in Spanish):
    ```
-   📘 Comando: /ai-behavior:manifest-create
+   📘 Comando: /waves:manifest-create
 
    Este comando analizará tu proyecto y creará un manifiesto completo con:
    - Información del proyecto y contexto
@@ -128,12 +128,12 @@
    Archivo encontrado: ai_files/project_manifest.json
 
    Opciones:
-   1. Detener (usar /ai-behavior:manifest-update en su lugar)
+   1. Detener (usar /waves:manifest-update en su lugar)
    2. Continuar (sobrescribe el archivo existente)
 
    Elige 1 o 2:
    ```
-   - IF "1" → Exit with message: "No se efectuaron cambios. Usa /ai-behavior:manifest-update para actualizar el manifiesto existente."
+   - IF "1" → Exit with message: "No se efectuaron cambios. Usa /waves:manifest-update para actualizar el manifiesto existente."
    - IF "2" → Continue (show warning: "⚠️ El archivo será sobrescrito al finalizar")
 
 7. IF NOT EXISTS → Continue silently
@@ -348,7 +348,7 @@
           "Initialize Next.js project with `npx create-next-app@latest`",
           "Set up TypeScript configuration",
           "Configure recommended architecture patterns",
-          "Run /ai-behavior:rules-create to establish coding conventions"
+          "Run /waves:rules-create to establish coding conventions"
         ]
       }
     }
@@ -386,7 +386,7 @@
       npx create-next-app@latest
 
       Luego ejecuta:
-      /ai-behavior:rules-create
+      /waves:rules-create
 
       Este comando establecerá las convenciones de código y
       estructura para cada capa de tu arquitectura.
@@ -679,12 +679,12 @@
     🎯 Próximo paso:
 
       Establece las reglas de código por capa:
-      /ai-behavior:rules-create [layer]
+      /waves:rules-create [layer]
 
       Capas disponibles: Frontend, Backend, Data
 
       Ejemplo:
-      /ai-behavior:rules-create Frontend
+      /waves:rules-create Frontend
     ```
 
 **Status:** ✅ DESIGNED
@@ -909,7 +909,7 @@
     🎯 Próximo paso:
 
       Ahora que conoces la estructura, establece las convenciones de código:
-      /ai-behavior:rules-create Frontend
+      /waves:rules-create Frontend
 
       Esto extraerá los patrones y convenciones que ya estás usando
       en el código y los documentará para mantener consistencia.
@@ -1207,7 +1207,7 @@
     🎯 Próximo paso:
 
       Establece los estándares de tu investigación:
-      /ai-behavior:rules-create academic
+      /waves:rules-create academic
 
       Esto documentará tus convenciones de escritura,
       formato de citas y estructura de capítulos.
@@ -1374,7 +1374,7 @@
         "recommended_actions": [
           "Define specific research questions",
           "Start compiling bibliography",
-          "Create /ai-behavior:rules-create academic for citation and writing standards"
+          "Create /waves:rules-create academic for citation and writing standards"
         ]
       }
     }
@@ -1405,7 +1405,7 @@
     🎯 Próximo paso:
 
       Establece los estándares académicos para tu investigación:
-      /ai-behavior:rules-create academic
+      /waves:rules-create academic
 
       Este comando creará academic_standards.json con:
       • Reglas de citación APA
@@ -1567,7 +1567,7 @@
          "recommended_actions": [
            "Create mood board",
            "Gather reference materials",
-           "Create /ai-behavior:rules-create creative for design standards"
+           "Create /waves:rules-create creative for design standards"
          ]
        }
      }
@@ -1597,7 +1597,7 @@
      🎯 Próximo paso:
 
        Establece los estándares creativos:
-       /ai-behavior:rules-create creative
+       /waves:rules-create creative
 
        Este comando creará creative_standards.json con:
        • Especificaciones de archivos (formatos, resoluciones)
@@ -1812,7 +1812,7 @@
          "recommended_actions": [
            "Define specific KPIs and targets",
            "Create financial projections",
-           "Create /ai-behavior:rules-create business for business rules and processes"
+           "Create /waves:rules-create business for business rules and processes"
          ]
        }
      }
@@ -1865,7 +1865,7 @@
      🎯 Próximo paso:
 
        Establece las reglas de negocio:
-       /ai-behavior:rules-create business
+       /waves:rules-create business
 
        Este comando creará business_rules.json con:
        • Procesos operativos
@@ -2011,7 +2011,7 @@
          "is_up_to_date": true,
          "recommended_actions": [
            "Start working on first objective",
-           "Create /ai-behavior:logbook-create to track progress"
+           "Create /waves:logbook-create to track progress"
          ]
        }
      }
@@ -2041,7 +2041,7 @@
      🎯 Próximo paso:
 
        Empieza a trabajar en tu proyecto y registra el progreso:
-       /ai-behavior:logbook-create
+       /waves:logbook-create
 
        El logbook te ayudará a mantener contexto de lo que vas
        haciendo y los hallazgos importantes.

@@ -1,6 +1,6 @@
 <div align="center">
 
-# ai-behavior
+# waves
 
 **[English](README.md) | [Español](README.es.md) | [Português](README.pt.md)**
 
@@ -8,13 +8,13 @@
 
 ## What is it?
 
-ai-behavior is a structured protocol that guides AI agents through the **entire lifecycle of a product** — from the first idea to production code. It works with `Claude Code`, `Codex`, and `Gemini CLI` through interactive slash commands and structured JSON schemas.
+waves is a structured protocol that guides AI agents through the **entire lifecycle of a product** — from the first idea to production code. It works with `Claude Code`, `Codex`, and `Gemini CLI` through interactive slash commands and structured JSON schemas.
 
-Instead of giving your AI agent a blank prompt and hoping for the best, ai-behavior walks it through a clear process: first understand if the idea is viable, then define what to build, then plan in what order, and finally write the code — with full context at every step.
+Instead of giving your AI agent a blank prompt and hoping for the best, waves walks it through a clear process: first understand if the idea is viable, then define what to build, then plan in what order, and finally write the code — with full context at every step.
 
 ### The Product Lifecycle
 
-ai-behavior organizes work into five levels, where each level builds on the previous one:
+waves organizes work into five levels, where each level builds on the previous one:
 
 **1. Feasibility** → *Can we build this? Should we?*
 You describe your idea in plain language. The agent acts as a business consultant: it analyzes the market, identifies competitors, builds revenue projections with Monte Carlo simulations, and gives you honest numbers on whether this can work. The output is a feasibility analysis with real data — not opinions.
@@ -70,11 +70,11 @@ Each JSON schema uses a dual-instruction pattern:
 
 ### Install
 
-Download `ai-behavior.plugin` from [Releases](https://github.com/exovian-developments/ai-behavior/releases) and double-click to install in Claude desktop. Or build from source:
+Download `waves.plugin` from [Releases](https://github.com/exovian-developments/waves/releases) and double-click to install in Claude desktop. Or build from source:
 
 ```bash
 cd plugin/
-zip -r ../ai-behavior.plugin . -x "*.DS_Store"
+zip -r ../waves.plugin . -x "*.DS_Store"
 ```
 
 ### Usage
@@ -101,25 +101,25 @@ See [`plugin/README.md`](plugin/README.md) for full plugin documentation.
 **Option A: Homebrew (recommended)**
 
 ```bash
-brew tap exovian-developments/ai-behavior
-brew install ai-behavior
+brew tap exovian-developments/waves
+brew install waves
 
 # Initialize in your project
 cd your-project
-ai-behavior init claude
+waves init claude
 ```
 
 **Option B: Manual**
 
 ```bash
 # Clone the repository
-git clone https://github.com/exovian-developments/ai-behavior.git
+git clone https://github.com/exovian-developments/waves.git
 
 # Copy to your project
 mkdir -p your-project/.claude/commands
-cp -r ai-behavior/.claude/commands/* your-project/.claude/commands/
+cp -r waves/.claude/commands/* your-project/.claude/commands/
 mkdir -p your-project/ai_files/schemas
-cp ai-behavior/schemas/*.json your-project/ai_files/schemas/
+cp waves/schemas/*.json your-project/ai_files/schemas/
 mkdir -p your-project/ai_files/logbooks
 ```
 
@@ -127,19 +127,19 @@ mkdir -p your-project/ai_files/logbooks
 
 ```bash
 # With Homebrew:
-brew upgrade ai-behavior
-cd your-project && ai-behavior update
+brew upgrade waves
+cd your-project && waves update
 
 # Or from local clone:
 cd your-project
-/path/to/ai-behavior/bin/ai-behavior update
+/path/to/waves/bin/waves update
 ```
 
 ### 2. Initialize
 
 In Claude Code, run:
 ```
-/ai-behavior:project-init
+/waves:project-init
 ```
 
 This will:
@@ -151,7 +151,7 @@ This will:
 ### 3. Create Project Manifest
 
 ```
-/ai-behavior:manifest-create
+/waves:manifest-create
 ```
 
 This will analyze your project and create a comprehensive manifest with technologies, architecture, features, and recommendations.
@@ -159,13 +159,13 @@ This will analyze your project and create a comprehensive manifest with technolo
 ### 4. Start Working with Logbooks
 
 ```
-/ai-behavior:logbook-create TICKET-123.json
+/waves:logbook-create TICKET-123.json
 ```
 
 Creates a structured logbook with objectives and completion guides for your ticket/task.
 
 ```
-/ai-behavior:logbook-update TICKET-123.json
+/waves:logbook-update TICKET-123.json
 ```
 
 Update progress, change objective statuses, add new objectives discovered during work.
@@ -176,22 +176,22 @@ Update progress, change objective statuses, add new objectives discovered during
 
 | Command | Description | Status |
 |---------|-------------|--------|
-| `/ai-behavior:project-init` | Initialize preferences and project context | 🟢 Ready |
-| `/ai-behavior:manifest-create` | Analyze project and create manifest | 🟢 Ready |
-| `/ai-behavior:manifest-update` | Update existing manifest with changes | 🟢 Ready |
-| `/ai-behavior:rules-create` | Extract coding rules from codebase | 🟢 Ready |
-| `/ai-behavior:rules-update` | Update rules based on code changes | 🟢 Ready |
-| `/ai-behavior:user-pref-create` | Create detailed user preferences | 🟢 Ready |
-| `/ai-behavior:user-pref-update` | Edit existing preferences | 🟢 Ready |
-| `/ai-behavior:logbook-create` | Create new development logbook | 🟢 Ready |
-| `/ai-behavior:logbook-update` | Update logbook with progress | 🟢 Ready |
-| `/ai-behavior:resolution-create` | Generate ticket resolution document | 🟢 Ready |
-| `/ai-behavior:objectives-implement` | Implement logbook objectives with auditing | 🟢 Ready |
-| `/ai-behavior:roadmap-create` | Create product-level roadmap with phases and milestones | 🟢 Ready |
-| `/ai-behavior:roadmap-update` | Update roadmap progress, decisions, and phases | 🟢 Ready |
-| `/ai-behavior:feasibility-analyze` | Pre-blueprint feasibility analysis with Monte Carlo and Bayesian projections | 🟢 Ready |
-| `/ai-behavior:foundation-create` | Compact feasibility into validated facts, re-classified capabilities, and financial benchmarks | 🟢 Ready |
-| `/ai-behavior:blueprint-create` | Create complete product blueprint from foundation with owner validation | 🟢 Ready |
+| `/waves:project-init` | Initialize preferences and project context | 🟢 Ready |
+| `/waves:manifest-create` | Analyze project and create manifest | 🟢 Ready |
+| `/waves:manifest-update` | Update existing manifest with changes | 🟢 Ready |
+| `/waves:rules-create` | Extract coding rules from codebase | 🟢 Ready |
+| `/waves:rules-update` | Update rules based on code changes | 🟢 Ready |
+| `/waves:user-pref-create` | Create detailed user preferences | 🟢 Ready |
+| `/waves:user-pref-update` | Edit existing preferences | 🟢 Ready |
+| `/waves:logbook-create` | Create new development logbook | 🟢 Ready |
+| `/waves:logbook-update` | Update logbook with progress | 🟢 Ready |
+| `/waves:resolution-create` | Generate ticket resolution document | 🟢 Ready |
+| `/waves:objectives-implement` | Implement logbook objectives with auditing | 🟢 Ready |
+| `/waves:roadmap-create` | Create product-level roadmap with phases and milestones | 🟢 Ready |
+| `/waves:roadmap-update` | Update roadmap progress, decisions, and phases | 🟢 Ready |
+| `/waves:feasibility-analyze` | Pre-blueprint feasibility analysis with Monte Carlo and Bayesian projections | 🟢 Ready |
+| `/waves:foundation-create` | Compact feasibility into validated facts, re-classified capabilities, and financial benchmarks | 🟢 Ready |
+| `/waves:blueprint-create` | Create complete product blueprint from foundation with owner validation | 🟢 Ready |
 
 **Legend:** 🟢 Ready
 
@@ -223,10 +223,10 @@ After installation, your project will have:
 your-project/
 ├── .claude/
 │   └── commands/
-│       ├── ai-behavior:project-init.md
-│       ├── ai-behavior:manifest-create.md
-│       ├── ai-behavior:logbook-create.md
-│       └── ai-behavior:logbook-update.md
+│       ├── waves:project-init.md
+│       ├── waves:manifest-create.md
+│       ├── waves:logbook-create.md
+│       └── waves:logbook-update.md
 ├── ai_files/
 │   ├── schemas/                    # JSON schemas
 │   │   ├── user_pref_schema.json
@@ -314,10 +314,10 @@ If you prefer not to use slash commands, you can still use the schemas directly:
 ### 1. Setup
 
 ```bash
-git clone https://github.com/exovian-developments/ai-behavior.git
+git clone https://github.com/exovian-developments/waves.git
 cd your-project
 mkdir -p ai_files/{schemas,logbooks}
-cp ai-behavior/schemas/*.json ai_files/schemas/
+cp waves/schemas/*.json ai_files/schemas/
 ```
 
 ### 2. Add to CLAUDE.md
@@ -438,7 +438,7 @@ python -c "import json,jsonschema; jsonschema.validate(json.load(open('data.json
 ## Repository Structure
 
 ```
-ai-behavior/
+waves/
 ├── schemas/              # Source of truth: 10 JSON schemas
 ├── subagents/            # Canonical design: 33 subagent specifications
 ├── commands/             # Command design docs (numbered, detailed)

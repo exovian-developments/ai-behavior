@@ -1,11 +1,11 @@
 ---
-description: Initialize ai-behavior preferences and project context
+description: Initialize waves preferences and project context
 allowed-tools: Read, Write, Edit
 ---
 
 # Plugin Command: project-init
 
-You are executing the ai-behavior plugin project initialization command. This is an interactive setup command — do NOT use the Task tool. Conduct this directly in the main thread.
+You are executing the waves plugin project initialization command. This is an interactive setup command — do NOT use the Task tool. Conduct this directly in the main thread.
 
 ## Your Role
 
@@ -59,7 +59,7 @@ Display in user's language:
 ```
 📘 Command: project-init
 
-This command configures your essential preferences for working with ai-behavior.
+This command configures your essential preferences for working with waves.
 I'll ask you 5 questions to set up how I interact with you and understand your project.
 
 Continue? (Yes/No)
@@ -176,7 +176,7 @@ Output Preferences:
 
 ## Step 9: Create user_pref.json
 
-Read the schema from `${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/user_pref_schema.json` to understand the structure.
+Read the schema from `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/user_pref_schema.json` to understand the structure.
 
 Create `ai_files/user_pref.json` with:
 - User's answers from questions 1-5

@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:foundation-create [product-name]`
+# Command: `/waves:foundation-create [product-name]`
 
 **Status:** ✅ DESIGNED
 
@@ -40,7 +40,7 @@
    ⚠️ Missing configuration!
 
    Please run first:
-   /ai-behavior:project-init
+   /waves:project-init
 
    This command requires user preferences to be configured.
    ```
@@ -65,7 +65,7 @@
    The foundation compacts feasibility research into validated facts.
 
    Run first:
-   /ai-behavior:feasibility-analyze [product-name]
+   /waves:feasibility-analyze [product-name]
 
    Then return here.
    ```
@@ -467,7 +467,7 @@
     Recommended: [action to resolve]
 
     [If ready:]
-    Next step: /ai-behavior:blueprint-create
+    Next step: /waves:blueprint-create
     ```
 
 ---
@@ -508,12 +508,12 @@
 
     🎯 Next step:
     [If ready:]
-      /ai-behavior:blueprint-create
+      /waves:blueprint-create
       The blueprint will use this foundation as its primary input.
 
     [If not ready:]
       Address blocking issues, then re-run:
-      /ai-behavior:foundation-create [product-name]
+      /waves:foundation-create [product-name]
     ```
 
 ---

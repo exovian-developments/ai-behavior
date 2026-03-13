@@ -6,7 +6,7 @@ Analyzes project context to propose roadmap phases and milestones for a product.
 
 ## Used By
 
-- `/ai-behavior:roadmap-create`
+- `/waves:roadmap-create`
 
 ## Tools Available
 

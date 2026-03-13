@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:manifest-update`
+# Command: `/waves:manifest-update`
 
 **Status:** ✅ DESIGNED
 
@@ -55,7 +55,7 @@ Changes that warrant manifest updates:
 **═══════════════════════════════════════════════════════════════════**
 
 1. MAIN AGENT: Check if `ai_files/user_pref.json` exists
-   - IF NOT EXISTS → Error: "Run /ai-behavior:project-init first"
+   - IF NOT EXISTS → Error: "Run /waves:project-init first"
 
 2. MAIN AGENT: Read `project_context.project_type` from user_pref.json
 
@@ -71,7 +71,7 @@ Changes that warrant manifest updates:
    ⚠️ No existe un manifiesto para actualizar.
 
    Primero crea el manifiesto con:
-   /ai-behavior:manifest-create
+   /waves:manifest-create
    ```
    → **EXIT COMMAND**
 
@@ -90,7 +90,7 @@ Changes that warrant manifest updates:
 
 8. MAIN AGENT (in user's language, example in Spanish):
    ```
-   📘 Comando: /ai-behavior:manifest-update
+   📘 Comando: /waves:manifest-update
 
    Detectaré los cambios desde la última actualización del manifiesto
    y actualizaré automáticamente los campos relevantes.
@@ -404,7 +404,7 @@ Changes that warrant manifest updates:
     🎯 Próximo paso:
 
       Si agregaste nuevas capas de arquitectura, considera:
-      /ai-behavior:rules-update
+      /waves:rules-update
 
       Para documentar las convenciones del nuevo código.
     ```
@@ -466,7 +466,7 @@ Changes that warrant manifest updates:
 
     Si eliminaste archivos que estaban en el manifiesto,
     necesitarás revisarlos manualmente o usar:
-    /ai-behavior:manifest-create (para regenerar desde cero)
+    /waves:manifest-create (para regenerar desde cero)
     ```
 
 **═══════════════════════════════════════════════════════════════════**

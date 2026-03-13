@@ -4,7 +4,7 @@
 Create a research/academic project manifest through 5 guided questions, producing a structured general manifest aligned with `general_manifest_schema.json`.
 
 ## Used By
-- `/ai-behavior:manifest-create` (Flow B1: Academic New Project)
+- `/waves:manifest-create` (Flow B1: Academic New Project)
 
 ## Tools Available
 - Read

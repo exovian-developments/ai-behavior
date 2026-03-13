@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:logbook-update [filename]`
+# Command: `/waves:logbook-update [filename]`
 
 **Status:** ✅ DESIGNED
 
@@ -53,7 +53,7 @@
    ⚠️ Missing configuration!
 
    Please run first:
-   /ai-behavior:project-init
+   /waves:project-init
    ```
    → **EXIT COMMAND**
 
@@ -74,7 +74,7 @@
    - Show tip:
      ```
      💡 TIP: Puedes ejecutar más rápido con:
-        /ai-behavior:logbook-update MT-572.json
+        /waves:logbook-update MT-572.json
      ```
    - List available logbooks:
      ```

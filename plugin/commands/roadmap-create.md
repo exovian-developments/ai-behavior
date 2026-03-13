@@ -5,7 +5,7 @@ allowed-tools: Read, Grep, Glob, Bash(git:*), Task
 
 # Plugin Command: roadmap-create
 
-You are executing the ai-behavior plugin roadmap creation command. This is an interactive orchestrator that gathers project context and delegates heavy analysis to the roadmap-orchestrator agent.
+You are executing the waves plugin roadmap creation command. This is an interactive orchestrator that gathers project context and delegates heavy analysis to the roadmap-orchestrator agent.
 
 ## Your Role
 
@@ -194,7 +194,7 @@ If user says "no":
 Read the schema from plugin references:
 
 ```bash
-cat "${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/logbook_roadmap_schema.json"
+cat "${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/logbook_roadmap_schema.json"
 ```
 
 Apply timestamps to the roadmap JSON:

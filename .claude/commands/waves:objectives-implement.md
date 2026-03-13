@@ -2,9 +2,9 @@
 description: Continuously implement logbook objectives with business-aware code generation, automatic auditing, real-time logbook updates, and context-window-aware session management.
 ---
 
-# Command: /ai-behavior:objectives-implement
+# Command: /waves:objectives-implement
 
-You are executing the ai-behavior implement command. Follow these instructions exactly.
+You are executing the waves implement command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -25,7 +25,7 @@ You are the orchestrator AND executor for code implementation with compliance ve
 ## Step -1: Prerequisites Check (CRITICAL)
 
 1. Check if `ai_files/user_pref.json` exists
-   - IF NOT EXISTS → Show error, suggest `/ai-behavior:project-init`, EXIT
+   - IF NOT EXISTS → Show error, suggest `/waves:project-init`, EXIT
 
 2. Read `user_pref.json`:
    - Extract `user_profile.preferred_language`
@@ -38,12 +38,12 @@ You are the orchestrator AND executor for code implementation with compliance ve
    Your project is configured as: [project_type]
 
    To change this, run:
-   /ai-behavior:project-init
+   /waves:project-init
    ```
    → EXIT
 
 4. Check if `ai_files/project_manifest.json` exists
-   - IF NOT EXISTS → Show error, suggest `/ai-behavior:manifest-create`, EXIT
+   - IF NOT EXISTS → Show error, suggest `/waves:manifest-create`, EXIT
 
 5. Check if `ai_files/project_rules.json` exists
    - IF NOT EXISTS → Show warning (will proceed without rules validation)
@@ -88,10 +88,10 @@ Scan `ai_files/logbooks/` directory for `.json` files.
 A logbook defines your task objectives and guides implementation.
 
 To create one, run:
-  /ai-behavior:logbook-create [filename]
+  /waves:logbook-create [filename]
 
 Example:
-  /ai-behavior:logbook-create TICKET-123.json
+  /waves:logbook-create TICKET-123.json
 ```
 → EXIT
 
@@ -138,10 +138,10 @@ Read user input.
 **IF "c" or "create":**
 ```
 To create a new logbook, run:
-  /ai-behavior:logbook-create [filename]
+  /waves:logbook-create [filename]
 
 Example:
-  /ai-behavior:logbook-create TICKET-456.json
+  /waves:logbook-create TICKET-456.json
 ```
 → EXIT
 
@@ -207,7 +207,7 @@ Choose:
    ✅ All objectives are completed!
 
    Consider running:
-     /ai-behavior:resolution-create [logbook]
+     /waves:resolution-create [logbook]
 
    to generate a resolution summary.
    ```
@@ -465,7 +465,7 @@ Choose [1-3]:
 **IF "2":**
 - List files that need fixes
 - Instruct user to fix manually
-- Offer to re-run audit after: "Run /ai-behavior:implement [logbook] when ready"
+- Offer to re-run audit after: "Run /waves:implement [logbook] when ready"
 - EXIT
 
 **IF "3":**
@@ -612,7 +612,7 @@ Saving progress and stopping to preserve session integrity.
 🎉 All objectives for this logbook are complete!
 
 Consider running:
-  /ai-behavior:resolution-create [logbook]
+  /waves:resolution-create [logbook]
 
 to generate a resolution summary for your ticket.
 ```
@@ -624,7 +624,7 @@ to generate a resolution summary for your ticket.
   [impediment description]
 
 Progress saved. Resume with:
-  /ai-behavior:objectives-implement [logbook]
+  /waves:objectives-implement [logbook]
 ```
 → Go to Final Summary
 
@@ -647,7 +647,7 @@ Progress saved. Resume with:
 🎯 Next pending objective: [next_objective.id]: [content]
 
 💡 Continue in next session:
-  /ai-behavior:objectives-implement [filename]
+  /waves:objectives-implement [filename]
 ```
 
 ---

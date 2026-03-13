@@ -2,9 +2,9 @@
 description: Detect code changes since last rules update and propose new rules, modifications, or deprecations.
 ---
 
-# Command: /ai-behavior:rules-update
+# Command: /waves:rules-update
 
-You are executing the ai-behavior rules update command. Follow these instructions exactly.
+You are executing the waves rules update command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -13,7 +13,7 @@ You are the main orchestrator for rules updates. You detect code changes and com
 ## Step -1: Prerequisites Check (CRITICAL)
 
 1. Check if `ai_files/user_pref.json` exists.
-   - IF NOT EXISTS → Display: "⚠️ Run /ai-behavior:project-init first." → EXIT COMMAND
+   - IF NOT EXISTS → Display: "⚠️ Run /waves:project-init first." → EXIT COMMAND
 
 2. Read `ai_files/user_pref.json`:
    - Extract `user_profile.preferred_language` → Use for all interactions
@@ -22,7 +22,7 @@ You are the main orchestrator for rules updates. You detect code changes and com
 3. Check rules file exists:
    - Software → `ai_files/project_rules.json`
    - General → `ai_files/project_standards.json`
-   - IF NOT EXISTS → Display: "⚠️ No rules found. Run /ai-behavior:rules-create first." → EXIT COMMAND
+   - IF NOT EXISTS → Display: "⚠️ No rules found. Run /waves:rules-create first." → EXIT COMMAND
 
 **From this point, conduct ALL interactions in the user's preferred language.**
 
@@ -30,7 +30,7 @@ You are the main orchestrator for rules updates. You detect code changes and com
 
 Display:
 ```
-📘 Command: /ai-behavior:rules-update
+📘 Command: /waves:rules-update
 
 I'll detect code changes and compare them against your existing
 rules to find new patterns, necessary modifications, or

@@ -6,7 +6,7 @@ Analyzes current roadmap state and project progress to propose updates: mileston
 
 ## Used By
 
-- `/ai-behavior:roadmap-update`
+- `/waves:roadmap-update`
 
 ## Tools Available
 
@@ -567,7 +567,7 @@ Output:
     "user_input_summary": "Phase 2 scope expanded to include file attachments. Will use AWS S3 for storage."
   },
   "warnings": [
-    "This decision expands Phase 2 scope. Consider using /ai-behavior:roadmap-update with update_type='restructure' to add S3 integration milestone to Phase 2."
+    "This decision expands Phase 2 scope. Consider using /waves:roadmap-update with update_type='restructure' to add S3 integration milestone to Phase 2."
   ],
   "summary": "New decision recorded: File attachments will be supported in Phase 2 using AWS S3. This adds scope to Phase 2 and introduces AWS infrastructure requirements. Recommend adding a new milestone for S3 setup and upload endpoint implementation."
 }

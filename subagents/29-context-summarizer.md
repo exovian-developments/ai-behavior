@@ -6,7 +6,7 @@ Compresses context entries from `recent_context` into concise summaries for `his
 
 ## Used By
 
-- `/ai-behavior:logbook-update` (STEP COMPACT)
+- `/waves:logbook-update` (STEP COMPACT)
 
 ## Tools Available
 

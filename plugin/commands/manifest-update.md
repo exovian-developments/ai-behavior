@@ -5,7 +5,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash, Task
 
 # Plugin Command: manifest-update
 
-You are executing the ai-behavior plugin manifest update command. Follow these instructions exactly.
+You are executing the waves plugin manifest update command. Follow these instructions exactly.
 
 ## Your Role
 

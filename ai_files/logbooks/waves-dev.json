@@ -1,8 +1,8 @@
 {
   "ticket": {
-    "title": "Completar implementación de ai-behavior para uso en producción",
-    "url": "https://github.com/exovian-developments/ai-behavior",
-    "description": "ai-behavior es un protocolo de contexto estructurado para agentes AI (Claude Code, Codex, Gemini CLI). El objetivo es completar la implementación de los 10 comandos slash diseñados, sus subagents, y tener el proyecto funcionando para usarlo en otros proyectos reales. Incluye: schemas JSON, comandos ejecutables en .claude/commands/, subagents especializados, y documentación actualizada."
+    "title": "Completar implementación de waves para uso en producción",
+    "url": "https://github.com/exovian-developments/waves",
+    "description": "waves es un protocolo de contexto estructurado para agentes AI (Claude Code, Codex, Gemini CLI). El objetivo es completar la implementación de los 10 comandos slash diseñados, sus subagents, y tener el proyecto funcionando para usarlo en otros proyectos reales. Incluye: schemas JSON, comandos ejecutables en .claude/commands/, subagents especializados, y documentación actualizada."
   },
   "objectives": {
     "main": [
@@ -10,13 +10,13 @@
         "id": 1,
         "created_at": "2025-12-11T22:00:00Z",
         "content": "4 comandos ejecutables funcionando: project-init, manifest-create, logbook-create, logbook-update",
-        "context": "Estos son los comandos core que permiten: inicializar preferencias, crear manifiestos de proyecto, y gestionar bitácoras de trabajo. Son esenciales para empezar a usar ai-behavior en otros proyectos.",
+        "context": "Estos son los comandos core que permiten: inicializar preferencias, crear manifiestos de proyecto, y gestionar bitácoras de trabajo. Son esenciales para empezar a usar waves en otros proyectos.",
         "scope": {
           "files": [
-            ".claude/commands/ai-behavior:project-init.md",
-            ".claude/commands/ai-behavior:manifest-create.md",
-            ".claude/commands/ai-behavior:logbook-create.md",
-            ".claude/commands/ai-behavior:logbook-update.md"
+            ".claude/commands/waves:project-init.md",
+            ".claude/commands/waves:manifest-create.md",
+            ".claude/commands/waves:logbook-create.md",
+            ".claude/commands/waves:logbook-update.md"
           ],
           "rules": []
         },
@@ -61,11 +61,11 @@
         "context": "Comandos secundarios que completan el flujo de trabajo. rules-create es importante para extraer patrones del código, resolution-create para generar comentarios de cierre de tickets.",
         "scope": {
           "files": [
-            ".claude/commands/ai-behavior:manifest-update.md (new)",
-            ".claude/commands/ai-behavior:rules-create.md (new)",
-            ".claude/commands/ai-behavior:rules-update.md (new)",
-            ".claude/commands/ai-behavior:user-pref-create.md (new)",
-            ".claude/commands/ai-behavior:resolution-create.md (new)"
+            ".claude/commands/waves:manifest-update.md (new)",
+            ".claude/commands/waves:rules-create.md (new)",
+            ".claude/commands/waves:rules-update.md (new)",
+            ".claude/commands/waves:user-pref-create.md (new)",
+            ".claude/commands/waves:resolution-create.md (new)"
           ],
           "rules": []
         },
@@ -89,11 +89,11 @@
       {
         "id": 6,
         "created_at": "2025-12-11T23:00:00Z",
-        "content": "Script CLI ai-behavior para Homebrew funcionando con comando init",
-        "context": "Script bash que permite ejecutar 'ai-behavior init claude' desde cualquier directorio. Crea estructura ai_files/, copia schemas y comandos. Detecta instalación existente y ofrece actualizar sin perder datos de usuario.",
+        "content": "Script CLI waves para Homebrew funcionando con comando init",
+        "context": "Script bash que permite ejecutar 'waves init claude' desde cualquier directorio. Crea estructura ai_files/, copia schemas y comandos. Detecta instalación existente y ofrece actualizar sin perder datos de usuario.",
         "scope": {
           "files": [
-            "bin/ai-behavior"
+            "bin/waves"
           ],
           "rules": []
         },
@@ -106,7 +106,7 @@
         "context": "BLOQUEADO: El comando está diseñado pero NO funciona porque invoca subagent_types que no existen (code-implementer, code-auditor). Requiere crear agentes reales en .claude/agents/.",
         "scope": {
           "files": [
-            ".claude/commands/ai-behavior:objectives-implement.md",
+            ".claude/commands/waves:objectives-implement.md",
             "commands/11-implement.md",
             "subagents/30-code-implementer.md",
             "subagents/31-code-auditor.md",
@@ -120,11 +120,11 @@
       {
         "id": 8,
         "created_at": "2025-12-12T12:00:00Z",
-        "content": "Soporte para Codex en script ai-behavior init",
-        "context": "Agregar soporte para 'ai-behavior init codex' que copie comandos al directorio correcto de Codex. Actualmente solo está Claude implementado.",
+        "content": "Soporte para Codex en script waves init",
+        "context": "Agregar soporte para 'waves init codex' que copie comandos al directorio correcto de Codex. Actualmente solo está Claude implementado.",
         "scope": {
           "files": [
-            "bin/ai-behavior"
+            "bin/waves"
           ],
           "rules": []
         },
@@ -137,7 +137,7 @@
         "context": "El comando ahora detecta si el ticket involucra UI y solicita mocks/wireframes. Además identifica incertidumbres, las resuelve con YAGNI→SOLID, y solo pregunta al usuario lo que no puede resolver. Adapta contexto de preguntas según explanation_style.",
         "scope": {
           "files": [
-            ".claude/commands/ai-behavior:logbook-create.md"
+            ".claude/commands/waves:logbook-create.md"
           ],
           "rules": []
         },
@@ -195,12 +195,12 @@
     {
       "id": 8,
       "created_at": "2025-12-12T18:30:00Z",
-      "content": "Mejorado script ai-behavior: detecta instalación existente, preserva datos de usuario, permite múltiples agentes en mismo proyecto."
+      "content": "Mejorado script waves: detecta instalación existente, preserva datos de usuario, permite múltiples agentes en mismo proyecto."
     },
     {
       "id": 7,
       "created_at": "2025-12-12T16:50:00Z",
-      "content": "Script ai-behavior probado. Symlink en /opt/homebrew/bin/ y archivos en /opt/homebrew/share/ai-behavior/."
+      "content": "Script waves probado. Symlink en /opt/homebrew/bin/ y archivos en /opt/homebrew/share/waves/."
     },
     {
       "id": 6,
@@ -222,7 +222,7 @@
     {
       "id": 2,
       "created_at": "2025-12-12T20:15:00Z",
-      "content": "Sesión 2 (12-dic): Script CLI ai-behavior creado y probado. Comando objectives-implement diseñado. Mejoras a logbook-create (UI detection, YAGNI/SOLID). DESCUBRIMIENTO: subagents/*.md no son agentes reales, hay que crearlos en .claude/agents/."
+      "content": "Sesión 2 (12-dic): Script CLI waves creado y probado. Comando objectives-implement diseñado. Mejoras a logbook-create (UI detection, YAGNI/SOLID). DESCUBRIMIENTO: subagents/*.md no son agentes reales, hay que crearlos en .claude/agents/."
     }
   ],
   "future_reminders": [],

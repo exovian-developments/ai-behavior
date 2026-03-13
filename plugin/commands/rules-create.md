@@ -5,7 +5,7 @@ allowed-tools: Read, Write, Glob, Grep, Task
 
 # Plugin Command: rules-create
 
-You are executing the ai-behavior plugin rules creation command. Follow these instructions exactly.
+You are executing the waves plugin rules creation command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -153,7 +153,7 @@ Options:
 
 ### Step A5: Generate Rules File
 
-Read `${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/project_rules_schema.json` for structure reference.
+Read `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/project_rules_schema.json` for structure reference.
 
 Generate `ai_files/project_rules.json` with:
 - Project info from manifest
@@ -231,7 +231,7 @@ If user wants changes → iterate.
 
 ### Step B4: Generate Standards File
 
-Generate `ai_files/project_standards.json` with structured standards matching the schema from `${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/project_standards_schema.json`.
+Generate `ai_files/project_standards.json` with structured standards matching the schema from `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/project_standards_schema.json`.
 
 ### Step B5: Success Message
 

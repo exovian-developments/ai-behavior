@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:blueprint-create [product-name]`
+# Command: `/waves:blueprint-create [product-name]`
 
 **Status:** ✅ DESIGNED
 
@@ -38,7 +38,7 @@
 1. IF NOT EXISTS → EXIT with message:
    ```
    ⚠️ Missing configuration!
-   Please run first: /ai-behavior:project-init
+   Please run first: /waves:project-init
    ```
 
 2. IF EXISTS:
@@ -63,7 +63,7 @@
      The foundation compacts feasibility data into the format this command needs.
 
      Run first:
-     /ai-behavior:foundation-create
+     /waves:foundation-create
 
      Then return here.
      ```
@@ -73,10 +73,10 @@
 
      The blueprint needs a foundation as input.
      Start with:
-     /ai-behavior:feasibility-analyze [product-name]
+     /waves:feasibility-analyze [product-name]
 
      Then:
-     /ai-behavior:foundation-create
+     /waves:foundation-create
 
      Then return here.
      ```
@@ -565,13 +565,13 @@
     • Open questions: [N]
 
     🎯 Next step:
-      /ai-behavior:roadmap-create [product-name]
+      /waves:roadmap-create [product-name]
 
       The roadmap will use this blueprint to plan development phases.
 
     💡 Update the blueprint as the product evolves:
       Edit ai_files/product_blueprint.json directly or
-      use /ai-behavior:roadmap-update to record decisions that affect the blueprint.
+      use /waves:roadmap-update to record decisions that affect the blueprint.
     ```
 
 ---

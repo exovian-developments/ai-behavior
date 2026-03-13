@@ -167,7 +167,7 @@ datos/
 ### 6) Limitations to Always Report
 ```json
 [
-  "Timestamp analysis cannot detect deleted files. Use /ai-behavior:manifest-create to regenerate if major deletions occurred.",
+  "Timestamp analysis cannot detect deleted files. Use /waves:manifest-create to regenerate if major deletions occurred.",
   "File renames appear as a new file + potentially missing old file (not correlated).",
   "Files copied or restored from backup may show incorrect creation dates.",
   "System clock changes can affect accuracy."

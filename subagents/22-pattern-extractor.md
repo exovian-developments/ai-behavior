@@ -4,8 +4,8 @@
 Extract consistent implementation patterns from a target layer so orchestrators can turn them into rules. Focus on patterns actually used in the code (3+ occurrences), not hypothetical guidance.
 
 ## Used By
-- `/ai-behavior:rules-create` (layer analysis flow)
-- `/ai-behavior:rules-update` (when reusing layer analysis)
+- `/waves:rules-create` (layer analysis flow)
+- `/waves:rules-update` (when reusing layer analysis)
 
 ## Tools Available
 - Read

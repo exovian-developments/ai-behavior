@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:roadmap-update [roadmap-file]`
+# Command: `/waves:roadmap-update [roadmap-file]`
 
 **Status:** ✅ DESIGNED
 
@@ -43,7 +43,7 @@
    The file ai_files/user_pref.json was not found.
 
    Please run first:
-   /ai-behavior:project-init
+   /waves:project-init
 
    This command will configure your preferences, which are required
    before updating a roadmap.
@@ -60,7 +60,7 @@
    No roadmap files exist in ai_files/ yet.
 
    Create one first:
-   /ai-behavior:roadmap-create my-product
+   /waves:roadmap-create my-product
 
    Then you can update it with this command.
    ```
@@ -93,8 +93,8 @@
      [...]
 
      Try again with correct name or wave number:
-     /ai-behavior:roadmap-update 0        (by wave number)
-     /ai-behavior:roadmap-update roadmap_w0.json  (by filename)
+     /waves:roadmap-update 0        (by wave number)
+     /waves:roadmap-update roadmap_w0.json  (by filename)
      ```
      → **EXIT COMMAND**
 
@@ -502,7 +502,7 @@
     Elige 1 o 2:
     ```
 
-44. IF "1" → Suggest command: `/ai-behavior:logbook-create [product-name]-phase-3`
+44. IF "1" → Suggest command: `/waves:logbook-create [product-name]-phase-3`
 
 45. Continue to **STEP 4: Apply Changes**
 
@@ -744,7 +744,7 @@
     🎯 Hito completado: "Production deployment"
 
     Considera crear un logbook entry para documentar:
-    /ai-behavior:logbook-create [product-name]-phase-2-deployment
+    /waves:logbook-create [product-name]-phase-2-deployment
     ```
 
 69. IF phase just completed → Suggest:
@@ -754,17 +754,17 @@
     Próxima fase: PHASE 3 - Enterprise Features
 
     Crea un logbook para la nueva fase:
-    /ai-behavior:logbook-create [product-name]-phase-3
+    /waves:logbook-create [product-name]-phase-3
 
     O transiciona en el roadmap:
-    /ai-behavior:roadmap-update roadmap_w[N].json
+    /waves:roadmap-update roadmap_w[N].json
     (selecciona opción 4: "Transicionar a siguiente fase")
     ```
 
 70. Standard tip:
     ```
     💡 Tip: Mantén el roadmap sincronizado conforme avanzas:
-      /ai-behavior:roadmap-update roadmap_w[N].json
+      /waves:roadmap-update roadmap_w[N].json
     ```
 
 ---

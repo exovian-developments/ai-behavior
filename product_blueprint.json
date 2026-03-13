@@ -1,17 +1,25 @@
 {
   "meta": {
-    "product_name": "ai-behavior",
-    "product_codename": "ai-behavior protocol",
+    "product_name": "waves",
+    "product_codename": "waves protocol",
     "owner": "Andrius V",
     "created_at": "2026-03-04T12:00:00Z",
-    "last_updated": "2026-03-04T12:00:00Z",
+    "last_updated": "2026-03-13T00:00:00Z",
     "blueprint_type": "standard"
   },
 
+  "philosophy": {
+    "core_insight": "AI agents have compressed what used to take 6 months of development into days or weeks. The bottleneck is no longer coding — it's human validation, QA, and decision-making. Traditional iterative frameworks like Scrum were designed for a world where development was the slowest part. That world no longer exists.",
+    "waves_model": "Waves replaces fixed-cadence sprints with organic, variable-length cycles called waves. Each wave is a complete unit of delivery: foundation → discovery → design → implementation → QA → production. A wave lasts as long as it needs — sometimes 3 days, sometimes 3 weeks — adapting to the actual rhythm of the work rather than forcing work into arbitrary time boxes.",
+    "why_not_scrum": "Scrum's 2-week sprints assume that development velocity is constant and predictable. With AI agents that can implement features in hours, the sprint becomes a container with too much empty space or artificial boundaries. Ceremonies designed for human coordination overhead (standups, sprint planning, retrospectives) lose their purpose when the AI agent can execute, track, and report in real-time through structured artifacts.",
+    "why_not_kanban": "Kanban optimizes for flow of individual items but lacks the strategic framing of a complete delivery cycle. Waves inherits Kanban's pull-based flexibility but adds what Kanban lacks: a bounded, coherent unit of product evolution with built-in feasibility analysis, architectural blueprinting, and progressive refinement from idea to production.",
+    "why_waves": "A wave is the natural shape of AI-assisted product development: it starts with a swell of validation and planning (feasibility, foundation, blueprint), crests with rapid implementation (roadmap, logbook, objectives), and completes with quality assurance and release. Each wave leaves the product in a shippable state. Multiple waves can overlap for different product areas. The framework doesn't prescribe when to start the next wave — the team decides based on evidence, not a calendar."
+  },
+
   "problem": {
-    "pain": "AI coding agents (Claude Code, Codex, Gemini CLI) start every session blind — no memory of what the project is, what rules apply, what was done yesterday, or what remains. Developers repeat the same context, the agent re-discovers the same codebase, and multi-session work loses continuity. The result: wasted tokens, inconsistent outputs, and developer frustration scaling with project complexity.",
-    "reality": "Every developer using AI agents faces this daily. Context windows are finite, sessions are ephemeral, and there is no standard way to persist structured project knowledge between sessions or across different agents. Teams adopting AI-assisted development hit this wall within the first week — the productivity gains evaporate as projects grow beyond what fits in a single prompt.",
-    "unsolved": "Existing approaches are ad-hoc: developers paste fragments into CLAUDE.md, write long system prompts, or rely on agent memory features that are shallow and unstructured. No solution provides a formal, schema-validated protocol that works across multiple AI agents, supports both software and non-software projects, and covers the full lifecycle from project setup through task tracking to resolution."
+    "pain": "Product development frameworks were designed for human-speed iteration. Scrum, SAFe, and Kanban assume development is the bottleneck and build ceremony and process around that assumption. But AI agents have inverted the equation — development now takes hours, not months. Teams using traditional frameworks with AI agents find themselves trapped in sprint ceremonies that add overhead to a process that no longer needs that coordination layer. Meanwhile, AI coding agents start every session blind — no memory of what the project is, what rules apply, what was done yesterday, or what remains.",
+    "reality": "Every team adopting AI-assisted development faces a double crisis: (1) their development framework is designed for a cadence that no longer matches reality, and (2) their AI agents have no persistent, structured memory across sessions. The productivity gains from AI agents evaporate when wrapped in process overhead designed for human timelines, and when every session starts from scratch because there's no standard way to persist project knowledge.",
+    "unsolved": "No existing framework addresses both problems simultaneously. Agile frameworks don't account for AI-speed development. AI context solutions (CLAUDE.md, memory features) don't provide lifecycle management. Waves solves both: it provides a wave-based delivery model that matches AI development speed, AND a schema-validated protocol that gives AI agents persistent, structured memory across sessions and across different agent platforms."
   },
 
   "target_users": [
@@ -29,16 +37,16 @@
     }
   ],
 
-  "product_hypothesis": "ai-behavior will eliminate context loss in AI-assisted development by providing a schema-validated protocol of structured JSON artifacts that persist project knowledge, coding rules, and work progress across sessions and across agents.",
+  "product_hypothesis": "Waves will replace fixed-cadence frameworks like Scrum for AI-assisted product development by providing wave-based delivery cycles that adapt to AI-speed development, combined with a schema-validated protocol that gives AI agents persistent structured memory across sessions — eliminating both process overhead and context loss simultaneously.",
 
-  "mission": "With ai-behavior, users run a slash command and their AI agent instantly knows the project structure, coding rules, current objectives, and work history — turning every session into a continuation, not a restart.",
+  "mission": "With Waves, teams work in organic delivery cycles that match the actual speed of AI-assisted development. Each wave carries a product increment from idea validation through implementation to production. AI agents start every session fully informed — knowing the project, the rules, the current wave, and what was done yesterday — because structured artifacts persist between sessions.",
 
-  "vision": "A universal protocol where any AI agent, on any project type, begins every session fully informed and operates within explicit, validated constraints — making structured, context-aware AI collaboration the default, not the exception.",
+  "vision": "The standard framework for AI-era product development: wave-based delivery cycles where AI agents operate as persistent team members with full project memory, any team can ship validated product increments at the speed their work demands rather than at the speed a calendar prescribes, and the framework works across any AI agent platform and any project type.",
 
   "out_of_scope": [
     {
       "id": 1,
-      "statement": "Runtime code execution or build system integration — ai-behavior produces JSON artifacts and markdown commands, it does not compile, run, or deploy anything. Tempting because implementation feedback loops would be valuable, but it would couple the protocol to specific runtimes."
+      "statement": "Runtime code execution or build system integration — waves produces JSON artifacts and markdown commands, it does not compile, run, or deploy anything. Tempting because implementation feedback loops would be valuable, but it would couple the protocol to specific runtimes."
     },
     {
       "id": 2,
@@ -159,7 +167,7 @@
     "desired": [
       {
         "id": 1,
-        "capability": "The user can install ai-behavior globally via Homebrew and initialize per-project with a single CLI command."
+        "capability": "The user can install Waves globally via Homebrew and initialize per-project with a single CLI command."
       },
       {
         "id": 2,
@@ -177,7 +185,7 @@
       {
         "id": 1,
         "name": "Project initialization",
-        "entry_point": "User runs /ai-behavior:project-init in a new project.",
+        "entry_point": "User runs /waves:project-init in a new project.",
         "termination": "user_pref.json is created and CLAUDE.md is updated with required_reading references.",
         "description": "The command asks 6 questions: language, name+role, project type (software/general), familiarity level, tone, explanation depth. Answers populate user_pref.json. CLAUDE.md is updated to reference ai_files/ artifacts so subsequent sessions auto-load context.",
         "capability_refs": [1]
@@ -185,7 +193,7 @@
       {
         "id": 2,
         "name": "Manifest creation for existing software project",
-        "entry_point": "User runs /ai-behavior:manifest-create after project-init.",
+        "entry_point": "User runs /waves:manifest-create after project-init.",
         "termination": "project_manifest.json is written with full project analysis.",
         "description": "The command detects project type from user_pref.json. For known software projects: 2 validation checkpoints, then 6 parallel subagents (entry-point-analyzer, navigation-mapper, flow-tracker, dependency-auditor, architecture-detective, feature-extractor) scan the codebase. Results are merged into a manifest following software_manifest_schema.json. User validates before write.",
         "capability_refs": [2]
@@ -193,7 +201,7 @@
       {
         "id": 3,
         "name": "Logbook creation and work tracking",
-        "entry_point": "User runs /ai-behavior:logbook-create TICKET-123.json.",
+        "entry_point": "User runs /waves:logbook-create TICKET-123.json.",
         "termination": "Logbook file exists in ai_files/logbooks/ with objectives, scope, and completion guides.",
         "description": "User describes the ticket. The command traces code references using the manifest, proposes main objectives with scope (files + rules), dispatches secondary-objective-generator subagent for completion guides. User validates at 3 checkpoints: analysis, main objectives, secondary objectives. Final logbook is written.",
         "capability_refs": [4]
@@ -201,7 +209,7 @@
       {
         "id": 4,
         "name": "Logbook update cycle",
-        "entry_point": "User runs /ai-behavior:logbook-update TICKET-123.json during a work session.",
+        "entry_point": "User runs /waves:logbook-update TICKET-123.json during a work session.",
         "termination": "Logbook is updated with new context entries and/or status changes. Auto-compaction fires if recent_context exceeds 20 entries.",
         "description": "The command loads the logbook, checks due reminders, displays current status table. User chooses operation: add progress, update objective status, add new objective, or add reminder. The context-summarizer subagent handles compaction when triggered. Multiple updates can chain in one session.",
         "capability_refs": [5]
@@ -253,21 +261,21 @@
       {
         "id": 1,
         "name": "Manifest creation for unknown software project",
-        "entry_point": "User runs /ai-behavior:manifest-create on a project they did not build.",
+        "entry_point": "User runs /waves:manifest-create on a project they did not build.",
         "termination": "Manifest created with educational output explaining what was discovered.",
         "description": "Zero-question flow. The command runs all 6 analysis subagents with progress prints so the user sees discovery in real-time. Output includes explanations of detected patterns, making it an educational experience. Useful for onboarding to unfamiliar codebases."
       },
       {
         "id": 2,
         "name": "General project manifest creation",
-        "entry_point": "User runs /ai-behavior:manifest-create on a non-software project (academic, creative, business).",
+        "entry_point": "User runs /waves:manifest-create on a non-software project (academic, creative, business).",
         "termination": "Type-specific manifest created (research_manifest, creative_manifest, business_manifest, or general_manifest).",
         "description": "Detects project type from user_pref.json. Routes to the appropriate subagent: academic (5 research questions), creative (5 concept questions), business (9-question Business Model Canvas), or generic (5 questions). Each flow produces a manifest structured for that domain."
       },
       {
         "id": 3,
         "name": "Rules update after code evolution",
-        "entry_point": "User runs /ai-behavior:rules-update after significant codebase changes.",
+        "entry_point": "User runs /waves:rules-update after significant codebase changes.",
         "termination": "Updated project_rules.json with new, modified, or deprecated rules.",
         "description": "Uses git history or timestamp analysis to detect changed files since last update. Re-analyzes only changed files. The rule-comparator subagent diffs existing vs detected rules and proposes additions, modifications, or deprecations. User approves each change."
       }
@@ -298,7 +306,7 @@
         "id": 2,
         "name": "Plugin build and distribution",
         "trigger": "Maintainer runs zip command in plugin/ directory after changes.",
-        "result": "ai-behavior.plugin file ready for distribution via GitHub Releases.",
+        "result": "waves.plugin file ready for distribution via GitHub Releases.",
         "description": "The plugin/ directory is zipped into a .plugin file that Claude Desktop can install. The plugin manifest (plugin.json) carries version, description, and author metadata. GitHub Releases hosts the artifact. Users double-click to install."
       }
     ]
@@ -412,6 +420,13 @@
       "decision": "Add three-tier artifact hierarchy: blueprint (WHAT/WHY) → roadmap (WHEN/ORDER) → logbook (HOW/DETAIL).",
       "context": "Logbooks alone were insufficient for product-level planning. Users needed a way to sequence phases and track strategic decisions above the task level. The roadmap bridges the gap. The blueprint (product_blueprint_schema.json) formalizes the highest level. Information flows downward — roadmaps reference blueprints, logbooks reference roadmaps. Discarded: flat structure with tags (loses hierarchy), single mega-document (loses separation of concerns).",
       "impact_on": "Design principle #6, roadmap commands, logbook_roadmap_schema.json"
+    },
+    {
+      "id": 5,
+      "created_at": "2026-03-13T00:00:00Z",
+      "decision": "Rebrand from ai-behavior to Waves — reflecting a shift from technical protocol identity to product-market identity built around wave-based delivery cycles for AI-era development.",
+      "context": "AI agents have compressed development timelines from months to days. Fixed-cadence frameworks (Scrum sprints, SAFe PIs) no longer match the natural rhythm of AI-assisted work. The wave metaphor captures organic, variable-length delivery cycles where each wave carries a complete increment from validation to production. The rename also makes the product more commercially accessible — 'ai-behavior' sounded like a library, 'Waves' sounds like a framework with a point of view. Full rename: repo, CLI, commands prefix, Homebrew formula, plugin identity.",
+      "impact_on": "All external-facing identity: repo name, CLI binary, command prefix /waves:*, Homebrew formula, plugin, documentation"
     }
   ],
 

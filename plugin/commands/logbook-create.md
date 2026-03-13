@@ -305,7 +305,7 @@ Validate filename format.
 
 ## Generate Logbook JSON
 
-Create logbook structure following the schema from `${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/logbook_software_schema.json` (or logbook_general_schema.json for general projects).
+Create logbook structure following the schema from `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/logbook_software_schema.json` (or logbook_general_schema.json for general projects).
 
 ## Validate Against Schema
 

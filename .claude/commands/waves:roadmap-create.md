@@ -2,9 +2,9 @@
 description: Create a product-level roadmap with phases, milestones, decisions, and rolling context for strategic development orchestration.
 ---
 
-# Command: /ai-behavior:roadmap-create
+# Command: /waves:roadmap-create
 
-You are executing the ai-behavior roadmap creation command. Follow these instructions exactly.
+You are executing the waves roadmap creation command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -19,7 +19,7 @@ Check if `ai_files/user_pref.json` exists.
 ## Step 0: Parameter Check and Wave Number
 
 - If product-name parameter is provided: Use it as the product name for the roadmap metadata
-- If not provided: Show tip: "Tip: Run `/ai-behavior:roadmap-create my-product` to name the roadmap. Running without a name will prompt you."
+- If not provided: Show tip: "Tip: Run `/waves:roadmap-create my-product` to name the roadmap. Running without a name will prompt you."
 
 **Wave number detection:**
 - Scan `ai_files/` for existing `roadmap_w*.json` files
@@ -133,5 +133,5 @@ Iterate until user confirms.
 - Explain wave context:
   - If w0: "This is a foundation wave — agnostic capabilities not tied to any specific business vertical."
   - If w1+: "This is business wave [N] — vertical-specific capabilities."
-- Suggest next step: "Ready to start? Run `/ai-behavior:logbook-create [product-name]` to create your first milestone logbook."
-- Suggest future waves: "When you're ready for the next wave, run `/ai-behavior:roadmap-create [product-name]` again — it will auto-detect the next wave number."
+- Suggest next step: "Ready to start? Run `/waves:logbook-create [product-name]` to create your first milestone logbook."
+- Suggest future waves: "When you're ready for the next wave, run `/waves:roadmap-create [product-name]` again — it will auto-detect the next wave number."

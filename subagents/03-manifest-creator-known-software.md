@@ -6,7 +6,7 @@ Analyzes existing software projects where the user has familiarity. Conducts 2 c
 
 ## Used By
 
-- `/ai-behavior:manifest-create` (Flow A2.1: Software Existente Conocido)
+- `/waves:manifest-create` (Flow A2.1: Software Existente Conocido)
 
 ## Tools Available
 

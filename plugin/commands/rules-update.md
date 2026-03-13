@@ -5,7 +5,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash, Task
 
 # Plugin Command: rules-update
 
-You are executing the ai-behavior plugin rules update command. Follow these instructions exactly.
+You are executing the waves plugin rules update command. Follow these instructions exactly.
 
 ## Your Role
 

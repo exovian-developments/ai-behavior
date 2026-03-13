@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:rules-create`
+# Command: `/waves:rules-create`
 
 **Status:** ✅ DESIGNED
 
@@ -73,13 +73,13 @@
 **═══════════════════════════════════════════════════════════════════**
 
 1. MAIN AGENT: Check `ai_files/user_pref.json` exists
-   - IF NOT → Error: "Run /ai-behavior:project-init first"
+   - IF NOT → Error: "Run /waves:project-init first"
 
 2. MAIN AGENT: Read `project_context.project_type`
 
 3. IF `project_type === "software"`:
    - Check `ai_files/project_manifest.json` exists
-   - IF NOT → Error: "Run /ai-behavior:manifest-create first"
+   - IF NOT → Error: "Run /waves:manifest-create first"
 
 4. Check if rules file already exists:
    - IF EXISTS → Warn and offer: Overwrite / Merge / Cancel
@@ -91,7 +91,7 @@
 
 5. MAIN AGENT (in user's language):
    ```
-   📘 Comando: /ai-behavior:rules-create
+   📘 Comando: /waves:rules-create
 
    Este comando creará reglas/estándares para tu proyecto.
 
@@ -507,13 +507,13 @@
     🎯 Próximos pasos:
 
     Para analizar más capas:
-    /ai-behavior:rules-create [layer]
+    /waves:rules-create [layer]
 
     Para actualizar reglas existentes:
-    /ai-behavior:rules-update
+    /waves:rules-update
 
     Para empezar a trabajar:
-    /ai-behavior:logbook-create
+    /waves:logbook-create
     ```
 
 **Status:** ✅ DESIGNED
@@ -712,10 +712,10 @@
     🎯 Próximo paso:
 
     Cuando quieras actualizar los estándares:
-    /ai-behavior:rules-update
+    /waves:rules-update
 
     Para empezar a trabajar:
-    /ai-behavior:logbook-create
+    /waves:logbook-create
     ```
 
 **Status:** ✅ DESIGNED

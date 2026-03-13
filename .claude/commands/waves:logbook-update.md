@@ -2,9 +2,9 @@
 description: Update an existing logbook with progress entries, objective status changes, new objectives, and reminders. Includes automatic history compaction.
 ---
 
-# Command: /ai-behavior:logbook-update
+# Command: /waves:logbook-update
 
-You are executing the ai-behavior logbook update command. Follow these instructions exactly.
+You are executing the waves logbook update command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -19,7 +19,7 @@ IF NOT EXISTS:
 ⚠️ Missing configuration!
 
 Please run first:
-/ai-behavior:project-init
+/waves:project-init
 ```
 → EXIT COMMAND
 
@@ -43,7 +43,7 @@ Check if filename parameter was provided with the command.
 1. Show tip:
 ```
 💡 TIP: You can run faster with:
-   /ai-behavior:logbook-update TICKET-123.json
+   /waves:logbook-update TICKET-123.json
 ```
 
 2. List available logbooks:

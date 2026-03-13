@@ -2,9 +2,9 @@
 description: Generate a resolution document from a software development logbook, documenting accomplishments, code changes, and technical learnings.
 ---
 
-# Command: /ai-behavior:resolution-create $ARGUMENTS
+# Command: /waves:resolution-create $ARGUMENTS
 
-You are executing the ai-behavior resolution creation command. Follow these instructions exactly.
+You are executing the waves resolution creation command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -15,7 +15,7 @@ You generate structured resolution documents from completed logbooks. Resolution
 ## Step -1: Prerequisites Check (CRITICAL)
 
 1. Check if `ai_files/user_pref.json` exists.
-   - IF NOT EXISTS → Display: "⚠️ Run /ai-behavior:project-init first." → EXIT COMMAND
+   - IF NOT EXISTS → Display: "⚠️ Run /waves:project-init first." → EXIT COMMAND
 
 2. Read `ai_files/user_pref.json`:
    - Extract `preferred_language`
@@ -26,7 +26,7 @@ You generate structured resolution documents from completed logbooks. Resolution
    ⚠️ This command is for software projects only.
 
    For general projects, your logbook already documents progress.
-   Use /ai-behavior:logbook-update to mark objectives as completed
+   Use /waves:logbook-update to mark objectives as completed
    and add final context entries.
    ```
    → EXIT COMMAND

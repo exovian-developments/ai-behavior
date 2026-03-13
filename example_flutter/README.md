@@ -1,6 +1,6 @@
 # Flutter Calculator App Example
 
-This directory demonstrates how **ai-behavior** schemas work in a Flutter mobile application.
+This directory demonstrates how **waves** schemas work in a Flutter mobile application.
 
 ## About This Example
 
@@ -43,9 +43,9 @@ example_flutter/
 
 ## How This Was Created
 
-All files were generated using ai-behavior protocols with AI agents (Claude Code, Codex, Gemini).
+All files were generated using waves protocols with AI agents (Claude Code, Codex, Gemini).
 
 ---
 
-**Part of ai-behavior examples**
-https://github.com/exovian-developments/ai-behavior
+**Part of waves examples**
+https://github.com/exovian-developments/waves

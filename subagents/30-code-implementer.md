@@ -6,7 +6,7 @@ Implements code for a specific objective following project rules, patterns, and 
 
 ## Used By
 
-- `/ai-behavior:implement` (Step 5, Step 8B retry)
+- `/waves:implement` (Step 5, Step 8B retry)
 
 ## Tools Available
 

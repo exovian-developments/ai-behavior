@@ -4,7 +4,7 @@
 Compare existing project rules against newly detected patterns/conventions/antipatterns to propose rule additions, modifications, and deprecations. Acts as the bridge between the detection subagents (pattern-extractor, convention-detector, antipattern-detector) and the rules file.
 
 ## Used By
-- `/ai-behavior:rules-update` (Flow A — Step 4, Flow B — Step 4)
+- `/waves:rules-update` (Flow A — Step 4, Flow B — Step 4)
 
 ## Tools Available
 - Read

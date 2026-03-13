@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:user-pref-update`
+# Command: `/waves:user-pref-update`
 
 **Status:** ✅ DESIGNED
 
@@ -24,7 +24,7 @@
 
 ```
 STEP 0: Check user_pref.json exists
-        └─ IF NOT → Error: "Run /ai-behavior:project-init first"
+        └─ IF NOT → Error: "Run /waves:project-init first"
 
 STEP 1: Show current configuration summary
         ┌─────────────────────────────────────────┐

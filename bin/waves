@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# ai-behavior - Structured context protocol for AI agents
-# https://github.com/exovian-developments/ai-behavior
+# waves - Structured context protocol for AI agents
+# https://github.com/exovian-developments/waves
 #
 # Usage:
-#   ai-behavior init [claude|codex]  - Initialize ai-behavior in current directory
-#   ai-behavior --version            - Show version
-#   ai-behavior --help               - Show help
+#   waves init [claude|codex]  - Initialize waves in current directory
+#   waves --version            - Show version
+#   waves --help               - Show help
 #
 
 set -e
@@ -22,8 +22,8 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 BOLD='\033[1m'
 
-# Determine where ai-behavior data files are installed
-# Homebrew installs to: $(brew --prefix)/share/ai-behavior/
+# Determine where waves data files are installed
+# Homebrew installs to: $(brew --prefix)/share/waves/
 # For development/testing, check relative to script location
 get_data_dir() {
     # Priority 1: Resolve the REAL location of the script (follow symlinks)
@@ -56,8 +56,8 @@ get_data_dir() {
     local brew_prefix
     if command -v brew &> /dev/null; then
         brew_prefix="$(brew --prefix 2>/dev/null)"
-        if [ -d "$brew_prefix/share/ai-behavior" ]; then
-            echo "$brew_prefix/share/ai-behavior"
+        if [ -d "$brew_prefix/share/waves" ]; then
+            echo "$brew_prefix/share/waves"
             return
         fi
     fi
@@ -84,10 +84,10 @@ show_banner() {
 show_help() {
     show_banner
     echo -e "${BOLD}USAGE${NC}"
-    echo "    ai-behavior <command> [options]"
+    echo "    waves <command> [options]"
     echo ""
     echo -e "${BOLD}COMMANDS${NC}"
-    echo "    init [agent]    Initialize ai-behavior in current directory"
+    echo "    init [agent]    Initialize waves in current directory"
     echo "                    Supported agents: claude, codex (coming soon)"
     echo "    update          Update schemas and commands in current directory"
     echo "                    Auto-detects installed agent(s), preserves user data"
@@ -97,22 +97,22 @@ show_help() {
     echo "    --help, -h      Show this help"
     echo ""
     echo -e "${BOLD}EXAMPLES${NC}"
-    echo "    ai-behavior init           # Interactive agent selection"
-    echo "    ai-behavior init claude    # Initialize for Claude Code"
-    echo "    ai-behavior update         # Update current project in-place"
+    echo "    waves init           # Interactive agent selection"
+    echo "    waves init claude    # Initialize for Claude Code"
+    echo "    waves update         # Update current project in-place"
     echo ""
     echo -e "${BOLD}AFTER INITIALIZATION${NC}"
     echo "    1. Start your AI agent (claude or codex)"
-    echo "    2. Run: /ai-behavior:project-init"
+    echo "    2. Run: /waves:project-init"
     echo ""
-    echo -e "Documentation: ${BLUE}https://github.com/exovian-developments/ai-behavior${NC}"
+    echo -e "Documentation: ${BLUE}https://github.com/exovian-developments/waves${NC}"
 }
 
 show_version() {
-    echo "ai-behavior version $VERSION"
+    echo "waves version $VERSION"
 }
 
-# Check if directory already has ai-behavior
+# Check if directory already has waves
 check_existing() {
     local agent="$1"
     local has_ai_files=false
@@ -133,7 +133,7 @@ check_existing() {
     esac
 
     if $has_ai_files || $has_agent_commands; then
-        echo -e "${YELLOW}Existing ai-behavior installation detected${NC}"
+        echo -e "${YELLOW}Existing waves installation detected${NC}"
         echo ""
 
         if $has_ai_files; then
@@ -158,7 +158,7 @@ check_existing() {
         case $choice in
             1)
                 echo ""
-                echo -e "${GREEN}Updating ai-behavior...${NC}"
+                echo -e "${GREEN}Updating waves...${NC}"
                 return 0
                 ;;
             *)
@@ -288,7 +288,7 @@ init_codex() {
     echo "  1. Copy schemas to ai_files/schemas/"
     echo "  2. Configure your Codex agent file"
     echo ""
-    echo "Documentation: https://github.com/exovian-developments/ai-behavior"
+    echo "Documentation: https://github.com/exovian-developments/waves"
     exit 0
 }
 
@@ -303,14 +303,14 @@ cmd_init() {
     data_dir="$(get_data_dir)"
 
     if [ -z "$data_dir" ]; then
-        echo -e "${RED}Error: Could not find ai-behavior data files${NC}"
+        echo -e "${RED}Error: Could not find waves data files${NC}"
         echo ""
         echo "Expected locations:"
-        echo "  - \$(brew --prefix)/share/ai-behavior/"
+        echo "  - \$(brew --prefix)/share/waves/"
         echo "  - Relative to script: ../schemas/ and ../.claude/commands/"
         echo ""
-        echo "Please reinstall ai-behavior:"
-        echo "  brew reinstall ai-behavior"
+        echo "Please reinstall waves:"
+        echo "  brew reinstall waves"
         exit 1
     fi
 
@@ -378,7 +378,7 @@ cmd_init() {
             echo -e "     ${CYAN}claude${NC}"
             echo ""
             echo -e "  2. Initialize your preferences:"
-            echo -e "     ${CYAN}/ai-behavior:project-init${NC}"
+            echo -e "     ${CYAN}/waves:project-init${NC}"
             ;;
         codex)
             echo -e "  1. Start Codex:"
@@ -389,9 +389,9 @@ cmd_init() {
     esac
     echo ""
     echo -e "  3. Create your project manifest:"
-    echo -e "     ${CYAN}/ai-behavior:manifest-create${NC}"
+    echo -e "     ${CYAN}/waves:manifest-create${NC}"
     echo ""
-    echo -e "${BLUE}Documentation:${NC} https://github.com/exovian-developments/ai-behavior"
+    echo -e "${BLUE}Documentation:${NC} https://github.com/exovian-developments/waves"
     echo ""
 }
 
@@ -401,16 +401,16 @@ cmd_update() {
     data_dir="$(get_data_dir)"
 
     if [ -z "$data_dir" ]; then
-        echo -e "${RED}Error: Could not find ai-behavior data files${NC}"
+        echo -e "${RED}Error: Could not find waves data files${NC}"
         echo ""
-        echo "Please reinstall ai-behavior:"
-        echo "  brew reinstall ai-behavior"
+        echo "Please reinstall waves:"
+        echo "  brew reinstall waves"
         exit 1
     fi
 
     # Pull latest from remote if data_dir is a git repository
     if [ -d "$data_dir/.git" ]; then
-        echo -e "${BLUE}Fetching latest ai-behavior from remote...${NC}"
+        echo -e "${BLUE}Fetching latest waves from remote...${NC}"
         local pull_output
         if pull_output=$(cd "$data_dir" && git pull origin main 2>&1); then
             if echo "$pull_output" | grep -q "Already up to date"; then
@@ -418,7 +418,7 @@ cmd_update() {
             else
                 # Re-read version from the updated script
                 local new_version
-                new_version=$(grep '^VERSION=' "$data_dir/bin/ai-behavior" 2>/dev/null | head -1 | cut -d'"' -f2)
+                new_version=$(grep '^VERSION=' "$data_dir/bin/waves" 2>/dev/null | head -1 | cut -d'"' -f2)
                 if [ -n "$new_version" ] && [ "$new_version" != "$VERSION" ]; then
                     echo -e "  ${GREEN}✓${NC} Updated source ${YELLOW}v${VERSION}${NC} → ${GREEN}v${new_version}${NC}"
                     VERSION="$new_version"
@@ -443,13 +443,13 @@ cmd_update() {
     [ -d "ai_files" ] && has_ai_files=true
 
     if ! $has_claude && ! $has_codex && ! $has_ai_files; then
-        echo -e "${RED}Error: No ai-behavior installation detected in current directory${NC}"
+        echo -e "${RED}Error: No waves installation detected in current directory${NC}"
         echo ""
-        echo "Run ${CYAN}ai-behavior init${NC} first to set up your project."
+        echo "Run ${CYAN}waves init${NC} first to set up your project."
         exit 1
     fi
 
-    echo -e "${BLUE}Updating ai-behavior to v${VERSION}...${NC}"
+    echo -e "${BLUE}Updating waves to v${VERSION}...${NC}"
     echo ""
 
     # Update schemas
@@ -522,7 +522,7 @@ main() {
         *)
             echo -e "${RED}Error: Unknown command '$1'${NC}"
             echo ""
-            echo "Run 'ai-behavior --help' for usage"
+            echo "Run 'waves --help' for usage"
             exit 1
             ;;
     esac

@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:user-pref-create`
+# Command: `/waves:user-pref-create`
 
 **Status:** ✅ DESIGNED
 
@@ -64,7 +64,7 @@ STEP 3: Generate user_pref.json
 
 STEP 4: Success message
         "✅ Preferencias creadas! Para ajustes futuros:
-         /ai-behavior:user-pref-update"
+         /waves:user-pref-update"
 ```
 
 ---

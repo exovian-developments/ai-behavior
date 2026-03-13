@@ -6,8 +6,8 @@ Performs deep code analysis starting from main objectives' scope files to genera
 
 ## Used By
 
-- `/ai-behavior:logbook-create` (Step A3)
-- `/ai-behavior:logbook-update` (when adding new objectives)
+- `/waves:logbook-create` (Step A3)
+- `/waves:logbook-update` (when adding new objectives)
 
 ## Tools Available
 

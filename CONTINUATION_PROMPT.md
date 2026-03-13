@@ -1,4 +1,4 @@
-# Prompt de Continuación: ai-behavior
+# Prompt de Continuación: waves
 
 **Fecha de última actualización:** 2024-12-03
 
@@ -6,11 +6,11 @@
 
 ## 1. Qué es este proyecto
 
-**Repositorio:** `/Users/avm/Repositories/ai_files/schemas/ai-behavior`
+**Repositorio:** `/Users/avm/Repositories/ai_files/schemas/waves`
 
 **Archivo de referencia principal:** `README.md`
 
-**ai-behavior** es un protocolo de contexto estructurado para agentes AI (Claude Code, Codex, Gemini CLI) que proporciona:
+**waves** es un protocolo de contexto estructurado para agentes AI (Claude Code, Codex, Gemini CLI) que proporciona:
 - **Contexto global** → manifiestos de proyecto, reglas de código, preferencias de usuario
 - **Contexto enfocado** → logbooks (bitácoras) para continuidad entre sesiones de trabajo
 
@@ -27,16 +27,16 @@ El protocolo usa JSON schemas con un patrón específico:
 **Archivo de referencia:** `IMPLEMENTATION_GUIDE.md`
 
 ### Comandos diseñados (10 total):
-1. `/ai-behavior:project-init` - Configuración inicial ✅ EJECUTABLE
-2. `/ai-behavior:manifest-create` - Crear manifest (8 flujos)
-3. `/ai-behavior:manifest-update` - Actualizar manifest
-4. `/ai-behavior:rules-create` - Crear reglas/estándares
-5. `/ai-behavior:rules-update` - Actualizar reglas
-6. `/ai-behavior:user-pref-create` - Preferencias completas
-7. `/ai-behavior:user-pref-update` - Editar preferencias
-8. `/ai-behavior:resolution-create` - Resolución de ticket (solo software)
-9. `/ai-behavior:logbook-create` - Crear bitácora
-10. `/ai-behavior:logbook-update` - Actualizar bitácora
+1. `/waves:project-init` - Configuración inicial ✅ EJECUTABLE
+2. `/waves:manifest-create` - Crear manifest (8 flujos)
+3. `/waves:manifest-update` - Actualizar manifest
+4. `/waves:rules-create` - Crear reglas/estándares
+5. `/waves:rules-update` - Actualizar reglas
+6. `/waves:user-pref-create` - Preferencias completas
+7. `/waves:user-pref-update` - Editar preferencias
+8. `/waves:resolution-create` - Resolución de ticket (solo software)
+9. `/waves:logbook-create` - Crear bitácora
+10. `/waves:logbook-update` - Actualizar bitácora
 
 ### Fases de implementación de subagents:
 
@@ -96,13 +96,13 @@ subagents/
 ### Comando ejecutable creado:
 ```
 .claude/commands/
-└── ai-behavior:project-init.md    ✅ (con banner ASCII en degradado azul→cian)
+└── waves:project-init.md    ✅ (con banner ASCII en degradado azul→cian)
 ```
 
 ### Directorio de prueba configurado:
 ```
-/Users/avm/Repositories/ai_files/ai-behavior-test/
-├── .claude/commands/ai-behavior:project-init.md
+/Users/avm/Repositories/ai_files/waves-test/
+├── .claude/commands/waves:project-init.md
 ├── ai_files/schemas/*.json
 └── ai_files/logbooks/
 ```
@@ -207,7 +207,7 @@ Después de crear cada subagent, actualizar `subagents/README.md`:
 
 | Archivo | Para qué consultarlo |
 |---------|---------------------|
-| `README.md` | Overview del proyecto y qué es ai-behavior |
+| `README.md` | Overview del proyecto y qué es waves |
 | `IMPLEMENTATION_GUIDE.md` | Roadmap completo, decisiones de diseño |
 | `subagents/README.md` | **Estado actual de implementación** (tabla con ✅/⏳) |
 | `commands/02-manifest-create.md` | **Descripción de los 6 analizadores** (buscar STEP 10A2.1) |

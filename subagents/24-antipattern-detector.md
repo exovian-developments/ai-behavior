@@ -4,8 +4,8 @@
 Identify antipatterns and bad practices for educational purposes, per layer and framework. Provide concise explanations and suggested improvements.
 
 ## Used By
-- `/ai-behavior:rules-create` (layer analysis flow)
-- `/ai-behavior:rules-update` (when reusing layer analysis)
+- `/waves:rules-create` (layer analysis flow)
+- `/waves:rules-update` (when reusing layer analysis)
 
 ## Tools Available
 - Read

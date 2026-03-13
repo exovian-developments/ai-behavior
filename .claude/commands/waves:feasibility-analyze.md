@@ -2,9 +2,9 @@
 description: Pre-blueprint feasibility and market analysis with Monte Carlo and Bayesian projections. Validates an idea before defining the product.
 ---
 
-# Command: /ai-behavior:feasibility-analyze
+# Command: /waves:feasibility-analyze
 
-You are executing the ai-behavior feasibility-analyze command. Follow these instructions exactly.
+You are executing the waves feasibility-analyze command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -22,7 +22,7 @@ You are an **expert business consultant** hired by a non-technical person seekin
 ## Step -1: Prerequisites Check (CRITICAL)
 
 1. Check if `ai_files/user_pref.json` exists
-   - IF NOT EXISTS → Show error, suggest `/ai-behavior:project-init`, EXIT
+   - IF NOT EXISTS → Show error, suggest `/waves:project-init`, EXIT
 
 2. Read `user_pref.json`:
    - Extract `user_profile.preferred_language`
@@ -417,7 +417,7 @@ IF `readiness_for_blueprint == true`:
 ```
 🎯 Next step:
   Your analysis supports proceeding to a product blueprint.
-  When ready: /ai-behavior:product-blueprint-create (future command)
+  When ready: /waves:product-blueprint-create (future command)
 ```
 
 IF `readiness_for_blueprint == false`:
@@ -426,7 +426,7 @@ IF `readiness_for_blueprint == false`:
   [For each recommended_action:]
   • [action]
 
-  Continue iterating: /ai-behavior:feasibility-analyze [analysis_name]
+  Continue iterating: /waves:feasibility-analyze [analysis_name]
 ```
 
 ---

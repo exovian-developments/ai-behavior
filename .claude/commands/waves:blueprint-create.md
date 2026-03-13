@@ -2,9 +2,9 @@
 description: Create a complete product blueprint from the product foundation. Works section-by-section with the product owner to transform validated facts into concrete product design with hypothesis, flows, views, rules, and success metrics.
 ---
 
-# Command: /ai-behavior:blueprint-create
+# Command: /waves:blueprint-create
 
-You are executing the ai-behavior blueprint creation command. Follow these instructions exactly.
+You are executing the waves blueprint creation command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -18,7 +18,7 @@ You are the product architect. You consume the product foundation (validated fac
 
 Check if `ai_files/user_pref.json` exists.
 - If found: Extract `preferred_language` for all interactions
-- If not found: EXIT with message: "user_pref.json not found. Please run /ai-behavior:project-init first."
+- If not found: EXIT with message: "user_pref.json not found. Please run /waves:project-init first."
 
 **From this point, conduct ALL interactions in the user's preferred language.**
 
@@ -27,8 +27,8 @@ Check if `ai_files/user_pref.json` exists.
 1. Check if `ai_files/product_foundation.json` exists
 2. IF NOT EXISTS:
    - Check for `ai_files/*_feasibility.json`
-   - If feasibility exists → EXIT: "Foundation not found. Run /ai-behavior:foundation-create first."
-   - If nothing exists → EXIT: "No foundation or feasibility found. Run /ai-behavior:feasibility-analyze first."
+   - If feasibility exists → EXIT: "Foundation not found. Run /waves:foundation-create first."
+   - If nothing exists → EXIT: "No foundation or feasibility found. Run /waves:feasibility-analyze first."
 3. IF EXISTS: Read completely into memory
 4. Check `blueprint_readiness.ready`:
    - If `false`: Show blocking issues. Ask: "Proceed anyway? (Yes / No)"
@@ -309,7 +309,7 @@ Store as `blueprint.product_decisions[]` and `blueprint.open_questions[]`.
 • Decisions: [N] | Open questions: [N]
 
 🎯 Next step:
-  /ai-behavior:roadmap-create [product-name]
+  /waves:roadmap-create [product-name]
 
   The roadmap will use this blueprint to plan development phases,
   with full context of capabilities, flows, and business rules.

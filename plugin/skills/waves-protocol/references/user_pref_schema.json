@@ -121,7 +121,7 @@
     "project_context": {
       "type": "object",
       "description": "Context about the project type and user familiarity. Determines which schemas and flows to use.",
-      "$comment": "Set during /ai-behavior:project-init. Used by other commands to select appropriate flows (e.g., software vs general logbook schema).",
+      "$comment": "Set during /waves:project-init. Used by other commands to select appropriate flows (e.g., software vs general logbook schema).",
       "required": ["project_type", "is_project_known_by_user", "is_project_from_scratch"],
       "properties": {
         "project_type": {
@@ -138,7 +138,7 @@
         "is_project_from_scratch": {
           "type": "boolean",
           "description": "Indicates if the project is being started from scratch (no existing codebase or other resources).",
-          "$comment": "Ask during /ai-behavior:project-init whether the project is new or existing. This flag adjusts CLI agent perspective for manifest and rules flows."
+          "$comment": "Ask during /waves:project-init whether the project is new or existing. This flag adjusts CLI agent perspective for manifest and rules flows."
         }
       }
     }

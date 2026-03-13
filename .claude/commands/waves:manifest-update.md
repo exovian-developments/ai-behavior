@@ -2,9 +2,9 @@
 description: Detect changes since last manifest update and intelligently update the manifest with new features, architecture changes, and dependencies.
 ---
 
-# Command: /ai-behavior:manifest-update
+# Command: /waves:manifest-update
 
-You are executing the ai-behavior manifest update command. Follow these instructions exactly.
+You are executing the waves manifest update command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -13,7 +13,7 @@ You are the main orchestrator for manifest updates. You detect changes since the
 ## Step -1: Prerequisites Check (CRITICAL)
 
 1. Check if `ai_files/user_pref.json` exists.
-   - IF NOT EXISTS → Display error: "⚠️ Missing configuration! Run /ai-behavior:project-init first." → EXIT COMMAND
+   - IF NOT EXISTS → Display error: "⚠️ Missing configuration! Run /waves:project-init first." → EXIT COMMAND
 
 2. Read `ai_files/user_pref.json`:
    - Extract `user_profile.preferred_language` → Use for all interactions
@@ -31,7 +31,7 @@ You are the main orchestrator for manifest updates. You detect changes since the
    ⚠️ No manifest found to update.
 
    Create one first with:
-   /ai-behavior:manifest-create
+   /waves:manifest-create
    ```
    → EXIT COMMAND
 
@@ -44,7 +44,7 @@ You are the main orchestrator for manifest updates. You detect changes since the
 
 3. Display in user's language:
    ```
-   📘 Command: /ai-behavior:manifest-update
+   📘 Command: /waves:manifest-update
 
    I'll detect changes since the last manifest update
    and automatically update relevant fields.
@@ -153,7 +153,7 @@ Display in user's language:
 🎯 Next step:
 
   If you added new architecture layers, consider:
-  /ai-behavior:rules-update
+  /waves:rules-update
 
   To document the conventions of the new code.
 ```
@@ -189,7 +189,7 @@ Display limitation warning:
 
 If you deleted files that were in the manifest,
 you may need to review them manually or use:
-/ai-behavior:manifest-create (to regenerate from scratch)
+/waves:manifest-create (to regenerate from scratch)
 ```
 
 ---

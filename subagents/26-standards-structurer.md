@@ -4,8 +4,8 @@
 Convert free-form user input about standards (for non-software/general projects) into structured standards JSON for rules-create flows.
 
 ## Used By
-- `/ai-behavior:rules-create` (general projects)
-- `/ai-behavior:rules-update` (for general standards updates)
+- `/waves:rules-create` (general projects)
+- `/waves:rules-update` (for general standards updates)
 
 ## Tools Available
 - Read

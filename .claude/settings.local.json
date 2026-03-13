@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(tree:*)",
+      "Bash(python3:*)",
+      "WebSearch",
+      "Bash(brew --prefix:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

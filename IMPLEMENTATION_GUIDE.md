@@ -1,4 +1,4 @@
-# ai-behavior: Implementation Guide
+# waves: Implementation Guide
 **Version:** 1.0.0
 **Date:** 2025-11-21
 **Status:** ✅ DESIGN COMPLETE - Ready for Implementation Phase
@@ -66,8 +66,8 @@ Interactive commands that:
 
 ### **1. Dual-Mode Commands (With/Without Parameters)**
 **Decision:** All commands that can accept parameters will support BOTH modes:
-- **With parameter:** `/ai-behavior:update-logbook CALC-001.json` → Fast execution
-- **Without parameter:** `/ai-behavior:update-logbook` → Interactive selection + Educational tip
+- **With parameter:** `/waves:update-logbook CALC-001.json` → Fast execution
+- **Without parameter:** `/waves:update-logbook` → Interactive selection + Educational tip
 
 **Rationale:**
 - New users discover commands through exploration (no parameters needed)
@@ -127,7 +127,7 @@ workflows/
 ```
 
 ### **4. Homebrew Installation + CLI Init**
-**Decision:** Install via Homebrew + provide `ai-behavior init` command
+**Decision:** Install via Homebrew + provide `waves init` command
 
 **Rationale:**
 - Familiar pattern for developers (`brew install` + `init`)
@@ -139,14 +139,14 @@ workflows/
 ```bash
 # Install (one time)
 brew tap exovian-developments/tap
-brew install ai-behavior
+brew install waves
 
 # Initialize in project (like git init)
 cd /path/to/project
-ai-behavior init
+waves init
 
 # Verify installation
-ls .claude/commands/ai-behavior/
+ls .claude/commands/waves/
 ```
 
 ### **5. Schema-First Design**
@@ -172,11 +172,11 @@ ls .claude/commands/ai-behavior/
 ### **Homebrew Formula Structure**
 
 ```ruby
-# Formula: exovian-developments/tap/ai-behavior.rb
-class AiBehavior < Formula
+# Formula: exovian-developments/tap/waves.rb
+class Waves < Formula
   desc "Interactive protocol for AI agents with structured context management"
-  homepage "https://github.com/exovian-developments/ai-behavior"
-  url "https://github.com/exovian-developments/ai-behavior/archive/v1.0.0.tar.gz"
+  homepage "https://github.com/exovian-developments/waves"
+  url "https://github.com/exovian-developments/waves/archive/v1.0.0.tar.gz"
   sha256 "..."
 
   def install
@@ -184,16 +184,16 @@ class AiBehavior < Formula
     prefix.install "schemas", "profiles", "scripts", "config.yml"
 
     # Install CLI binary
-    bin.install "scripts/ai-behavior-cli.sh" => "ai-behavior"
+    bin.install "scripts/waves-cli.sh" => "waves"
   end
 
   def caveats
     <<~EOS
-      ai-behavior has been installed!
+      waves has been installed!
 
       To initialize in your project, run:
         cd /path/to/your/project
-        ai-behavior init
+        waves init
     EOS
   end
 end
@@ -204,18 +204,18 @@ end
 ```bash
 # Install globally via Homebrew
 brew tap exovian-developments/tap
-brew install ai-behavior
+brew install waves
 
 # Available CLI commands:
-ai-behavior init                    # Initialize in current project
-ai-behavior update                  # Update existing installation
-ai-behavior version                 # Show version
-ai-behavior help                    # Show help
+waves init                    # Initialize in current project
+waves update                  # Update existing installation
+waves version                 # Show version
+waves help                    # Show help
 ```
 
 ### **Project Initialization Flow**
 
-When user runs `ai-behavior init`:
+When user runs `waves init`:
 
 1. **Check prerequisites:**
    - Is this a git repository? (warn if not)
@@ -233,9 +233,9 @@ When user runs `ai-behavior init`:
    ```
    .claude/
      commands/
-       ai-behavior/     ← Compiled command files
+       waves/     ← Compiled command files
      agents/
-       ai-behavior/     ← Subagent definitions
+       waves/     ← Subagent definitions
    ```
 
 4. **Create config:**
@@ -251,18 +251,18 @@ When user runs `ai-behavior init`:
 
 6. **Show next steps:**
    ```
-   ✅ ai-behavior initialized!
+   ✅ waves initialized!
 
    Get started:
-     /ai-behavior:create-user-pref       → Set your preferences
-     /ai-behavior:create-project-manifest → Analyze your project
+     /waves:create-user-pref       → Set your preferences
+     /waves:create-project-manifest → Analyze your project
 
-   Learn more: https://github.com/exovian-developments/ai-behavior
+   Learn more: https://github.com/exovian-developments/waves
    ```
 
 ### **Update Flow**
 
-When user runs `ai-behavior update`:
+When user runs `waves update`:
 
 1. Compare installed version vs Homebrew version
 2. Backup existing `ai_files/` (optional, ask user)
@@ -275,19 +275,19 @@ When user runs `ai-behavior update`:
 ## 📑 Command Index
 
 ### **Initialization Command** (Run once per project)
-1. `/ai-behavior:project-init` - **NEW** Interactive first-time setup (language, tone, essential prefs)
+1. `/waves:project-init` - **NEW** Interactive first-time setup (language, tone, essential prefs)
 
 ### **Global Context Commands** (Run once or occasionally)
-2. `/ai-behavior:user-pref-create` - Create detailed user interaction preferences
-3. `/ai-behavior:manifest-create` - Analyze project and generate manifest
-4. `/ai-behavior:manifest-update` - Update existing manifest
-5. `/ai-behavior:rules-create [layer]` - Create coding rules for layer
-6. `/ai-behavior:rules-update [layer]` - Update rules for layer
+2. `/waves:user-pref-create` - Create detailed user interaction preferences
+3. `/waves:manifest-create` - Analyze project and generate manifest
+4. `/waves:manifest-update` - Update existing manifest
+5. `/waves:rules-create [layer]` - Create coding rules for layer
+6. `/waves:rules-update [layer]` - Update rules for layer
 
 ### **Focused Context Commands** (Daily development work)
-7. `/ai-behavior:logbook-create [filename]` - Create new ticket logbook
-8. `/ai-behavior:logbook-update [filename]` - Update logbook with progress
-9. `/ai-behavior:resolution-create [filename]` - Generate resolution comment
+7. `/waves:logbook-create [filename]` - Create new ticket logbook
+8. `/waves:logbook-update [filename]` - Update logbook with progress
+9. `/waves:resolution-create [filename]` - Generate resolution comment
 
 ---
 
@@ -295,7 +295,7 @@ When user runs `ai-behavior update`:
 
 > **Note:** Detailed command designs have been moved to separate files in the `commands/` directory for better organization and maintainability.
 
-### **1. `/ai-behavior:project-init`** ✅ DESIGNED
+### **1. `/waves:project-init`** ✅ DESIGNED
 
 **Purpose:** Quick essential setup - Create `ai_files/user_pref.json` with interaction preferences AND project context
 
@@ -310,7 +310,7 @@ When user runs `ai-behavior update`:
 
 ---
 
-### **2. `/ai-behavior:manifest-create`** ✅ DESIGNED
+### **2. `/waves:manifest-create`** ✅ DESIGNED
 
 **Purpose:** Analyze project and create manifest file based on project type (software or general)
 
@@ -334,7 +334,7 @@ When user runs `ai-behavior update`:
 
 ---
 
-### **3. `/ai-behavior:manifest-update`** ✅ DESIGNED
+### **3. `/waves:manifest-update`** ✅ DESIGNED
 
 **Purpose:** Detect changes since last manifest update and intelligently update the manifest
 
@@ -361,7 +361,7 @@ When user runs `ai-behavior update`:
 
 ---
 
-### **4. `/ai-behavior:rules-create [layer]`** ✅ DESIGNED
+### **4. `/waves:rules-create [layer]`** ✅ DESIGNED
 
 **Purpose:** Create development rules/standards based on code analysis (software) or user definition (general)
 
@@ -386,7 +386,7 @@ When user runs `ai-behavior update`:
 
 ---
 
-### **5. `/ai-behavior:rules-update [layer]`** ✅ DESIGNED
+### **5. `/waves:rules-update [layer]`** ✅ DESIGNED
 
 **Purpose:** Detect code changes and propose rule updates/deprecations
 
@@ -400,7 +400,7 @@ When user runs `ai-behavior update`:
 
 ---
 
-### **6. `/ai-behavior:user-pref-create`** ✅ DESIGNED
+### **6. `/waves:user-pref-create`** ✅ DESIGNED
 
 **Purpose:** Create complete user preferences file with ALL options from schema (advanced setup)
 
@@ -414,7 +414,7 @@ When user runs `ai-behavior update`:
 
 ---
 
-### **7. `/ai-behavior:user-pref-update`** ✅ DESIGNED
+### **7. `/waves:user-pref-update`** ✅ DESIGNED
 
 **Purpose:** Allow user to update preferences by opening the file in system's default editor
 
@@ -428,7 +428,7 @@ When user runs `ai-behavior update`:
 
 ---
 
-### **9. `/ai-behavior:logbook-create [filename]`** ✅ DESIGNED
+### **9. `/waves:logbook-create [filename]`** ✅ DESIGNED
 
 **Purpose:** Create a new development logbook with structured objectives and actionable guidance
 
@@ -455,7 +455,7 @@ When user runs `ai-behavior update`:
 
 ---
 
-### **10. `/ai-behavior:logbook-update [filename]`** ✅ DESIGNED
+### **10. `/waves:logbook-update [filename]`** ✅ DESIGNED
 
 **Purpose:** Update an existing logbook with progress, findings, and objective status changes
 
@@ -482,7 +482,7 @@ When user runs `ai-behavior update`:
 
 ---
 
-### **8. `/ai-behavior:resolution-create [logbook]`** ✅ DESIGNED
+### **8. `/waves:resolution-create [logbook]`** ✅ DESIGNED
 
 **Purpose:** Generate resolution comment from logbook
 
@@ -620,7 +620,7 @@ All 10 commands have been designed:
 **Decision:** Use `exovian-developments/tap`
 ```bash
 brew tap exovian-developments/tap
-brew install ai-behavior
+brew install waves
 ```
 
 ### **2. Installation & Initialization Flow** ✅
@@ -629,28 +629,28 @@ brew install ai-behavior
 **Step 1: Install via Homebrew** (one-time, global)
 ```bash
 brew tap exovian-developments/tap
-brew install ai-behavior
+brew install waves
 ```
 
 **Step 2: Initialize in project** (per-project)
 ```bash
 cd /path/to/project
-ai-behavior init
+waves init
 ```
 
 This command will:
 - Create `ai_files/` directory structure
 - Copy schema files to `ai_files/schemas/`
-- Install Claude Code commands to `.claude/commands/ai-behavior/`
-- Install agents to `.claude/agents/ai-behavior/`
+- Install Claude Code commands to `.claude/commands/waves/`
+- Install agents to `.claude/agents/waves/`
 - Check for Claude Code installation (warn if not present)
 - Update `.gitignore` with `ai_files/logbooks/`
-- **Show next step:** Suggest running `/ai-behavior:project-init`
+- **Show next step:** Suggest running `/waves:project-init`
 
 **Step 3: Interactive Project Setup** (NEW COMMAND)
 ```bash
 # In Claude Code conversation:
-/ai-behavior:project-init
+/waves:project-init
 ```
 
 This command will:
@@ -658,10 +658,10 @@ This command will:
 2. Ask for conversation tone (formal, neutral, friendly, friendly_with_sarcasm, funny, strict)
 3. Ask other essential preferences for comfortable interaction
 4. Create `ai_files/user_pref.json` with these settings
-5. **All subsequent ai-behavior commands will use these language/tone preferences**
+5. **All subsequent waves commands will use these language/tone preferences**
 
 **Rationale:**
-- Separates system setup (`ai-behavior init` - CLI) from user preferences (`/project-init` - interactive)
+- Separates system setup (`waves init` - CLI) from user preferences (`/project-init` - interactive)
 - Language/tone set once, used by all commands automatically
 - More intuitive than running full `/user-pref-create` on first use
 - Guides new users through essential setup before other commands
@@ -670,7 +670,7 @@ This command will:
 **Decision:** Multi-language conversations, English commands
 
 **Implementation:**
-- Command names: **English only** (e.g., `/ai-behavior:logbook-create`)
+- Command names: **English only** (e.g., `/waves:logbook-create`)
 - Command documentation: **Translated** (README.md, README.es.md, README.pt.md)
 - Agent conversations: **Dynamic** based on `user_pref.json` → `preferred_language` field
 - Agent outputs: **Dynamic** based on user preferences
@@ -735,35 +735,35 @@ Each schema file includes:
 ### **5. Command Naming Convention** ✅
 **Decision:** Verb-last (like git) for familiarity
 
-**Pattern:** `/ai-behavior:[noun]-[verb]`
+**Pattern:** `/waves:[noun]-[verb]`
 
 **Updated Command List:**
 ```bash
 # Initialization
-/ai-behavior:project-init              # NEW - Interactive first-time setup
+/waves:project-init              # NEW - Interactive first-time setup
 
 # Global Context Commands
-/ai-behavior:user-pref-create          # Create user preferences
-/ai-behavior:manifest-create           # Analyze and create project manifest
-/ai-behavior:manifest-update           # Update existing manifest
-/ai-behavior:rules-create [layer]      # Create rules for layer
-/ai-behavior:rules-update [layer]      # Update rules for layer
+/waves:user-pref-create          # Create user preferences
+/waves:manifest-create           # Analyze and create project manifest
+/waves:manifest-update           # Update existing manifest
+/waves:rules-create [layer]      # Create rules for layer
+/waves:rules-update [layer]      # Update rules for layer
 
 # Focused Context Commands
-/ai-behavior:logbook-create [filename] # Create new ticket logbook
-/ai-behavior:logbook-update [filename] # Update logbook with progress
-/ai-behavior:resolution-create [filename] # Generate ticket resolution
+/waves:logbook-create [filename] # Create new ticket logbook
+/waves:logbook-update [filename] # Update logbook with progress
+/waves:resolution-create [filename] # Generate ticket resolution
 
 # Utility Commands (future consideration)
-/ai-behavior:logbook-list              # List all logbooks
-/ai-behavior:logbook-validate [filename] # Validate logbook against schema
-/ai-behavior:manifest-validate         # Validate manifest against schema
+/waves:logbook-list              # List all logbooks
+/waves:logbook-validate [filename] # Validate logbook against schema
+/waves:manifest-validate         # Validate manifest against schema
 ```
 
 **Rationale:**
 - Matches git pattern: `git commit`, `git branch-create` (conceptually)
 - Natural grouping by noun: all `logbook-*` commands together
-- Tab completion friendly: type `/ai-behavior:logbook-` → see all logbook commands
+- Tab completion friendly: type `/waves:logbook-` → see all logbook commands
 - Consistent verb positioning aids memorization
 
 **Comparison with git:**
@@ -773,17 +773,17 @@ git branch create feature-x
 git remote add origin url
 git stash pop
 
-# ai-behavior equivalents (conceptual)
-/ai-behavior:logbook-create FEATURE-X.json
-/ai-behavior:manifest-update
-/ai-behavior:resolution-create FEATURE-X.json
+# waves equivalents (conceptual)
+/waves:logbook-create FEATURE-X.json
+/waves:manifest-update
+/waves:resolution-create FEATURE-X.json
 ```
 
 **Recommendation on familiarity:**
 ✅ **Yes, this achieves familiarity!**
 
 The verb-last pattern is subtle but powerful because:
-1. **Autocomplete grouping** - Type `/ai-behavior:logbook-` and see all logbook operations
+1. **Autocomplete grouping** - Type `/waves:logbook-` and see all logbook operations
 2. **Noun-first thinking** - Developers think "I want to work with a logbook" → then "what do I want to do?"
 3. **Git mental model** - Developers have strong git muscle memory
 4. **Consistent structure** - No exceptions, every command follows same pattern
@@ -792,7 +792,7 @@ The verb-last pattern is subtle but powerful because:
 Add aliases in documentation:
 ```bash
 # Full command
-/ai-behavior:logbook-create CALC-001.json
+/waves:logbook-create CALC-001.json
 
 # Shorthand (if Claude Code supports aliases in future)
 /aib:logbook-create CALC-001.json

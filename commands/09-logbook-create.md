@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:logbook-create [filename]`
+# Command: `/waves:logbook-create [filename]`
 
 **Status:** ✅ DESIGNED
 
@@ -51,7 +51,7 @@
    ⚠️ Missing configuration!
 
    Please run first:
-   /ai-behavior:project-init
+   /waves:project-init
 
    This command requires user preferences to be configured.
    ```
@@ -68,7 +68,7 @@
 5. IF NO parameter → Show tip (in user's language):
    ```
    💡 TIP: Puedes ejecutar más rápido con:
-      /ai-behavior:logbook-create TICKET-123.json
+      /waves:logbook-create TICKET-123.json
    ```
 
 6. IF parameter provided → Validate filename format
@@ -506,8 +506,8 @@ The agent resolves ALL design decisions autonomously. It only escalates to the u
     [completion_guide items]
 
     💡 Comandos útiles:
-    • /ai-behavior:logbook-update [filename] - Actualizar progreso
-    • /ai-behavior:resolution-create [filename] - Generar resolución al terminar
+    • /waves:logbook-update [filename] - Actualizar progreso
+    • /waves:resolution-create [filename] - Generar resolución al terminar
 
     ¡Listo para comenzar!
     ```

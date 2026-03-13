@@ -605,7 +605,7 @@
         "recommended_next_step": {
           "type": "string",
           "description": "What to do next.",
-          "$comment": "If ready: 'Run /ai-behavior:product-blueprint-create with this foundation as input'. If not ready: specific action like 'Return to feasibility and run scenario with adjusted pricing'."
+          "$comment": "If ready: 'Run /waves:product-blueprint-create with this foundation as input'. If not ready: specific action like 'Return to feasibility and run scenario with adjusted pricing'."
         }
       },
       "required": ["ready", "confidence_level", "recommended_next_step"]

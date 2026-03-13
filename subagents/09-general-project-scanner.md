@@ -4,7 +4,7 @@
 Scan an existing general (non-software) project directory to map structure, file types, and candidate themes, feeding orchestrator discovery for manifests.
 
 ## Used By
-- `/ai-behavior:manifest-create` (Flow BE: General Existing Project)
+- `/waves:manifest-create` (Flow BE: General Existing Project)
 
 ## Tools Available
 - Read

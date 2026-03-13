@@ -124,7 +124,7 @@ After editing (either method):
 1. Re-read `ai_files/user_pref.json`.
 2. Validate JSON syntax.
    - IF invalid → Show error and offer to re-edit.
-3. Validate against `${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/user_pref_schema.json`.
+3. Validate against `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/user_pref_schema.json`.
    - IF schema violation → Show what's wrong, offer to fix.
 
 ## Step 4: Success Message

@@ -6,7 +6,7 @@ Audits code changes against project rules to verify compliance. Returns detailed
 
 ## Used By
 
-- `/ai-behavior:implement` (Step 7)
+- `/waves:implement` (Step 7)
 
 ## Tools Available
 

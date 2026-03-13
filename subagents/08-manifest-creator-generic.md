@@ -4,7 +4,7 @@
 Create a general-purpose project manifest through 5 guided questions, producing a structured manifest aligned with `general_manifest_schema.json`.
 
 ## Used By
-- `/ai-behavior:manifest-create` (Flow B4: General/Other New Project)
+- `/waves:manifest-create` (Flow B4: General/Other New Project)
 
 ## Tools Available
 - Read

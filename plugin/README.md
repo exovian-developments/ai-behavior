@@ -1,10 +1,10 @@
-# ai-behavior Plugin
+# waves Plugin
 
 Structured context protocol for AI agents — project manifests, coding rules, development logbooks, and multi-session continuity.
 
 ## What it does
 
-ai-behavior gives Claude structured knowledge about your project so it can work with full context across sessions. It supports software projects (any language/framework) and general projects (academic, creative, business).
+waves gives Claude structured knowledge about your project so it can work with full context across sessions. It supports software projects (any language/framework) and general projects (academic, creative, business).
 
 **Two types of context:**
 - **Global Context** — Manifests describe your project, rules define how to work in it, preferences set how Claude communicates with you

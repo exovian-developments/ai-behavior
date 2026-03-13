@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:resolution-create [logbook]`
+# Command: `/waves:resolution-create [logbook]`
 
 **Status:** ✅ DESIGNED
 
@@ -18,7 +18,7 @@
 
 **Parameters:** `[logbook]` (optional) - Logbook filename to use
 
-**Note:** For general projects, the logbook itself serves as documentation. Use `/ai-behavior:logbook-update` to mark objectives as achieved and add final context entries.
+**Note:** For general projects, the logbook itself serves as documentation. Use `/waves:logbook-update` to mark objectives as achieved and add final context entries.
 
 ---
 
@@ -28,7 +28,7 @@
 STEP 0: Determine which logbook to use
 
         IF parameter provided:
-           └─ Use specified logbook: /ai-behavior:resolution-create mi-feature.json
+           └─ Use specified logbook: /waves:resolution-create mi-feature.json
 
         IF NO parameter:
            └─ Check if working on a logbook in current session
@@ -118,7 +118,7 @@ Resolution: bug-fix-login-resolution.md
      ⚠️ Este comando es solo para proyectos de software.
 
      Para proyectos generales, tu bitácora ya documenta el progreso.
-     Usa /ai-behavior:logbook-update para marcar objetivos como completados
+     Usa /waves:logbook-update para marcar objetivos como completados
      y agregar entradas finales de contexto.
      ```
      → **EXIT COMMAND**

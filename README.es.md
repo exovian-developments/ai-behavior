@@ -1,6 +1,6 @@
 <div align="center">
 
-# ai-behavior
+# waves
 
 **[English](README.md) | [Español](README.es.md) | [Português](README.pt.md)**
 
@@ -33,16 +33,16 @@ Estos schemas se han usado y depurado con `Claude Code`, `Codex` y `Gemini CLI`*
 ### Opción 1: Homebrew (Recomendado para macOS/Linux)
 ```bash
 brew tap exovian-developments/tap
-brew install ai-behavior
+brew install waves
 
 # Desde la raíz de tu proyecto
-ai-behavior
+waves
 ```
 
 ### Opción 2: Script de Instalación
 ```bash
 # Descarga el script primero (SIEMPRE inspecciona scripts antes de ejecutarlos)
-curl -O https://raw.githubusercontent.com/exovian-developments/ai-behavior/main/install.sh
+curl -O https://raw.githubusercontent.com/exovian-developments/waves/main/install.sh
 
 # Inspecciona el contenido
 cat install.sh
@@ -55,9 +55,9 @@ bash install.sh
 
 ### Opción 3: Instalación Manual
 
-**1.** Checkout del repositorio `ai-behavior`.
+**1.** Checkout del repositorio `waves`.
 ```bash
-git clone https://github.com/exovian-developments/ai-behavior.git
+git clone https://github.com/exovian-developments/waves.git
 ```
 
 **2.** En la raíz de tu proyecto crea el directorio `ai_files` y los siguientes subdirectorios:
@@ -65,9 +65,9 @@ git clone https://github.com/exovian-developments/ai-behavior.git
 mkdir -p ai_files/{schemas,logbooks}
 ```
 
-**3.** Copia los schemas ubicados en `ai-behavior/schemas/` al directorio `ai_files/schemas/` de tu proyecto:
+**3.** Copia los schemas ubicados en `waves/schemas/` al directorio `ai_files/schemas/` de tu proyecto:
 ```bash
-cp ai-behavior/schemas/*.json ai_files/schemas/
+cp waves/schemas/*.json ai_files/schemas/
 ```
 
 Schemas incluidos:

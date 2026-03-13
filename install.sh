@@ -1,11 +1,11 @@
 #!/bin/bash
-# ai-behavior installation script
+# waves installation script
 # Created by Exovian Developments
-# https://github.com/exovian-developments/ai-behavior
+# https://github.com/exovian-developments/waves
 
 set -e
 
-echo "🤖 ai-behavior installer"
+echo "🤖 waves installer"
 echo "========================"
 echo ""
 
@@ -30,7 +30,7 @@ if [ -f "$SCRIPT_DIR/schemas/logbook_software_schema.json" ]; then
     cp "$SCRIPT_DIR/schemas/"*.json ai_files/schemas/
 else
     echo "📥 Downloading schemas from GitHub..."
-    BASE_URL="https://raw.githubusercontent.com/exovian-developments/ai-behavior/main/schemas"
+    BASE_URL="https://raw.githubusercontent.com/exovian-developments/waves/main/schemas"
     for schema in logbook_software_schema.json software_manifest_schema.json project_rules_schema.json ticket_resolution_schema.json user_pref_schema.json; do
         echo "  - Downloading $schema..."
         curl -fsSL "$BASE_URL/$schema" -o "ai_files/schemas/$schema"
@@ -56,10 +56,10 @@ fi
 if [ -n "$AGENT_FILE" ]; then
     # Check if already configured
     if grep -q "ai_files/project_manifest.json" "$AGENT_FILE" 2>/dev/null; then
-        echo "⚠️  ai-behavior configuration already exists in $AGENT_FILE"
+        echo "⚠️  waves configuration already exists in $AGENT_FILE"
         echo "   Skipping agent file modification..."
     else
-        echo "📝 Updating $AGENT_FILE with ai-behavior configuration..."
+        echo "📝 Updating $AGENT_FILE with waves configuration..."
         cat >> "$AGENT_FILE" << 'EOF'
 
 # Key files to review on session start:
@@ -120,7 +120,7 @@ else
             echo ""
             echo "✅ Setup complete!"
             echo "   Please manually add the required_reading section to your agent configuration."
-            echo "   See documentation: https://github.com/exovian-developments/ai-behavior"
+            echo "   See documentation: https://github.com/exovian-developments/waves"
             exit 0
             ;;
         *)
@@ -133,8 +133,8 @@ else
         echo "📝 Creating $AGENT_FILE..."
         cat > "$AGENT_FILE" << 'EOF'
 # AI Agent Configuration
-# Powered by ai-behavior protocol
-# https://github.com/exovian-developments/ai-behavior
+# Powered by waves protocol
+# https://github.com/exovian-developments/waves
 
 # Key files to review on session start:
 required_reading:
@@ -204,6 +204,6 @@ echo ""
 echo "3. Generate project rules:"
 echo "   Tell your agent: 'Create ai_files/project_rules.json for [layer] based on the schemas'"
 echo ""
-echo "📚 Documentation: https://github.com/exovian-developments/ai-behavior"
+echo "📚 Documentation: https://github.com/exovian-developments/waves"
 echo "🙏 Created by Exovian Developments"
 echo ""

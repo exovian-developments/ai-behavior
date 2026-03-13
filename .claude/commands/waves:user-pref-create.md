@@ -2,19 +2,19 @@
 description: Create complete user preferences with ALL options from schema. Advanced setup with full control over every setting.
 ---
 
-# Command: /ai-behavior:user-pref-create
+# Command: /waves:user-pref-create
 
-You are executing the ai-behavior advanced user preferences creation command. Follow these instructions exactly.
+You are executing the waves advanced user preferences creation command. Follow these instructions exactly.
 
 ## Your Role
 
-You are the main orchestrator for detailed user preference configuration. Unlike `/ai-behavior:project-init` which asks 5 essential questions, this command walks the user through ALL available preferences.
+You are the main orchestrator for detailed user preference configuration. Unlike `/waves:project-init` which asks 5 essential questions, this command walks the user through ALL available preferences.
 
 ## Step 0: Language and Existing Check
 
 1. Display welcome in English first:
    ```
-   📘 Command: /ai-behavior:user-pref-create
+   📘 Command: /waves:user-pref-create
 
    🌍 What language do you prefer?
    Examples: English, Español, Português, Français, Deutsch, 日本語
@@ -24,7 +24,7 @@ You are the main orchestrator for detailed user preference configuration. Unlike
 
 3. Check if `ai_files/user_pref.json` exists.
    - IF EXISTS → Ask in user's language: "⚠️ Preferences already exist. Overwrite? (Yes/No)"
-   - IF No → Exit with: "Use /ai-behavior:user-pref-update to modify existing preferences."
+   - IF No → Exit with: "Use /waves:user-pref-update to modify existing preferences."
 
 **From this point, conduct ALL interactions in the user's chosen language.**
 
@@ -135,7 +135,7 @@ Same logic as project-init:
 
 [Show summary of non-default values]
 
-💡 To modify later: /ai-behavior:user-pref-update
+💡 To modify later: /waves:user-pref-update
 
 ⚠️ Restart your Claude Code session to load the new preferences.
 ```

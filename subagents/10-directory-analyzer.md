@@ -4,7 +4,7 @@
 Deep-dive into a specific directory (general projects) to extract themes/topics, file roles, and relationships, based on filenames and light inspection when allowed.
 
 ## Used By
-- `/ai-behavior:manifest-create` (Flow BE: General Existing Project) — multiple instances in parallel
+- `/waves:manifest-create` (Flow BE: General Existing Project) — multiple instances in parallel
 
 ## Tools Available
 - Read

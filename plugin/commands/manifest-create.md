@@ -5,7 +5,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash, Task
 
 # Plugin Command: manifest-create
 
-You are executing the ai-behavior plugin manifest creation command. Follow these instructions exactly.
+You are executing the waves plugin manifest creation command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -673,7 +673,7 @@ Generate `ai_files/general_manifest.json` populated with discovered content.
 ## Validation
 
 Before saving any manifest, validate against the appropriate schema:
-- Software: `${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/software_manifest_schema.json`
-- General: `${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/general_manifest_schema.json`
+- Software: `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/software_manifest_schema.json`
+- General: `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/general_manifest_schema.json`
 
 END OF COMMAND

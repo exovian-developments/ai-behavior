@@ -4,7 +4,7 @@
 Create a business/startup project manifest using 9 Business Model Canvas questions, producing a structured general manifest aligned with `general_manifest_schema.json`.
 
 ## Used By
-- `/ai-behavior:manifest-create` (Flow B3: Business New Project)
+- `/waves:manifest-create` (Flow B3: Business New Project)
 
 ## Tools Available
 - Read

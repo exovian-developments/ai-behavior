@@ -6,7 +6,7 @@ Guides users through 5 questions to create a project manifest for NEW software p
 
 ## Used By
 
-- `/ai-behavior:manifest-create` (Flow A1: Software Nuevo)
+- `/waves:manifest-create` (Flow A1: Software Nuevo)
 
 ## Tools Available
 
@@ -210,7 +210,7 @@ After collecting all answers, generate `ai_files/project_manifest.json`:
       "[Framework-specific initialization command]",
       "Set up [language] configuration",
       "Configure recommended architecture patterns",
-      "Run /ai-behavior:rules-create to establish coding conventions"
+      "Run /waves:rules-create to establish coding conventions"
     ]
   }
 }

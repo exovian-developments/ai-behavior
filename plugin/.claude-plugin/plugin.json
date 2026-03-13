@@ -1,10 +1,10 @@
 {
-  "name": "ai-behavior",
+  "name": "waves",
   "version": "0.2.1",
   "description": "Structured context protocol for AI agents: project manifests, coding rules, development logbooks, product roadmaps, and multi-session continuity for software, academic, creative, and business projects",
   "author": {
     "name": "Andrius V",
-    "homepage": "https://github.com/exovian-developments/ai-behavior"
+    "homepage": "https://github.com/exovian-developments/waves"
   },
   "keywords": ["context", "manifest", "logbook", "roadmap", "rules", "protocol", "multi-session"]
 }

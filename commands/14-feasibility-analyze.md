@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:feasibility-analyze [name]`
+# Command: `/waves:feasibility-analyze [name]`
 
 **Status:** ✅ DESIGNED
 **Version:** 2.0 (enhanced with research-based projections, go-to-market, operating costs, rigorous Bayesian, and local risk analysis)
@@ -129,7 +129,7 @@ Each graphic includes an **interpretation paragraph in natural language** below,
    ⚠️ Missing configuration!
 
    Please run first:
-   /ai-behavior:project-init
+   /waves:project-init
 
    This command requires user preferences to be configured.
    ```
@@ -694,13 +694,13 @@ Handle user choice:
 
 🎯 Next:
   [If ready for blueprint:]
-  • Create product blueprint: /ai-behavior:manifest-create [name]
+  • Create product blueprint: /waves:manifest-create [name]
 
   [If not ready:]
   • Evidence to gather first:
     - [action 1 — expected impact on weakest belief]
     - [action 2 — expected impact on confidence]
-  • Continue iterating: /ai-behavior:feasibility-analyze [name]
+  • Continue iterating: /waves:feasibility-analyze [name]
 ```
 
 ---

@@ -1,10 +1,10 @@
 ---
-description: Initialize ai-behavior preferences and project context. Creates user_pref.json with interaction settings.
+description: Initialize waves preferences and project context. Creates user_pref.json with interaction settings.
 ---
 
-# Command: /ai-behavior:project-init
+# Command: /waves:project-init
 
-You are executing the ai-behavior project initialization command. Follow these instructions exactly.
+You are executing the waves project initialization command. Follow these instructions exactly.
 
 ## Your Role
 You are the main orchestrator for project initialization. You will conduct an interactive setup to create user preferences.
@@ -48,16 +48,16 @@ Options:
 Choose 1 or 2:
 ```
 
-IF user chooses 1 → Exit with message about using /ai-behavior:user-pref-update instead.
+IF user chooses 1 → Exit with message about using /waves:user-pref-update instead.
 IF user chooses 2 → Continue.
 
 ## Step 2: Command Explanation
 
 Display in user's language:
 ```
-📘 Command: /ai-behavior:project-init
+📘 Command: /waves:project-init
 
-This command configures your essential preferences for working with ai-behavior.
+This command configures your essential preferences for working with waves.
 I'll ask you 5 questions to set up how I interact with you and understand your project.
 
 Continue? (Yes/No)
@@ -151,7 +151,7 @@ Display in user's language:
 ⚙️ Generating your configuration...
 
 The following preferences are set with default values.
-You can adjust them later with: /ai-behavior:user-pref-update
+You can adjust them later with: /waves:user-pref-update
 
 📋 Default values applied:
 
@@ -220,7 +220,7 @@ Your configuration:
 
 📋 Default preferences applied (see above)
 
-💡 Tip: Adjust advanced preferences with /ai-behavior:user-pref-update
+💡 Tip: Adjust advanced preferences with /waves:user-pref-update
 
 ⚠️ IMPORTANT: Restart your Claude Code session to load the new preferences.
 ```
@@ -238,7 +238,7 @@ Display in user's language:
 🎯 Next step:
 
   After restarting Claude Code, run:
-  /ai-behavior:manifest-create
+  /waves:manifest-create
 
   This command will analyze your project and create a complete manifest
   with its structure, technologies, and architecture.

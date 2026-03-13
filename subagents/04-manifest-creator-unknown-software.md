@@ -6,7 +6,7 @@ Analyzes existing software projects where the user has NO familiarity. Performs 
 
 ## Used By
 
-- `/ai-behavior:manifest-create` (Flow A2.2: Software Existente Desconocido)
+- `/waves:manifest-create` (Flow A2.2: Software Existente Desconocido)
 
 ## Tools Available
 
@@ -369,7 +369,7 @@ Present comprehensive findings to teach the user about their project:
 🎯 Próximo paso:
 
   Ahora que conoces la estructura y los issues, establece las convenciones:
-  /ai-behavior:rules-create [layer]
+  /waves:rules-create [layer]
 
   Esto documentará las buenas prácticas y te ayudará a corregir
   los antipatrones identificados.

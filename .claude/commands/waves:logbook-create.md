@@ -2,9 +2,9 @@
 description: Create a new development logbook for a ticket/task with structured objectives, autonomous design resolution, code tracing, UI detection, and actionable completion guides.
 ---
 
-# Command: /ai-behavior:logbook-create
+# Command: /waves:logbook-create
 
-You are executing the ai-behavior logbook creation command. Follow these instructions exactly.
+You are executing the waves logbook creation command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -21,7 +21,7 @@ IF NOT EXISTS:
 ⚠️ Missing configuration!
 
 Please run first:
-/ai-behavior:project-init
+/waves:project-init
 
 This command requires user preferences to be configured.
 ```
@@ -42,7 +42,7 @@ Check if filename parameter was provided with the command.
 IF NO parameter:
 ```
 💡 TIP: You can run faster with:
-   /ai-behavior:logbook-create TICKET-123.json
+   /waves:logbook-create TICKET-123.json
 ```
 
 IF parameter provided:
@@ -680,9 +680,9 @@ Guide:
 [completion_guide items]
 
 💡 Useful commands:
-• /ai-behavior:implement [filename] - Implement with auto-auditing
-• /ai-behavior:logbook-update [filename] - Update progress manually
-• /ai-behavior:resolution-create [filename] - Generate resolution when done
+• /waves:implement [filename] - Implement with auto-auditing
+• /waves:logbook-update [filename] - Update progress manually
+• /waves:resolution-create [filename] - Generate resolution when done
 
 Ready to start!
 ```

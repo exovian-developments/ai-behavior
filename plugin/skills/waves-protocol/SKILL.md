@@ -1,18 +1,18 @@
 ---
-name: ai-behavior-protocol
+name: waves-protocol
 description: >
   This skill should be used when the user asks to "initialize a project",
   "create a manifest", "create rules", "create a logbook", "update a manifest",
   "analyze project structure", "track development progress", "create a roadmap",
   "update roadmap", or needs guidance on structured context for AI agents.
-  Also triggers for "ai-behavior", "project context", "coding rules",
+  Also triggers for "waves", "project context", "coding rules",
   "development logbook", "ticket resolution", "user preferences", "roadmap",
   "product roadmap", "phase planning", or any workflow involving project
   manifests, standards, product planning, or multi-session continuity.
 version: 0.1.0
 ---
 
-# ai-behavior Protocol
+# waves Protocol
 
 A structured context protocol for AI agents that provides interactive commands and JSON schemas to manage project context, coding rules, and development logbooks.
 
@@ -105,7 +105,7 @@ Read the appropriate schema before generating any JSON file to ensure compliance
 
 ## Roadmap Hierarchy
 
-The ai-behavior protocol organizes product planning in three levels:
+The waves protocol organizes product planning in three levels:
 
 ```
 BLUEPRINT (WHY + WHAT)

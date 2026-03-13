@@ -5,7 +5,7 @@ allowed-tools: Read, Grep, Glob, Bash(git:*), Task
 
 # Plugin Command: roadmap-update
 
-You are executing the ai-behavior plugin roadmap update command. This is an interactive orchestrator that manages roadmap modifications, delegating complex updates to the roadmap-orchestrator agent.
+You are executing the waves plugin roadmap update command. This is an interactive orchestrator that manages roadmap modifications, delegating complex updates to the roadmap-orchestrator agent.
 
 ## Your Role
 

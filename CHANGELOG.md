@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to ai-behavior will be documented in this file.
+All notable changes to waves will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -9,14 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Foundation Create Command** (`/ai-behavior:foundation-create`)
+- **Foundation Create Command** (`/waves:foundation-create`)
   - Compacts feasibility analysis into validated facts for blueprint consumption
   - 13-step flow: enriched problem → target users → competitive landscape → revenue model → financial benchmarks → SWOT synthesis → capability re-classification → flow expansion → timeline constraints → proactive insights → blueprint readiness gate
   - Key transformation: re-classifies capabilities from revenue-impact (blocking/enabling/expansion) to operational criticality (essential/important/desired)
   - Scope feasibility check against runway and available hours
   - No subagent delegation — all steps executed directly by main agent
 
-- **Blueprint Create Command** (`/ai-behavior:blueprint-create`)
+- **Blueprint Create Command** (`/waves:blueprint-create`)
   - Transforms foundation into complete product architecture
   - 17-step flow with product owner validation at every section
   - Progressive refinement: foundation fields evolve to higher specificity
@@ -35,9 +35,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Legacy pattern `*_roadmap.json` supported as fallback
   - Updated across all commands: roadmap-create, roadmap-update, logbook-create, objectives-implement
   - Updated plugin commands and SKILL.md
-  - Updated `bin/ai-behavior` preserved files list
+  - Updated `bin/waves` preserved files list
 
-- **Roadmap Create** (`/ai-behavior:roadmap-create`)
+- **Roadmap Create** (`/waves:roadmap-create`)
   - Context priority order: blueprint > foundation > feasibility > manifest > rules
   - Wave number auto-detection with user confirmation
   - Output filename uses wave convention
@@ -52,7 +52,7 @@ Complete product lifecycle: feasibility (CAN WE?) → foundation (WHAT DID WE LE
 
 ### Added
 
-- **Feasibility Analysis Command** (`/ai-behavior:feasibility-analyze`)
+- **Feasibility Analysis Command** (`/waves:feasibility-analyze`)
   - Pre-blueprint feasibility and market analysis
   - Conversational discovery with expert consultant role
   - Monte Carlo simulation (10,000 scenarios) with interpretable graphics
@@ -149,8 +149,8 @@ Plugin agents `code-implementer` and `code-auditor` remain in `plugin/agents/` a
   - `33-roadmap-updater` — Analyzes roadmap state, proposes updates and phase transitions
 
 - **Roadmap Commands**
-  - `/ai-behavior:roadmap-create` — Create product-level roadmap with phases and milestones
-  - `/ai-behavior:roadmap-update` — Update progress, decisions, questions, phase transitions
+  - `/waves:roadmap-create` — Create product-level roadmap with phases and milestones
+  - `/waves:roadmap-update` — Update progress, decisions, questions, phase transitions
 
 - **Plugin Updates**
   - New agent: `roadmap-orchestrator` (combines creation and update analysis)
@@ -190,7 +190,7 @@ Plugin agents `code-implementer` and `code-auditor` remain in `plugin/agents/` a
 - **Cowork Plugin (`plugin/`)**
   - 16 specialized agents adapted from 31 subagents for the Cowork plugin format
   - 11 slash commands as orchestrators dispatching to agents via Task tool
-  - 1 skill (`ai-behavior-protocol`) with 9 schema references
+  - 1 skill (`waves-protocol`) with 9 schema references
   - SessionStart hook for automatic context loading
   - Packaged as `.plugin` for Claude desktop installation
 

@@ -3,7 +3,7 @@
 ## Repository Structure
 
 ```
-ai-behavior/
+waves/
 ├── schemas/              # Source of truth (9 JSON schemas)
 ├── subagents/            # Canonical design (31 subagent specifications)
 ├── commands/             # Command design docs (numbered, detailed)
@@ -33,10 +33,10 @@ To generate it:
 
 ```bash
 cd plugin/
-zip -r ../ai-behavior.plugin . -x "*.DS_Store"
+zip -r ../waves.plugin . -x "*.DS_Store"
 ```
 
-This creates `ai-behavior.plugin` in the repo root, ready to install or distribute.
+This creates `waves.plugin` in the repo root, ready to install or distribute.
 
 ## Version Numbering
 
@@ -97,9 +97,9 @@ git push origin main --tags
 
 ```bash
 cd plugin/
-zip -r ../ai-behavior.plugin . -x "*.DS_Store"
+zip -r ../waves.plugin . -x "*.DS_Store"
 cd ..
-gh release create v0.2.0 ai-behavior.plugin --title "v0.2.0" --notes "See CHANGELOG.md for details"
+gh release create v0.2.0 waves.plugin --title "v0.2.0" --notes "See CHANGELOG.md for details"
 ```
 
 This uploads the `.plugin` file to GitHub Releases where anyone can download it.
@@ -110,8 +110,8 @@ When modifying the canonical design, check if the plugin needs updating:
 
 | Changed | Plugin files to update |
 |---|---|
-| A schema in `schemas/` | `plugin/skills/ai-behavior-protocol/references/` (copy the updated schema) |
+| A schema in `schemas/` | `plugin/skills/waves-protocol/references/` (copy the updated schema) |
 | A subagent in `subagents/` | The corresponding agent in `plugin/agents/` (see CHANGELOG mapping) |
 | A command in `commands/` | The corresponding command in `plugin/commands/` |
-| SKILL.md content | `plugin/skills/ai-behavior-protocol/SKILL.md` |
+| SKILL.md content | `plugin/skills/waves-protocol/SKILL.md` |
 | Hook behavior | `plugin/hooks/hooks.json` |

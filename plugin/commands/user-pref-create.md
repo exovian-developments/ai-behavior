@@ -5,7 +5,7 @@ allowed-tools: Read, Write
 
 # Plugin Command: user-pref-create
 
-You are executing the ai-behavior plugin advanced user preferences creation command. Follow these instructions exactly.
+You are executing the waves plugin advanced user preferences creation command. Follow these instructions exactly.
 
 ## Your Role
 
@@ -31,7 +31,7 @@ You are the main orchestrator for detailed user preference configuration. Unlike
 
 ## Step 1: Section 1 — LLM Guidance
 
-Read `${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/user_pref_schema.json` for field definitions.
+Read `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/user_pref_schema.json` for field definitions.
 
 Display:
 ```
@@ -308,7 +308,7 @@ Return to that section and re-ask all fields in that section.
 
 ## Step 6: Generate user_pref.json
 
-1. Read schema from `${CLAUDE_PLUGIN_ROOT}/skills/ai-behavior-protocol/references/user_pref_schema.json`.
+1. Read schema from `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/user_pref_schema.json`.
 2. Create `ai_files/user_pref.json` with all user-provided values.
 3. Include all fields from schema with user values or defaults.
 4. Set `created_at` to current UTC ISO 8601 timestamp.
@@ -389,7 +389,7 @@ Next steps:
 2. Run: project-init (if not already done)
 3. Run: manifest-create (to analyze your project)
 
-Questions? See the ai-behavior documentation.
+Questions? See the waves documentation.
 ```
 
 END OF COMMAND

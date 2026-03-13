@@ -1,6 +1,6 @@
 # React Calculator Web App Example
 
-This directory demonstrates how **ai-behavior** schemas work in a React web application.
+This directory demonstrates how **waves** schemas work in a React web application.
 
 ## About This Example
 
@@ -45,5 +45,5 @@ example_web/
 
 ---
 
-**Part of ai-behavior examples**
-https://github.com/exovian-developments/ai-behavior
+**Part of waves examples**
+https://github.com/exovian-developments/waves

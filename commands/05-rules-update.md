@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:rules-update`
+# Command: `/waves:rules-update`
 
 **Status:** ✅ DESIGNED
 

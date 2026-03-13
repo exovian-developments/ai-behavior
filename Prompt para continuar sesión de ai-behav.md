@@ -1,15 +1,15 @@
-Prompt para continuar sesión de ai-behavior
+Prompt para continuar sesión de waves
 This session is being continued from a previous conversation that ran out of context. The
 conversation is summarized below:
 Analysis:
-Let me chronologically analyze this extensive conversation about designing the ai-behavior
+Let me chronologically analyze this extensive conversation about designing the waves
 project:
 
-1. **Initial Context**: User asked me to review the ai-behavior repository in detail. I
+1. **Initial Context**: User asked me to review the waves repository in detail. I
 analyzed it and found it's a protocol for AI agents (Claude Code, Codex, Gemini CLI) with JSON
 schemas for project context management.
 
-2. **Command Creation Request**: User wanted to create slash commands for ai-behavior based on
+2. **Command Creation Request**: User wanted to create slash commands for waves based on
 Agent OS patterns. Key request: Interactive commands with questions, subagents, and session
 flows.
 
@@ -29,7 +29,7 @@ parameters, showing tips for faster usage when no params provided.
 (main agent → subagent → questions → user → subagent → result). I traced `/shape-spec` command
 as example.
 
-7. **Project Scope Expansion**: Critical pivot - User realized ai-behavior should support both
+7. **Project Scope Expansion**: Critical pivot - User realized waves should support both
 SOFTWARE and GENERAL (non-software) projects. This led to:
    - Fork-based command design
    - Multiple manifest types (project_manifest, research_manifest, creative_manifest,
@@ -58,14 +58,14 @@ implementation. I mapped out 7 distinct flows based on project type and user fam
 - Simplify to 5 questions instead of 6 in project-init
 
 **Technical Decisions**:
-- Verb-last naming (like git): `/ai-behavior:manifest-create` not
-`/ai-behavior:create-manifest`
+- Verb-last naming (like git): `/waves:manifest-create` not
+`/waves:create-manifest`
 - Project context stored in user_pref.json to avoid redundant questions
 - Multi-subagent discovery for software projects (6 specialized subagents)
 - Cross-analysis to validate consistency between subagent findings
 
 **User's Motivations** (stated throughout):
-- Make ai-behavior more accessible and self-instructive
+- Make waves more accessible and self-instructive
 - Avoid users needing to memorize complex prompts
 - Leverage familiar patterns (git commands, video game UX)
 - Support diverse project types beyond just software
@@ -74,18 +74,18 @@ implementation. I mapped out 7 distinct flows based on project type and user fam
 Summary:
 ## 1. Primary Request and Intent
 
-The user wants to transform the **ai-behavior protocol** (JSON schemas for AI agent context
+The user wants to transform the **waves protocol** (JSON schemas for AI agent context
 management) into an interactive command-based system for Claude Code, following the Agent OS
 architectural patterns. Key objectives:
 
-- **Create slash commands** (`/ai-behavior:*`) that guide users through interactive sessions
+- **Create slash commands** (`/waves:*`) that guide users through interactive sessions
 instead of requiring them to memorize complex prompts
 - **Support both software AND non-software projects** (academic, creative, business, etc.)
 - **Multi-language support** with commands in English but conversations in user's preferred
 language
 - **Dual-mode operation**: Commands work with or without parameters, showing educational tips
-- **Homebrew installation**: Install via `brew install ai-behavior` and initialize with
-`ai-behavior init`
+- **Homebrew installation**: Install via `brew install waves` and initialize with
+`waves init`
 - **Self-instructive UX**: Each command explains what it does, asks for confirmation, shows
 execution summary, and suggests next steps
 - **Leverage familiar patterns**: Git-like naming conventions, video game "saved game"
@@ -94,7 +94,7 @@ metaphors for file overwrites
 **User's Motivation for This Project**:
 - Started 8 months ago to improve AI agent workflows
 - Discovered Agent OS 2 days ago and wants to adopt its proven patterns
-- Wants ai-behavior to be community-friendly and extensible
+- Wants waves to be community-friendly and extensible
 - Aims to reduce cognitive load by automating complex schema interactions
 - Desires universal context files that work across Claude Code, Codex, Gemini CLI
 
@@ -123,13 +123,13 @@ architecture-detective, feature-extractor)
 
 ## 3. Files and Code Sections
 
-### `/Users/avm/Repositories/ai_files/schemas/ai-behavior/IMPLEMENTATION_GUIDE.md`
+### `/Users/avm/Repositories/ai_files/schemas/waves/IMPLEMENTATION_GUIDE.md`
 
-**Purpose**: Central design document for all ai-behavior commands with detailed flows
+**Purpose**: Central design document for all waves commands with detailed flows
 
 **Key Sections Created**:
 
-1. **Command #1: `/ai-behavior:project-init`** - COMPLETED DESIGN
+1. **Command #1: `/waves:project-init`** - COMPLETED DESIGN
 
 **Final Flow Structure**:
 ```markdown
@@ -194,23 +194,23 @@ Final summary and next step
 **Structure**:
 ```
 LEVEL 0: INITIALIZATION
-  /ai-behavior:project-init (1 flow)
+  /waves:project-init (1 flow)
 
 LEVEL 1: GLOBAL CONTEXT
-  /ai-behavior:manifest-create (7 flows via FORKs)
-  /ai-behavior:manifest-update (1 flow)
-  /ai-behavior:rules-create [layer] (4 flows)
-  /ai-behavior:rules-update [layer] (4 flows)
+  /waves:manifest-create (7 flows via FORKs)
+  /waves:manifest-update (1 flow)
+  /waves:rules-create [layer] (4 flows)
+  /waves:rules-update [layer] (4 flows)
 
 LEVEL 2: FOCUSED CONTEXT
-  /ai-behavior:logbook-create [filename] (4 flows)
-  /ai-behavior:logbook-update [filename] (1 universal flow)
-  /ai-behavior:resolution-create [filename] (1 universal flow)
+  /waves:logbook-create [filename] (4 flows)
+  /waves:logbook-update [filename] (1 universal flow)
+  /waves:resolution-create [filename] (1 universal flow)
 
 LEVEL 3: UTILITIES
-  /ai-behavior:user-pref-create (1 flow)
-  /ai-behavior:validate [artifact] (1 flow)
-  /ai-behavior:help [command] (1 flow)
+  /waves:user-pref-create (1 flow)
+  /waves:validate [artifact] (1 flow)
+  /waves:help [command] (1 flow)
 ```
 
 3. **Artifact Analysis for Non-Software Projects** - DOCUMENTED
@@ -262,7 +262,7 @@ seleccionar el idioma"
 
 ## 5. Problem Solving
 
-### Problem 1: How to make ai-behavior more accessible
+### Problem 1: How to make waves more accessible
 **Solution**: Transform manual schema-based prompts into interactive slash commands with guided
  questions
 
@@ -306,13 +306,13 @@ parte del comando :manifest-create?"
 
 ## 7. Pending Tasks
 
-1. **Design `/ai-behavior:manifest-create` with all 7 flows in detail** - Current priority
+1. **Design `/waves:manifest-create` with all 7 flows in detail** - Current priority
 2. Design remaining 7 commands iteratively with user approval
 3. Create workflow files for each schema interaction
 4. Create agent definitions for specialized tasks (6 subagents for software analysis)
 5. Write command files with dual-mode support (with/without parameters)
 6. Create Homebrew formula and installation scripts
-7. Create `ai-behavior init` CLI script
+7. Create `waves init` CLI script
 8. Test installation and command execution
 
 ---
@@ -320,7 +320,7 @@ parte del comando :manifest-create?"
 ## 8. Current Work
 
 **Immediately before summary request**, I was presenting the complete flow map for
-`/ai-behavior:manifest-create` command showing all 7 derived flows:
+`/waves:manifest-create` command showing all 7 derived flows:
 
 **The 7 Flows**:
 - **A1**: Software Nuevo (5 questions → project_manifest.json template)
@@ -352,7 +352,7 @@ de mis decisiones y de la necesidad de este proyecto"
 ## 9. Optional Next Step
 
 **Next step**: After user reviews the summary, proceed with **detailed design of
-`/ai-behavior:manifest-create` Flow A1 (Software Nuevo)** in the IMPLEMENTATION_GUIDE.md,
+`/waves:manifest-create` Flow A1 (Software Nuevo)** in the IMPLEMENTATION_GUIDE.md,
 following the established pattern:
 
 ```
@@ -379,11 +379,11 @@ Exact messages from the previous session to shape the command /ai.behavior:manif
 antes de continuar, me puedes listar los nuevos flujos y cada uno de sus pasos que son parte
 del comando :manifest-create? Quiero tenerlos a la vista antes de continuar
 
-⏺ Perfecto! Aquí están todos los flujos derivados del comando /ai-behavior:manifest-create con
+⏺ Perfecto! Aquí están todos los flujos derivados del comando /waves:manifest-create con
   sus pasos:
 
   ---
-  :world_map: FLUJOS DEL COMANDO /ai-behavior:manifest-create
+  :world_map: FLUJOS DEL COMANDO /waves:manifest-create
 
   FLUJO PRINCIPAL (Entry Point)
 
@@ -416,7 +416,7 @@ del comando :manifest-create? Quiero tenerlos a la vista antes de continuar
 
   STEP 6A1: Mensaje de éxito
     - Archivo creado
-    - Próximo paso: Inicializa tu proyecto + /ai-behavior:manifest-update
+    - Próximo paso: Inicializa tu proyecto + /waves:manifest-update
 
   A2: Software EXISTENTE
 
@@ -446,7 +446,7 @@ del comando :manifest-create? Quiero tenerlos a la vista antes de continuar
   STEP 8A2.1: Mensaje de éxito
     - Archivos creados
     - Resumen de hallazgos
-    - Próximo paso: /ai-behavior:rules-create [layer]
+    - Próximo paso: /waves:rules-create [layer]
 
   A2.2: Software Existente DESCONOCIDO
 
@@ -469,7 +469,7 @@ del comando :manifest-create? Quiero tenerlos a la vista antes de continuar
   STEP 8A2.2: Mensaje de éxito + Resumen educativo
     - "Ahora conoces mejor tu proyecto!"
     - Resumen de lo descubierto
-    - Próximo paso: /ai-behavior:rules-create [layer]
+    - Próximo paso: /waves:rules-create [layer]
 
   ---
   OPCIÓN B: PROYECTO GENERAL (No Software)
@@ -493,7 +493,7 @@ del comando :manifest-create? Quiero tenerlos a la vista antes de continuar
 
   STEP 6B1: Mensaje de éxito
     - Archivo creado
-    - Próximo paso: /ai-behavior:rules-create academic (genera academic_standards.json)
+    - Próximo paso: /waves:rules-create academic (genera academic_standards.json)
 
   B2: Proyecto CREATIVO (Diseño/Arte/Multimedia)
 
@@ -511,7 +511,7 @@ del comando :manifest-create? Quiero tenerlos a la vista antes de continuar
 
   STEP 6B2: Mensaje de éxito
     - Archivo creado
-    - Próximo paso: /ai-behavior:rules-create creative (genera creative_standards.json)
+    - Próximo paso: /waves:rules-create creative (genera creative_standards.json)
 
   B3: Proyecto NEGOCIO/STARTUP
 
@@ -532,7 +532,7 @@ del comando :manifest-create? Quiero tenerlos a la vista antes de continuar
 
   STEP 6B3: Mensaje de éxito
     - Archivo creado
-    - Próximo paso: /ai-behavior:rules-create business (genera business_rules.json)
+    - Próximo paso: /waves:rules-create business (genera business_rules.json)
 
   B4: Proyecto OTRO (Personalizado)
 
@@ -548,7 +548,7 @@ del comando :manifest-create? Quiero tenerlos a la vista antes de continuar
 
   STEP 6B4: Mensaje de éxito
     - Archivo creado
-    - Próximo paso: /ai-behavior:logbook-create (empezar a trabajar)
+    - Próximo paso: /waves:logbook-create (empezar a trabajar)
 
   ---
   :bar_chart: RESUMEN DE FLUJOS TOTALES
@@ -575,7 +575,7 @@ del comando :manifest-create? Quiero tenerlos a la vista antes de continuar
   ---
   :twisted_rightwards_arrows: ÁRBOL DE DECISIÓN VISUAL
 
-  /ai-behavior:manifest-create
+  /waves:manifest-create
   │
   ├─ Lee user_pref.json
   │

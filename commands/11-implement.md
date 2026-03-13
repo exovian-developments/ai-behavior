@@ -1,4 +1,4 @@
-# Command: `/ai-behavior:implement [logbook]`
+# Command: `/waves:implement [logbook]`
 
 **Status:** ✅ DESIGNED
 
@@ -58,7 +58,7 @@ This command does NOT use subagents. All steps (implementation, auditing, retry 
    ⚠️ Missing configuration!
 
    Please run first:
-   /ai-behavior:project-init
+   /waves:project-init
 
    This command requires user preferences to be configured.
    ```
@@ -73,12 +73,12 @@ This command does NOT use subagents. All steps (implementation, auditing, retry 
    Your project is configured as: [project_type]
 
    To change this, run:
-   /ai-behavior:project-init
+   /waves:project-init
    ```
    → **EXIT COMMAND**
 
 5. Check if `ai_files/project_manifest.json` exists
-   - IF NOT EXISTS → Error: "Run /ai-behavior:manifest-create first"
+   - IF NOT EXISTS → Error: "Run /waves:manifest-create first"
    → **EXIT COMMAND**
 
 **From this point, conduct ALL interactions in the user's preferred language.**
@@ -91,7 +91,7 @@ Check if user has used this command before (can store in user_pref or check cont
 
 IF first time:
 ```
-📘 Command: /ai-behavior:implement
+📘 Command: /waves:implement
 
 This command helps you implement objectives from your logbook:
 
@@ -131,10 +131,10 @@ IF empty:
 📂 No logbooks found in ai_files/logbooks/
 
 To create a logbook for your task, run:
-  /ai-behavior:logbook-create [filename]
+  /waves:logbook-create [filename]
 
 Example:
-  /ai-behavior:logbook-create TICKET-123.json
+  /waves:logbook-create TICKET-123.json
 
 A logbook helps you:
 • Define clear objectives for your task
@@ -169,10 +169,10 @@ Choose:
 - IF "c" or "create":
   ```
   To create a new logbook, run:
-    /ai-behavior:logbook-create [filename]
+    /waves:logbook-create [filename]
 
   Example:
-    /ai-behavior:logbook-create TICKET-456.json
+    /waves:logbook-create TICKET-456.json
   ```
   → **EXIT COMMAND**
 - IF "q" or "quit" → Exit
@@ -225,7 +225,7 @@ IF "auto":
   ✅ All objectives are completed!
 
   Consider running:
-    /ai-behavior:resolution-create [logbook]
+    /waves:resolution-create [logbook]
   ```
   → **EXIT COMMAND**
 
@@ -486,9 +486,9 @@ IF "No" or "Quit" → Show final summary and exit
 📋 Logbook updated: ai_files/logbooks/[filename]
 
 💡 Commands:
-  • Continue later: /ai-behavior:implement [filename]
-  • Update progress: /ai-behavior:logbook-update [filename]
-  • Close ticket: /ai-behavior:resolution-create [filename]
+  • Continue later: /waves:implement [filename]
+  • Update progress: /waves:logbook-update [filename]
+  • Close ticket: /waves:resolution-create [filename]
 ```
 
 ---

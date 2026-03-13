@@ -4,8 +4,8 @@
 Identify naming and structural conventions in a target layer so orchestrators can turn them into consistent rules. Report only conventions used consistently (≈80%+).
 
 ## Used By
-- `/ai-behavior:rules-create` (layer analysis flow)
-- `/ai-behavior:rules-update` (when reusing layer analysis)
+- `/waves:rules-create` (layer analysis flow)
+- `/waves:rules-update` (when reusing layer analysis)
 
 ## Tools Available
 - Read
