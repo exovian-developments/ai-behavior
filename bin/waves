@@ -142,9 +142,26 @@ check_existing() {
         if $has_ai_files; then
             echo -e "  ${CYAN}ai_files/${NC} exists"
             # Show what user files exist (won't be touched)
+            # Preferences and config
             [ -f "ai_files/user_pref.json" ] && echo -e "    └─ user_pref.json ${GREEN}(will preserve)${NC}"
-            [ -f "ai_files/project_manifest.json" ] && echo -e "    └─ project_manifest.json ${GREEN}(will preserve)${NC}"
-            [ -f "ai_files/project_rules.json" ] && echo -e "    └─ project_rules.json ${GREEN}(will preserve)${NC}"
+            # Blueprints (product, company, or legacy name)
+            for bp in ai_files/blueprint.json ai_files/product_blueprint.json ai_files/company_blueprint.json; do
+                [ -f "$bp" ] && echo -e "    └─ $(basename "$bp") ${GREEN}(will preserve)${NC}"
+            done
+            # Feasibility and foundation
+            [ -f "ai_files/feasibility.json" ] && echo -e "    └─ feasibility.json ${GREEN}(will preserve)${NC}"
+            [ -f "ai_files/foundation.json" ] && echo -e "    └─ foundation.json ${GREEN}(will preserve)${NC}"
+            # Manifests (any type)
+            for mf in ai_files/*manifest*.json; do
+                [ -f "$mf" ] && echo -e "    └─ $(basename "$mf") ${GREEN}(will preserve)${NC}"
+            done
+            # Rules and standards
+            for rf in ai_files/*rules*.json ai_files/*standards*.json; do
+                [ -f "$rf" ] && echo -e "    └─ $(basename "$rf") ${GREEN}(will preserve)${NC}"
+            done
+            # Architecture map
+            [ -f "ai_files/architecture_map.json" ] && echo -e "    └─ architecture_map.json ${GREEN}(will preserve)${NC}"
+            # Waves directory
             [ -d "ai_files/waves" ] && echo -e "    └─ waves/ ${GREEN}(will preserve)${NC}"
         fi
 
@@ -525,9 +542,24 @@ cmd_upgrade() {
         echo ""
         echo -e "${GREEN}Preserved (untouched):${NC}"
         [ -f "ai_files/user_pref.json" ] && echo -e "  ${CYAN}✓${NC} user_pref.json"
-        [ -f "ai_files/blueprint.json" ] && echo -e "  ${CYAN}✓${NC} blueprint.json"
-        [ -f "ai_files/project_manifest.json" ] && echo -e "  ${CYAN}✓${NC} project_manifest.json"
-        [ -f "ai_files/project_rules.json" ] && echo -e "  ${CYAN}✓${NC} project_rules.json"
+        # Blueprints
+        for bp in ai_files/blueprint.json ai_files/product_blueprint.json ai_files/company_blueprint.json; do
+            [ -f "$bp" ] && echo -e "  ${CYAN}✓${NC} $(basename "$bp")"
+        done
+        # Feasibility and foundation
+        [ -f "ai_files/feasibility.json" ] && echo -e "  ${CYAN}✓${NC} feasibility.json"
+        [ -f "ai_files/foundation.json" ] && echo -e "  ${CYAN}✓${NC} foundation.json"
+        # Manifests (any type)
+        for mf in ai_files/*manifest*.json; do
+            [ -f "$mf" ] && echo -e "  ${CYAN}✓${NC} $(basename "$mf")"
+        done
+        # Rules and standards
+        for rf in ai_files/*rules*.json ai_files/*standards*.json; do
+            [ -f "$rf" ] && echo -e "  ${CYAN}✓${NC} $(basename "$rf")"
+        done
+        # Architecture map
+        [ -f "ai_files/architecture_map.json" ] && echo -e "  ${CYAN}✓${NC} architecture_map.json"
+        # Waves and CLAUDE.md
         [ -d "ai_files/waves" ] && echo -e "  ${CYAN}✓${NC} waves/"
         [ -f "CLAUDE.md" ] && echo -e "  ${CYAN}✓${NC} CLAUDE.md"
     else
