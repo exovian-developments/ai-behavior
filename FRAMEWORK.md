@@ -358,9 +358,70 @@ Every roadmap references capabilities, flows, or views defined in the blueprint.
 
 If a logbook cannot trace to the blueprint, either the blueprint needs to be updated (via Blueprint Refinement) or the work should not exist.
 
-### 6.3 Directory structure
+### 6.3 Product scope and `ai_files/` placement
 
-All Waves artifacts live in the `ai_files/` directory of each project:
+**Waves operates at the product level, not the repository level.** A product is a single coherent thing that gets delivered to users — it may live in one repository or span multiple repositories. Regardless of how many repos, packages, or services compose the product, there is **one** `ai_files/` directory that contains **one** blueprint, **one** set of roadmaps, and **one** set of logbooks for the entire product.
+
+#### Single repository (most common)
+
+One repo = one product = one `ai_files/` at the repo root.
+
+```
+my-product/
+├── ai_files/           ← Waves artifacts for the product
+├── lib/                ← Source code
+└── ...
+```
+
+#### Monorepo (multiple packages, one product)
+
+A product with frontend and backend packages in the same repo (e.g., using Melos, Nx, Turborepo). The `ai_files/` lives at the **monorepo root**, not inside individual packages. The blueprint describes the entire product. Roadmap phases can span multiple packages — a Wave 1 might have backend phases (1-3), frontend phases (4-7), and deployment (8) all under the same roadmap.
+
+```
+ecc/                         ← monorepo root
+├── ai_files/                ← ONE set of artifacts for the entire product
+│   ├── blueprint.json       ← describes the whole product (frontend + backend)
+│   ├── project_manifest.json ← describes ALL packages
+│   ├── project_rules.json   ← rules for ALL packages
+│   └── waves/
+│       └── w1/
+│           ├── roadmap.json ← phases that span frontend and backend
+│           └── logbooks/    ← logbooks that may touch any package
+├── packages/
+│   ├── ecc_app/             ← Frontend package
+│   └── ecc_backend/         ← Backend package
+└── melos.yaml
+```
+
+**Important:** AI agents working in a monorepo read `ai_files/` from the monorepo root. They do NOT look for `ai_files/` inside individual packages. The manifest should describe all packages as layers or components of the same product.
+
+#### Multiple repositories, one product
+
+Some products distribute their code across separate repos (e.g., frontend in one repo, backend in another, shared libraries in a third). In this case, choose **one** repo as the product's home — typically the one closest to the user-facing experience — and place `ai_files/` there. The other repos are referenced by their paths but don't maintain separate Waves artifacts.
+
+```
+org/product-app/             ← Product home
+├── ai_files/                ← Waves artifacts live HERE
+│   ├── blueprint.json
+│   └── waves/
+│       └── w1/
+│           ├── roadmap.json ← milestones may reference other repos
+│           └── logbooks/
+├── lib/
+└── ...
+
+org/product-backend/         ← Supporting repo
+├── lib/                     ← No ai_files/ here — the product is managed from product-app
+└── ...
+```
+
+Roadmap milestones that involve work in other repos use `logbook_ref` with the portable cross-repo format: `org/repo::waves/wN/logbooks/file.json`. If a logbook must live in the other repo for practical reasons (the agent needs filesystem access to that codebase), the reference still traces back to the product's roadmap.
+
+**The rule is simple: one product = one `ai_files/` = one blueprint. Always.**
+
+### 6.4 Directory structure
+
+All Waves artifacts live in the `ai_files/` directory at the product root:
 
 ```
 ai_files/
@@ -406,7 +467,7 @@ ai_files/
 
 **Cross-project references:** When a roadmap has milestones that reference logbooks in other repositories (e.g., a platform orchestration roadmap), the `logbook_ref` uses the portable format: `org/repo::waves/wN/logbooks/file.json`. Tools like ECC can resolve these via GitHub API.
 
-### 6.4 Complete artifact map
+### 6.5 Complete artifact map
 
 | Artifact | Location | Created in | Updated in | Owner |
 |----------|----------|-----------|------------|-------|
@@ -422,7 +483,7 @@ ai_files/
 | `user_pref.json` | `ai_files/` | W0 | As needed | Individual |
 | `schemas/` | `ai_files/schemas/` | W0 | As needed | Framework |
 
-### 6.5 Artifact linkage
+### 6.6 Artifact linkage
 
 The traceability chain is maintained through explicit references:
 
@@ -439,7 +500,7 @@ blueprint.json
 - `logbook_ref` in roadmap milestones points to the logbook implementing that milestone.
 - `parent_roadmap` in each logbook points back to its parent roadmap.
 
-### 6.6 Progressive refinement
+### 6.7 Progressive refinement
 
 The same concepts appear at multiple levels but evolve in detail:
 
