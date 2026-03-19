@@ -192,100 +192,116 @@ IF EXISTS:
 ```markdown
 # Waves Framework — Agent Operating Protocol
 
-This project uses the **Waves** product development framework. As an AI agent, you MUST follow these guidelines:
+This project uses the **Waves** product development framework. As an AI agent, you are a team member — not a tool. These instructions define how you operate within the framework.
+
+## Core Philosophy
+
+Waves replaces fixed-cadence methodologies (Scrum sprints) with organic, variable-length delivery cycles called **waves**. Each wave carries a product increment from validation to production. You, as an AI agent, must work WITH the framework — reading its artifacts, following its order, and alerting when something is missing or misaligned.
+
+**The Golden Rule:** Nothing exists in the project that is not supported in the product blueprint. If you're about to build something that can't trace to the blueprint, STOP and ask the user.
 
 ## User Preferences
 
-Read and follow user preferences from: ai_files/user_pref.json
+Read `ai_files/user_pref.json` at session start. Follow the language, tone, and explanation depth configured there.
 
 ## Directory Structure
 
-All Waves artifacts live in `ai_files/`:
-
+```
 ai_files/
-├── user_pref.json              ← User preferences (language, style)
-├── project_manifest.json       ← Technical project analysis
-├── project_rules.json          ← Coding rules and standards
+├── user_pref.json              ← Your interaction settings
+├── project_manifest.json       ← Technical project map
+├── project_rules.json          ← Coding rules you MUST follow
 ├── schemas/                    ← JSON schemas for validation
 │
-├── feasibility.json            ← Market/technical feasibility (Sub-Zero)
+├── feasibility.json            ← Is this idea viable? (Sub-Zero)
 ├── foundation.json             ← Validated facts from feasibility (Sub-Zero)
-├── blueprint.json              ← Product definition: WHAT and WHY (W0)
+├── blueprint.json              ← WHAT we're building and WHY (W0)
 │
 └── waves/                      ← Delivery cycles
-    ├── sub-zero/               ← Validation / Knowledge acquisition
+    ├── sub-zero/               ← Validation / Knowledge wave
     │   ├── roadmap.json
     │   └── logbooks/
-    ├── w0/                     ← Product definition
+    ├── w0/                     ← Definition wave
     │   ├── roadmap.json
     │   └── logbooks/
-    ├── w1/                     ← Business wave 1
-    │   ├── roadmap.json        ← WHEN and ORDER for this wave
-    │   ├── logbooks/           ← HOW and DETAIL (per ticket)
-    │   └── resolutions/        ← Completed logbook summaries
-    └── wN/                     ← Subsequent business waves
-        ├── roadmap.json
-        ├── logbooks/
-        └── resolutions/
+    └── wN/                     ← Business waves (w1, w2, ...)
+        ├── roadmap.json        ← WHEN and in what ORDER
+        ├── logbooks/           ← HOW each ticket gets done
+        └── resolutions/        ← What was accomplished
+```
 
-## Artifact Hierarchy (Golden Rule)
+## Artifact Hierarchy
 
-blueprint.json              ← WHAT / WHY (source of truth)
-  └── waves/wN/roadmap.json ← WHEN / ORDER (wave plan)
-       └── logbooks/*.json  ← HOW / DETAIL (ticket execution)
+```
+blueprint.json                      ← Source of truth for the product
+  └── product_roadmaps[]            ← Links to all wave roadmaps
+       └── waves/wN/roadmap.json    ← Plan for this wave
+            └── logbooks/*.json     ← Implementation detail per ticket
+```
 
-**Nothing exists in the project that is not supported in the blueprint.** Every roadmap references the blueprint. Every logbook belongs to a roadmap.
+Information flows DOWNWARD. Never duplicate detail upward. If you need strategic context in a logbook, REFERENCE the roadmap — don't copy from it.
 
-## Required Agent Behaviors
+## How You Must Operate
 
-1. **Before starting any task**, read `ai_files/blueprint.json` to understand the product context. If no blueprint exists, ALERT the user: "No product blueprint found. Consider running /waves:blueprint-create to define the product before implementation."
+### At Session Start
+1. Read `ai_files/user_pref.json` — respect language and tone
+2. Read `ai_files/blueprint.json` — understand what the product IS
+3. Read `ai_files/project_rules.json` — know what rules to follow when writing code
+4. Scan `ai_files/waves/` — identify which wave is active (look for roadmaps with status "active" or "in_progress")
 
-2. **Before implementing code**, check for an active roadmap in `ai_files/waves/`. If no roadmap exists, ALERT the user: "No active roadmap found. Consider running /waves:roadmap-create to plan the wave."
+### Before Any Task
+1. **Check the blueprint exists.** If not → tell the user: "There's no product blueprint. I recommend running `/waves:blueprint-create` before we start building — otherwise I don't have context on what this product is."
+2. **Check an active roadmap exists.** If not → tell the user: "There's no roadmap for the current wave. Consider `/waves:roadmap-create` to plan the work."
+3. **Check a logbook exists for the task.** Look in the active wave's `logbooks/`. If not → suggest: "I don't see a logbook tracking this task. Want me to run `/waves:logbook-create` so we track objectives and progress?"
 
-3. **When given a task**, check if a logbook exists for it in the active wave's `logbooks/` directory. If not, RECOMMEND: "No logbook found for this task. Consider running /waves:logbook-create to track objectives and context."
+### During Work
+1. **Follow project_rules.json** when writing code — these are non-negotiable coding standards extracted from the project
+2. **Reference the blueprint** when discussing features — mention which capability you're supporting
+3. **Update the logbook** when completing objectives or making decisions — context entries preserve institutional knowledge
+4. **Check the roadmap** to understand priorities and dependencies before starting a new milestone
 
-4. **Reference artifacts in responses**. When discussing features, mention which capability from the blueprint they support. When reporting progress, reference the roadmap milestone.
+### When Something Doesn't Fit
+- If you're asked to build something that **doesn't trace to any blueprint capability** → alert: "This work doesn't appear in the blueprint. Should we add it via a Blueprint Refinement, or is this out of scope?"
+- If a logbook objective **contradicts** the roadmap or blueprint → alert and ask for clarification
+- If you find **missing artifacts** (no rules, no manifest) → recommend creating them: "I'd do better work if I had the project rules. Want to run `/waves:rules-create`?"
 
-5. **Follow the Waves order**:
-   - Sub-Zero: feasibility → foundation (validate the idea)
-   - W0: blueprint → roadmap → project setup (define the product)
-   - W1+: logbook → implement → update logbook → resolution (deliver value)
+## Wave Order
 
-6. **Alert on missing artifacts**:
-   - No blueprint → "The product is not defined yet"
-   - No roadmap → "There's no plan for the current wave"
-   - No logbook for current task → "This task isn't being tracked"
-   - Logbook can't trace to blueprint → "This work may not be aligned with the product"
+Don't skip steps. If the user asks you to implement code but there's no blueprint, don't just start coding — explain what's missing and why it matters.
 
-7. **When artifacts exist, USE them**:
-   - Read `project_rules.json` before writing code
-   - Read the active roadmap to understand priorities
-   - Read relevant logbooks for implementation context
-   - Read `project_manifest.json` for architecture context
+| Wave | Purpose | What gets created |
+|------|---------|-------------------|
+| **Sub-Zero** | Validate the idea | `feasibility.json` → `foundation.json` |
+| **W0** | Define the product | `blueprint.json` → first `roadmap.json` → `project_manifest.json` → `project_rules.json` |
+| **W1+** | Build and ship | `logbooks` → code → `resolutions` → deploy |
 
-## Wave Lifecycle
+## Available Commands
 
-Waves are organic delivery cycles (not fixed sprints). A wave lasts as long as needed.
+| Command | When to use it |
+|---------|---------------|
+| `/waves:project-init` | First time setting up Waves in a project |
+| `/waves:feasibility-analyze` | Before committing to build something |
+| `/waves:foundation-create` | After feasibility, before blueprint |
+| `/waves:blueprint-create` | To define WHAT the product is |
+| `/waves:roadmap-create` | To plan a wave (WHEN and ORDER) |
+| `/waves:logbook-create` | To start tracking a ticket/task |
+| `/waves:logbook-update` | To record progress, decisions, status changes |
+| `/waves:objectives-implement` | To execute logbook objectives with code |
+| `/waves:roadmap-update` | To record progress and decisions in the roadmap |
+| `/waves:resolution-create` | To summarize what was done when a logbook completes |
+| `/waves:manifest-create` | To analyze the project technically |
+| `/waves:manifest-update` | To refresh the manifest after changes |
+| `/waves:rules-create` | To extract coding standards from the codebase |
+| `/waves:rules-update` | To refresh rules after code evolution |
 
-| Wave | Purpose | Key artifacts |
-|------|---------|---------------|
-| Sub-Zero | Validate the idea | feasibility.json, foundation.json |
-| W0 | Define the product | blueprint.json, roadmap for W1 |
-| W1+ | Deliver to production | roadmaps, logbooks, resolutions |
+## What Makes You a Good Waves Agent
 
-## Waves Commands Available
-
-- `/waves:feasibility-analyze` — Market/technical feasibility analysis
-- `/waves:foundation-create` — Compact feasibility into validated facts
-- `/waves:blueprint-create` — Define the product (WHAT and WHY)
-- `/waves:roadmap-create` — Plan a wave (WHEN and ORDER)
-- `/waves:logbook-create` — Create implementation logbook (HOW)
-- `/waves:logbook-update` — Update logbook with progress
-- `/waves:objectives-implement` — Execute logbook objectives
-- `/waves:roadmap-update` — Update roadmap with progress/decisions
-- `/waves:resolution-create` — Generate completion summary
-- `/waves:manifest-create` — Analyze project technically
-- `/waves:rules-create` — Extract coding standards
+- You **read before you act** — blueprint, rules, roadmap, logbook
+- You **alert on gaps** — missing artifacts, untracked work, misaligned tasks
+- You **follow the order** — don't skip from idea to code without the intermediate artifacts
+- You **reference artifacts** — "This implements capability #3 from the blueprint" instead of just "I added the feature"
+- You **preserve context** — update logbooks with decisions and learnings so the next session (or the next agent) doesn't start blind
+- You **don't invent** — if the blueprint doesn't mention it, ask before building it
 
 ---
 
