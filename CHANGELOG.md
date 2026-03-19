@@ -5,6 +5,49 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-03-19
+
+### Added
+
+- **Company Blueprint Schema** (`company_blueprint_schema.json`)
+  - Top-level artifact for company identity, strategy, and operations
+  - Sections: identity, market, hypothesis, strategic_capabilities, products, operational_areas, revenue_model, channels, partnerships, cost_structure, team, key_dates, company_roadmaps, company_decisions, open_questions
+  - All field descriptions use clear, non-jargon language with guiding questions
+  - Sits above product blueprints in the artifact hierarchy
+
+- **`product_roadmaps` array** in `product_blueprint_schema.json`
+  - Prepend-only array linking blueprint to its roadmaps
+  - Managed exclusively by `roadmap-create` command
+  - Completes the traceability chain: blueprint → roadmaps → logbooks
+
+- **FRAMEWORK.md** updated to v1.2.0 with full documentation:
+  - Directory structure (section 6.3) with physical layout
+  - Progress metrics (section 7) with formulas for wave, product, velocity, ecosystem
+  - Company blueprint section (section 9) with strategic layer documentation
+  - Artifact linkage (section 6.5) with product_roadmaps chain
+  - Role clarification: process roles vs tool access roles
+
+### Changed
+
+- **Directory restructure**: flat `ai_files/` → wave-based hierarchy
+  - Product artifacts at root: `blueprint.json`, `foundation.json`, `feasibility.json`
+  - Wave artifacts nested: `waves/sub-zero/`, `waves/w0/`, `waves/wN/`
+  - Each wave contains: `roadmap.json`, `logbooks/`, `resolutions/`
+  - Renamed: `product_blueprint.json` → `blueprint.json`, `product_foundation.json` → `foundation.json`
+
+- **All 32 command files** updated across 3 locations (`.claude/commands/`, `plugin/commands/`, `commands/`)
+  - Path references updated to wave-based structure
+  - `logbook-create`: smart wave detection from active roadmap status
+  - `roadmap-create`: auto-detect next wave, prepend to `product_roadmaps`
+  - `resolution-create`: derive output path from logbook location
+  - `project-init`: injects Waves Framework Agent Operating Protocol into CLAUDE.md
+
+- **SKILL.md** updated with new directory structure
+
+### Removed
+
+- Obsolete pre-rebrand files: `CONTINUATION_PROMPT.md`, `IMPLEMENTATION_GUIDE.md`, `Prompt para continuar sesión de ai-behav.md`
+
 ## [1.1.0] - 2026-03-11
 
 ### Added
