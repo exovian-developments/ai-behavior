@@ -145,7 +145,7 @@ check_existing() {
             [ -f "ai_files/user_pref.json" ] && echo -e "    └─ user_pref.json ${GREEN}(will preserve)${NC}"
             [ -f "ai_files/project_manifest.json" ] && echo -e "    └─ project_manifest.json ${GREEN}(will preserve)${NC}"
             [ -f "ai_files/project_rules.json" ] && echo -e "    └─ project_rules.json ${GREEN}(will preserve)${NC}"
-            [ -d "ai_files/logbooks" ] && echo -e "    └─ logbooks/ ${GREEN}(will preserve)${NC}"
+            [ -d "ai_files/waves" ] && echo -e "    └─ waves/ ${GREEN}(will preserve)${NC}"
         fi
 
         if $has_agent_commands; then
@@ -234,8 +234,8 @@ init_claude() {
     echo -e "  ${GREEN}Creating${NC} ai_files/schemas/"
     mkdir -p ai_files/schemas
 
-    echo -e "  ${GREEN}Creating${NC} ai_files/logbooks/"
-    mkdir -p ai_files/logbooks
+    echo -e "  ${GREEN}Creating${NC} ai_files/waves/"
+    mkdir -p ai_files/waves
 
     echo -e "  ${GREEN}Creating${NC} .claude/commands/"
     mkdir -p .claude/commands
@@ -270,10 +270,10 @@ init_claude() {
 
     # Update .gitignore
     if [ -f ".gitignore" ]; then
-        if ! grep -q "ai_files/logbooks/" .gitignore 2>/dev/null; then
+        if ! grep -q "ai_files/waves/" .gitignore 2>/dev/null; then
             echo "" >> .gitignore
-            echo "# AI behavior logbooks (work in progress, usually not committed)" >> .gitignore
-            echo "ai_files/logbooks/" >> .gitignore
+            echo "# Waves delivery cycles (logbooks, resolutions — usually not committed)" >> .gitignore
+            echo "ai_files/waves/" >> .gitignore
             echo ""
             echo -e "${BLUE}Updated .gitignore${NC}"
         fi
@@ -362,7 +362,7 @@ cmd_init() {
     echo ""
     echo -e "  ${CYAN}ai_files/${NC}"
     echo -e "  ├── ${CYAN}schemas/${NC}      <- JSON schemas (updated)"
-    echo -e "  └── ${CYAN}logbooks/${NC}     <- Your work logbooks (preserved)"
+    echo -e "  └── ${CYAN}waves/${NC}        <- Delivery cycles (roadmaps, logbooks, resolutions)"
     echo ""
 
     # Show installed agents
