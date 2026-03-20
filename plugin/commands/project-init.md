@@ -16,10 +16,10 @@ You are the main orchestrator for project initialization. Conduct an interactive
 Display this welcome banner exactly:
 
 ```
-▄▀█ █   █▄▄ █▀▀ █ █ ▄▀█ █ █ █ █▀█ █▀█
-█▀█ █   █▄█ ██▄ █▀█ █▀█ ▀▄▀ █ █▄█ █▀▄
+█ █ █ ▄▀█ █ █ █▀▀ █▀
+▀▄▀▄▀ █▀█ ▀▄▀ ██▄ ▄█
 
-« structured context for AI agents »
+« product development for the AI era »
   Claude · Codex · Gemini CLI
 
 🌍 What language do you prefer for our conversations?

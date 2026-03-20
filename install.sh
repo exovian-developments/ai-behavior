@@ -180,13 +180,13 @@ fi
 
 # Update .gitignore
 if [ -f ".gitignore" ]; then
-    if ! grep -q "ai_files/logbooks/" .gitignore 2>/dev/null; then
+    if ! grep -q "ai_files/waves/" .gitignore 2>/dev/null; then
         echo "" >> .gitignore
-        echo "# AI behavior logbooks (optional - remove if you want to track them)" >> .gitignore
-        echo "ai_files/logbooks/" >> .gitignore
-        echo "✅ Added ai_files/logbooks/ to .gitignore"
+        echo "# Waves delivery cycles (logbooks, resolutions — usually not committed)" >> .gitignore
+        echo "ai_files/waves/" >> .gitignore
+        echo "✅ Added ai_files/waves/ to .gitignore"
     else
-        echo "ℹ️  ai_files/logbooks/ already in .gitignore"
+        echo "ℹ️  ai_files/waves/ already in .gitignore"
     fi
 fi
 

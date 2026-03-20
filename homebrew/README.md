@@ -1,12 +1,12 @@
-# Homebrew Tap for ai-behavior
+# Homebrew Tap for Waves
 
-Structured context protocol for AI agents — Claude, Codex, Gemini CLI.
+Product development framework for the AI era — Claude, Codex, Gemini CLI.
 
 ## Installation
 
 ```bash
-brew tap exovian-developments/ai-behavior
-brew install ai-behavior
+brew tap exovian-developments/waves
+brew install waves
 ```
 
 ## Usage
@@ -14,22 +14,22 @@ brew install ai-behavior
 ```bash
 # Initialize in a project
 cd your-project
-ai-behavior init claude
+waves init claude
 
-# Update an existing project
-ai-behavior update
+# Upgrade waves globally + update current project
+waves upgrade
 
 # Check version
-ai-behavior --version
+waves --version
 ```
 
 ## Updating
 
 ```bash
-brew upgrade ai-behavior
+waves upgrade
 ```
 
 ## More Info
 
-- [GitHub Repository](https://github.com/exovian-developments/ai-behavior)
-- [Documentation](https://github.com/exovian-developments/ai-behavior#readme)
+- [GitHub Repository](https://github.com/exovian-developments/waves)
+- [Documentation](https://github.com/exovian-developments/waves#readme)
