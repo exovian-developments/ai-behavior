@@ -430,13 +430,15 @@ cmd_upgrade() {
         # Check if waves is installed via Homebrew
         if brew list waves &> /dev/null; then
             echo -e "${BLUE}Checking for updates via Homebrew...${NC}"
-            brew update --quiet 2>/dev/null
+            brew update 2>/dev/null
 
-            local outdated
-            outdated=$(brew outdated waves 2>/dev/null)
-            if [ -n "$outdated" ]; then
-                echo -e "  ${YELLOW}New version available${NC}"
-                brew upgrade waves 2>/dev/null
+            # Get the version available in the tap
+            local tap_version
+            tap_version=$(brew info waves 2>/dev/null | head -1 | awk '{print $NF}' | sed 's/^v//')
+
+            if [ -n "$tap_version" ] && [ "$tap_version" != "$old_version" ]; then
+                echo -e "  ${YELLOW}New version available: v${tap_version}${NC}"
+                brew reinstall waves 2>/dev/null
                 # Re-read version from upgraded binary
                 local new_bin="$brew_prefix/bin/waves"
                 if [ -f "$new_bin" ]; then
