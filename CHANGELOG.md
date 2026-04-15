@@ -5,6 +5,16 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-04-15
+
+### Fixed
+
+- **SessionStart hook not firing** — the `"matcher": ""` field in settings.json caused SessionStart hooks to silently fail. Removed matcher (matching official Anthropic plugin format). PreToolUse and PostToolUse were unaffected.
+- **`waves upgrade` now auto-fixes** — detects the v2.0.0 bug (`"matcher": ""`) in existing settings.json and replaces it with the corrected config. No manual intervention needed.
+- **`waves init` also auto-fixes** — same detection for projects initialized with v2.0.0.
+
+---
+
 ## [2.0.0] - 2026-04-15
 
 ### Added

@@ -11,7 +11,7 @@
 
 set -e
 
-VERSION="2.0.0"
+VERSION="2.0.1"
 
 # Colors for output
 RED='\033[0;31m'
@@ -305,11 +305,14 @@ init_claude() {
 
     # Copy hooks settings (Waves 2.0)
     if [ -f "$data_dir/.claude/settings.json" ]; then
-        if [ -f ".claude/settings.json" ]; then
-            echo -e "  ${YELLOW}!${NC} .claude/settings.json already exists — skipping (check manually for hook config)"
-        else
+        if [ ! -f ".claude/settings.json" ]; then
             cp "$data_dir/.claude/settings.json" ".claude/settings.json"
             echo -e "  ${GREEN}+${NC} settings.json (hooks configuration)"
+        elif grep -q '"matcher": ""' ".claude/settings.json" 2>/dev/null; then
+            cp "$data_dir/.claude/settings.json" ".claude/settings.json"
+            echo -e "  ${GREEN}+${NC} settings.json updated (fixed SessionStart hook config)"
+        else
+            echo -e "  ${YELLOW}!${NC} .claude/settings.json already exists — skipping (check manually for hook config)"
         fi
     fi
 
@@ -581,11 +584,15 @@ cmd_upgrade() {
                 echo -e "  ${GREEN}✓${NC} $hook_count hooks updated"
             fi
 
-            # Update settings.json (only if not customized by user)
+            # Update settings.json
             if [ -f "$data_dir/.claude/settings.json" ]; then
                 if [ ! -f ".claude/settings.json" ]; then
                     cp "$data_dir/.claude/settings.json" ".claude/settings.json"
                     echo -e "  ${GREEN}✓${NC} settings.json installed (hooks configuration)"
+                elif grep -q '"matcher": ""' ".claude/settings.json" 2>/dev/null; then
+                    # Fix: empty matcher on SessionStart caused hooks to not fire (v2.0.0 bug)
+                    cp "$data_dir/.claude/settings.json" ".claude/settings.json"
+                    echo -e "  ${GREEN}✓${NC} settings.json updated (fixed SessionStart hook config)"
                 else
                     echo -e "  ${CYAN}✓${NC} settings.json preserved (already exists)"
                 fi
