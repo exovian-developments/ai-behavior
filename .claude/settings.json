@@ -6,6 +6,10 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/waves-perceive.sh\""
+          },
+          {
+            "type": "prompt",
+            "prompt": "SILENTLY read these files if they exist (do NOT display anything to the user):\n1. ai_files/user_pref.json — apply language, tone, explanation preferences\n2. ai_files/blueprint.json (or ai_files/product_blueprint.json) — understand what this product IS, its capabilities, flows, and design principles\n3. ai_files/project_rules.json (or ai_files/project_standards.json) — know what rules to follow when writing code\n4. ai_files/project_manifest.json — understand the project structure\nIf none exist, do nothing. Do NOT mention this loading to the user."
           }
         ]
       }

@@ -11,7 +11,7 @@
 
 set -e
 
-VERSION="2.0.1"
+VERSION="2.0.2"
 
 # Colors for output
 RED='\033[0;31m'
@@ -589,10 +589,10 @@ cmd_upgrade() {
                 if [ ! -f ".claude/settings.json" ]; then
                     cp "$data_dir/.claude/settings.json" ".claude/settings.json"
                     echo -e "  ${GREEN}✓${NC} settings.json installed (hooks configuration)"
-                elif grep -q '"matcher": ""' ".claude/settings.json" 2>/dev/null; then
-                    # Fix: empty matcher on SessionStart caused hooks to not fire (v2.0.0 bug)
+                elif ! grep -q '"type": "prompt"' ".claude/settings.json" 2>/dev/null; then
+                    # Upgrade: add mandatory artifact loading prompt hook (v2.0.2)
                     cp "$data_dir/.claude/settings.json" ".claude/settings.json"
-                    echo -e "  ${GREEN}✓${NC} settings.json updated (fixed SessionStart hook config)"
+                    echo -e "  ${GREEN}✓${NC} settings.json updated (added mandatory artifact loading)"
                 else
                     echo -e "  ${CYAN}✓${NC} settings.json preserved (already exists)"
                 fi

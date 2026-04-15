@@ -5,6 +5,18 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2026-04-15
+
+### Added
+
+- **Mandatory artifact loading at SessionStart** — a prompt-type hook now forces the agent to silently read blueprint, project rules, manifest, and user preferences at session start. The agent starts every session with full product context loaded, not just a summary.
+
+### Changed
+
+- **SessionStart now has 2 hooks**: (1) command hook injects state summary (ESTADO WAVES), (2) prompt hook forces reading of core artifacts. This ensures the agent has both the overview AND the full detail.
+
+---
+
 ## [2.0.1] - 2026-04-15
 
 ### Fixed
