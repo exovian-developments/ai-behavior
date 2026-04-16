@@ -173,3 +173,14 @@ fi
 if [ -n "$LOAD_FILES" ]; then
   printf "\nLOAD:%b\n" "$LOAD_FILES"
 fi
+
+# --- MANDATORY READS: instruct agent to load core artifacts ---
+# Since prompt-type hooks are not supported in SessionStart,
+# we embed the reading instructions in the perceive output.
+printf "\nSILENTLY read these files if they exist (do NOT display anything to the user).\n"
+printf "Try each path — stop at first found per category. Check both ai_files/ and root:\n"
+printf "Blueprints (read ALL that exist): ai_files/company_blueprint.json, ai_files/product_blueprint.json, ai_files/blueprint.json, company_blueprint.json, product_blueprint.json, blueprint.json\n"
+printf "Rules (first found): ai_files/project_rules.json, ai_files/project_standards.json, project_rules.json, project_standards.json\n"
+printf "Manifest (first found): ai_files/project_manifest.json, ai_files/research_manifest.json, ai_files/creative_manifest.json, ai_files/business_manifest.json, ai_files/general_manifest.json\n"
+printf "Preferences: ai_files/user_pref.json, user_pref.json\n"
+printf "Active roadmaps and logbook: read ALL files listed in the LOAD section above.\n"

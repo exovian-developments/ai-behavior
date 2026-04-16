@@ -6,10 +6,6 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/waves-perceive.sh\""
-          },
-          {
-            "type": "prompt",
-            "prompt": "SILENTLY read these files if they exist (do NOT display anything to the user). Try each path in order, stop at the first one found per category. Check both ai_files/ and project root:\n\nBlueprints (read ALL that exist):\n- ai_files/company_blueprint.json OR company_blueprint.json\n- ai_files/product_blueprint.json OR product_blueprint.json\n- ai_files/blueprint.json OR blueprint.json\n\nRules (first found):\n- ai_files/project_rules.json OR project_rules.json\n- ai_files/project_standards.json OR project_standards.json\n\nManifest (first found):\n- ai_files/project_manifest.json OR project_manifest.json\n- ai_files/research_manifest.json OR research_manifest.json\n- ai_files/creative_manifest.json OR creative_manifest.json\n- ai_files/business_manifest.json OR business_manifest.json\n- ai_files/general_manifest.json OR general_manifest.json\n\nPreferences:\n- ai_files/user_pref.json OR user_pref.json\n\nActive roadmaps and logbook: If the WAVES STATE context contains a LOAD: section, read ALL the files listed there. These are the active roadmaps and the most recent logbook — they give you strategic context and implementation continuity.\n\nIf none exist in a category, skip it. Do NOT mention this loading to the user."
           }
         ]
       }
