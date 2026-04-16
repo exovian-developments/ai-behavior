@@ -89,6 +89,41 @@ Ask for:
 - `project_type` — software / general
 - `is_project_known_by_user` — true/false
 
+## Step 4.5: Section 5 — Agent Configuration (Waves 2.0+)
+
+```
+📋 SECTION 5: Agent Configuration
+
+These settings control how Waves 2.0 hooks operate:
+```
+
+Ask:
+
+```
+📌 Metacognition Model
+   When a primary objective completes, a blueprint changes, or a roadmap phase
+   finishes, Waves delegates a strategic analysis to a background subagent.
+   This subagent reads your blueprint, roadmaps, and logbooks to detect
+   blockers, design improvements, and effort-saving opportunities.
+
+   Which model should the metacognition subagent use?
+
+   • opus   — Strongest analysis. Recommended for complex products. (default)
+   • sonnet — Faster, good for straightforward projects.
+   • haiku  — Fastest, minimal cost. Basic checks only.
+
+   Your choice (opus/sonnet/haiku):
+```
+
+Store as `agent_config.metacognition_model`.
+
+```
+💡 TIP: In early stages (before blueprint or with minimal artifacts),
+   metacognition has little to analyze. You can request it on-demand
+   by asking the agent: "Run a metacognition analysis on the current state."
+   The automatic triggers activate once you have blueprint + roadmap + logbooks.
+```
+
 ## Step 5: Show Summary
 
 Display all selected values in a formatted summary:
@@ -105,6 +140,9 @@ Output Preferences:
   [list all settings with values]
 
 Project Context:
+  [list all settings with values]
+
+Agent Configuration:
   [list all settings with values]
 
 Save this configuration? (Yes/No/Edit [section])
