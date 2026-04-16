@@ -5,6 +5,17 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.3] - 2026-04-15
+
+### Added
+
+- **Active roadmaps and logbook loaded at session start** — the perceive hook now outputs a `CARGAR:` section with paths to all active roadmaps and the most recent logbook. The prompt hook reads them silently, giving the agent full strategic context AND implementation continuity from the first interaction.
+- **Multi-roadmap support** — projects with multiple active waves (e.g., w0 and w1 both in_progress) get all roadmaps loaded, not just the first one found.
+- **Logbook priority** — the most recent active logbook is found by scanning from the highest wave downward. Ensures the agent picks up where the last session left off.
+- **Comprehensive artifact discovery** — the prompt hook now checks both `ai_files/` and project root for all artifact types, including `company_blueprint.json`, all manifest variants, and both naming conventions.
+
+---
+
 ## [2.0.2] - 2026-04-15
 
 ### Added
