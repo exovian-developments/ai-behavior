@@ -46,7 +46,30 @@ Output Preferences:
   • format_code_with_comments: [value]
   • highlight_gotchas: [value]
   • code_language: [value]
+
+Agent Configuration (Waves 2.0+):
+  • metacognition_model: [value or "not set — defaults to opus"]
 ```
+
+**If `agent_config.metacognition_model` is missing from the file, show:**
+```
+💡 New in Waves 2.0: Metacognition model is not configured.
+   Currently using default (opus).
+   Add it? (Yes/No)
+```
+If Yes, ask:
+```
+📌 Metacognition Model
+   When objectives complete, blueprints change, or phases finish,
+   Waves delegates a strategic analysis to a background subagent.
+
+   • opus   — Strongest analysis. Recommended for complex products. (default)
+   • sonnet — Faster, good for straightforward projects.
+   • haiku  — Fastest, minimal cost. Basic checks only.
+
+   Your choice (opus/sonnet/haiku):
+```
+Store as `agent_config.metacognition_model` in user_pref.json.
 
 ## Step 2: Choose Edit Method
 
@@ -78,6 +101,7 @@ Available fields:
   • highlight_gotchas
   • project_type
   • is_project_known_by_user
+  • metacognition_model (opus/sonnet/haiku)
   • (or type 'done' to finish)
 ```
 
