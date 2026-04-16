@@ -4,7 +4,7 @@
 
 **[English](README.md) | [Español](README.es.md) | [Português](README.pt.md)**
 
-*The product development framework for the AI agent era*
+*The Product Consciousness Framework for the AI agent era*
 
 </div>
 
@@ -12,13 +12,22 @@
 
 Product development as we knew it has changed. AI agents (Claude Code, Codex, Gemini CLI) compress what used to take 6 months of development into days or weeks. 2-week sprints no longer reflect the actual rhythm of work — development is no longer the bottleneck.
 
-Waves replaces fixed-cadence sprints with **waves**: organic, variable-length delivery cycles where each wave carries a product increment from validation to production. A wave lasts as long as it needs — sometimes 3 days, sometimes 3 weeks. No artificial ceremonies, no arbitrary time boxes.
+But there's a deeper problem: **your AI agent has no judgment.** It treats renaming a variable the same as changing your business model. It doesn't know when to proceed and when to stop. Without classification, there's no trust — and without trust, you can't truly delegate.
+
+Waves replaces fixed-cadence sprints with **waves**: organic, variable-length delivery cycles where each wave carries a product increment from validation to production. And with **Waves 2.0**, the agent becomes a strategic advisor with graduated autonomy — it knows your business, enforces your rules mechanically, classifies every decision by impact level, and alerts you to what you can't see because you're focused on the immediate task.
 
 ## What is it?
 
-Waves is a structured protocol that guides AI agents through the **entire lifecycle of a product** — from the first idea to production code. It works with `Claude Code`, `Codex`, and `Gemini CLI` through interactive slash commands and structured JSON schemas.
+Waves is a Product Consciousness Framework that gives the **human + AI team**:
 
-Instead of giving your AI agent a blank prompt and hoping for the best, waves walks it through a clear process: first understand if the idea is viable, then define what to build, then plan in what order, and finally write the code — with full context at every step.
+1. **Structure** — what artifacts exist and how they relate
+2. **Order** — in what sequence value is produced
+3. **Memory** — structured persistence across sessions and agents
+4. **Governance** — mechanical enforcement that doesn't degrade
+5. **Trust** — graduated autonomy by decision level
+6. **Extended perception** — the agent sees the whole board while you focus on the piece
+
+It works with `Claude Code` (full 2.0 features), `Claude Desktop` (plugin), `Codex`, and `Gemini CLI` through interactive slash commands and structured JSON schemas.
 
 ### The Product Lifecycle
 
@@ -47,6 +56,33 @@ feasibility → foundation → blueprint → roadmap → logbook
 
 Each level feeds the next. You can start at any level — if you already have a product and just need logbooks for day-to-day coding, start there. The full pipeline is for when you're building something from scratch.
 
+### What's New in 2.0
+
+Waves 1.x gave structure to chaos. **Waves 2.0 gives consciousness to structure.**
+
+| Capability | What it does | How it works |
+|-----------|-------------|-------------|
+| **Perception** | Agent starts every session knowing the full product state | SessionStart hook reads artifacts, injects state summary + forces reading of blueprint, roadmap, logbook |
+| **Mechanical Enforcement** | Rules that cannot be ignored | PreToolUse hook blocks actions (exit 2) when blueprint/roadmap/logbook are missing |
+| **Decision Classification** | 5-level graduated autonomy | Classification reminder injected on every action, re-injected after compaction |
+| **Proactive Metacognition** | Agent reflects at strategic moments | PostToolUse hooks trigger on objective completion, blueprint changes, phase completion |
+| **Context Survival** | Rules survive long sessions | SessionStart re-fires after context compaction, re-injecting state and rules |
+| **Graduated Governance** | Enforcement proportional to maturity | No blueprint → allow all; blueprint without roadmap → block; full artifacts → allow + classify |
+
+**Decision Classification — The Trust Contract:**
+
+| Level | Type | Agent action |
+|-------|------|-------------|
+| 1 | Mechanical (naming, formatting) | Proceeds silently |
+| 2 | Technical (pattern, structure) | Proceeds + documents in logbook |
+| 3 | Scope (outside current objective) | **STOPS.** Informs. Waits. |
+| 4 | Business (affects blueprint capability) | **STOPS.** Projects scenarios. Waits. |
+| 5 | Discovery (independent market value) | **STOPS.** Documents. Projects. Advises. |
+
+> When in doubt, the agent classifies **UP** (more caution), never down. Validated with 18 benchmark scenarios: 100% correct actions.
+
+**Platform availability:** Full 2.0 features (hooks, enforcement, metacognition) require Claude Code. Schema-based features (artifacts, persistence, commands) work on all platforms.
+
 ### Three ways to use it
 
 1. **Cowork Plugin (Recommended)** — Install the plugin in Claude desktop for full GUI experience
@@ -66,11 +102,14 @@ Each JSON schema uses a dual-instruction pattern:
 
 | Feature | Description |
 |---------|-------------|
-| **Global Context** | Project manifests, coding rules, user preferences |
-| **Focused Context** | Development logbooks for tickets/tasks with objectives and progress tracking |
-| **Multi-Agent** | Same files work across Claude Code, Codex, and Gemini CLI |
-| **Multi-Session** | Logbooks preserve context between sessions |
+| **Perception** | Agent starts every session informed — product state, active wave, current phase, next objective |
+| **Enforcement** | Mechanical hooks that block actions when artifacts are missing — not suggestions, code |
+| **Classification** | 5-level decision autonomy — agent knows when to proceed and when to stop |
+| **Metacognition** | Proactive reflection at objective completion, blueprint changes, and phase completion |
+| **Multi-Agent** | Same files work across Claude Code, Claude Desktop, Codex, and Gemini CLI |
+| **Multi-Session** | Logbooks + hooks preserve context between sessions and after compaction |
 | **Software + General** | Supports software projects AND academic, creative, business projects |
+| **Business Validation** | Feasibility analysis with Monte Carlo simulations before writing a line of code |
 
 ---
 
@@ -124,11 +163,13 @@ waves init claude
 git clone https://github.com/exovian-developments/waves.git
 
 # Copy to your project
-mkdir -p your-project/.claude/commands
+mkdir -p your-project/.claude/{commands,hooks}
 cp -r waves/.claude/commands/* your-project/.claude/commands/
+cp waves/.claude/hooks/*.sh your-project/.claude/hooks/
+chmod +x your-project/.claude/hooks/*.sh
+cp waves/.claude/settings.json your-project/.claude/settings.json
 mkdir -p your-project/ai_files/schemas
 cp waves/schemas/*.json your-project/ai_files/schemas/
-mkdir -p your-project/ai_files/logbooks
 ```
 
 **Updating an existing project:**
@@ -230,22 +271,32 @@ After installation, your project will have:
 ```
 your-project/
 ├── .claude/
-│   └── commands/
-│       ├── waves:project-init.md
-│       ├── waves:manifest-create.md
-│       ├── waves:logbook-create.md
-│       └── waves:logbook-update.md
+│   ├── settings.json               # Hooks configuration (Waves 2.0)
+│   ├── commands/                    # Slash commands
+│   │   ├── waves:project-init.md
+│   │   ├── waves:blueprint-create.md
+│   │   ├── waves:roadmap-create.md
+│   │   ├── waves:logbook-create.md
+│   │   └── ... (16 commands total)
+│   └── hooks/                       # Executable hooks (Waves 2.0)
+│       ├── waves-perceive.sh        # SessionStart: injects product state
+│       ├── waves-gate.sh            # PreToolUse: graduated enforcement
+│       ├── waves-doc-enforce.sh     # PostToolUse: documentation enforcement
+│       ├── waves-metacognition.sh   # PostToolUse: reflection triggers
+│       ├── waves-blueprint-impact.sh # PostToolUse: impact projection
+│       ├── waves-phase-audit.sh     # PostToolUse: strategic audit
+│       └── waves-dart-analyze.sh    # PostToolUse: dart analysis
 ├── ai_files/
-│   ├── schemas/                    # JSON schemas
-│   │   ├── user_pref_schema.json
-│   │   ├── software_manifest_schema.json
-│   │   ├── logbook_software_schema.json
-│   │   └── ...
-│   ├── logbooks/                   # Your work logbooks
-│   │   └── TICKET-123.json
-│   ├── user_pref.json              # Your preferences
-│   └── project_manifest.json       # Project analysis
-└── CLAUDE.md                       # Updated with preferences reference
+│   ├── schemas/                     # JSON schemas
+│   ├── user_pref.json               # Your preferences
+│   ├── project_manifest.json        # Project analysis
+│   ├── project_rules.json           # Coding rules
+│   ├── blueprint.json               # Product definition (WHAT/WHY)
+│   └── waves/
+│       └── wN/
+│           ├── roadmap.json         # Wave plan (WHEN/ORDER)
+│           └── logbooks/            # Implementation (HOW/DETAIL)
+└── CLAUDE.md                        # Agent Operating Protocol
 ```
 
 ---
@@ -324,8 +375,11 @@ If you prefer not to use slash commands, you can still use the schemas directly:
 ```bash
 git clone https://github.com/exovian-developments/waves.git
 cd your-project
-mkdir -p ai_files/{schemas,logbooks}
+mkdir -p ai_files/schemas .claude/{commands,hooks}
 cp waves/schemas/*.json ai_files/schemas/
+cp waves/.claude/commands/*.md .claude/commands/
+cp waves/.claude/hooks/*.sh .claude/hooks/ && chmod +x .claude/hooks/*.sh
+cp waves/.claude/settings.json .claude/settings.json
 ```
 
 ### 2. Add to CLAUDE.md
@@ -447,38 +501,36 @@ python -c "import json,jsonschema; jsonschema.validate(json.load(open('data.json
 
 ```
 waves/
-├── schemas/              # Source of truth: 10 JSON schemas
-├── subagents/            # Canonical design: 33 subagent specifications
+├── bin/waves             # CLI installer (brew install waves)
+├── schemas/              # Source of truth: JSON schemas
+├── .claude/
+│   ├── commands/         # 16 executable slash commands
+│   ├── hooks/            # 7 Waves 2.0 hooks (perceive, gate, enforce, metacognition, ...)
+│   └── settings.json     # Hook configuration (SessionStart, PreToolUse, PostToolUse)
+├── plugin/               # Cowork plugin (Claude Desktop)
+│   ├── agents/           # Specialized agents
+│   ├── commands/         # Slash commands
+│   ├── skills/           # Protocol knowledge + schema references
+│   └── hooks/            # SessionStart prompt-based hook
+├── subagents/            # Canonical design: subagent specifications
 ├── commands/             # Command design docs (numbered, detailed)
-├── .claude/commands/     # Executable slash commands for Claude Code
-├── plugin/               # Cowork plugin (Claude desktop)
-│   ├── .claude-plugin/   #   Plugin manifest
-│   ├── agents/           #   17 specialized agents
-│   ├── commands/         #   13 slash commands
-│   ├── skills/           #   Protocol knowledge + schema references
-│   └── hooks/            #   SessionStart auto-context hook
-├── example_flutter/      # Example: Flutter project
-├── example_java/         # Example: Java project
-├── example_web/          # Example: Web project
-├── CHANGELOG.md          # Version history with subagent-to-agent mapping
-├── IMPLEMENTATION_GUIDE.md
+├── FRAMEWORK.md          # Complete framework documentation (v2.0)
+├── CHANGELOG.md          # Version history
 └── README.md
 ```
-
-The `schemas/` and `subagents/` directories are the canonical design. The `plugin/` directory is an adapted implementation for the Cowork plugin format (17 agents consolidated from 33 subagents). See [CHANGELOG.md](CHANGELOG.md) for the mapping.
 
 ---
 
 ## Compatibility
 
-| Platform | Plugin | Slash Commands | Manual Prompts | Notes |
-|----------|--------|---------------|----------------|-------|
-| Claude Desktop (Cowork) | ✅ | ✅ | ✅ | Full support via plugin |
-| Claude Code | ❌ | ✅ | ✅ | Full support via .claude/commands/ |
-| Codex | ❌ | ❌ | ✅ | Use prompts directly |
-| Gemini CLI | ❌ | ❌ | ✅ | Better with .md output |
+| Platform | Hooks (2.0) | Plugin | Slash Commands | Manual Prompts |
+|----------|-------------|--------|---------------|----------------|
+| Claude Code | ✅ Full (enforcement, metacognition, classification) | ❌ | ✅ | ✅ |
+| Claude Desktop | ❌ | ✅ (prompt-based perception) | ✅ | ✅ |
+| Codex | ❌ | ❌ | ❌ | ✅ |
+| Gemini CLI | ❌ | ❌ | ❌ | ✅ |
 
-**Note:** Gemini CLI works better producing results in `.md` format. For JSON output, it sometimes has issues with anchors.
+**Note:** Hooks-based features (mechanical enforcement, metacognition, decision classification) are currently exclusive to Claude Code. Schema-based features (artifacts, persistence, commands) work on all platforms.
 
 ---
 
@@ -494,6 +546,6 @@ The `schemas/` and `subagents/` directories are the canonical design. The `plugi
 See [IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md) for architecture details and [subagents/README.md](subagents/README.md) for implementation status.
 
 **Current priorities:**
-1. Test and refine all flows end-to-end
-2. Gather user feedback on command usability
+1. Community feedback on decision classification levels
+2. Hooks support for additional platforms (Codex, Gemini CLI) if requested
 3. Keep plugin agents in sync with canonical subagent changes
