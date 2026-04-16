@@ -5,6 +5,14 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.9] - 2026-04-16
+
+### Fixed
+
+- **Gate now handles multiline Bash commands** — heredoc-style git commits (`git commit -m "$(cat <<'EOF'..."`) were blocked because the command parser read all lines instead of just the first. Now only the first line is parsed for the command prefix.
+
+---
+
 ## [2.0.8] - 2026-04-15
 
 ### Fixed

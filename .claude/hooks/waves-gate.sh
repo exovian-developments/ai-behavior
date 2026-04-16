@@ -89,14 +89,15 @@ fi
 
 # --- Whitelist: read-only Bash commands are always allowed ---
 if [ "$TOOL_NAME" = "Bash" ] && [ -n "$COMMAND" ]; then
-  # Extract the first word/command from the Bash command
-  FIRST_CMD=$(echo "$COMMAND" | sed 's/^[[:space:]]*//' | cut -d' ' -f1 | cut -d'/' -f1)
+  # Extract the first word/command from the Bash command (first line only — heredocs have newlines)
+  FIRST_LINE=$(echo "$COMMAND" | head -1)
+  FIRST_CMD=$(echo "$FIRST_LINE" | sed 's/^[[:space:]]*//' | cut -d' ' -f1 | cut -d'/' -f1)
 
   # Read-only commands that never modify state
   case "$FIRST_CMD" in
     git)
       # Allow read-only git subcommands + essential git workflow
-      GIT_SUB=$(echo "$COMMAND" | sed 's/^[[:space:]]*git[[:space:]]*//' | cut -d' ' -f1)
+      GIT_SUB=$(echo "$FIRST_LINE" | sed 's/^[[:space:]]*git[[:space:]]*//' | cut -d' ' -f1)
       case "$GIT_SUB" in
         status|log|diff|show|branch|remote|tag|ls-files|blame|shortlog|describe|rev-parse|config|stash)
           echo '{}'
