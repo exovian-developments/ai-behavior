@@ -5,9 +5,13 @@
 # Logic:
 #   No blueprint → allow everything (project in shaping phase)
 #   Blueprint exists → Waves enforcement activates:
-#     No roadmap → BLOCK (exit 2)
-#     No logbook → BLOCK (exit 2)
+#     No roadmap → BLOCK (except ai_files/ writes and read-only Bash)
+#     No logbook → BLOCK (except ai_files/ writes and read-only Bash)
 #     All artifacts present → ALLOW + inject decision classification reminder
+#
+# Whitelisted always:
+#   - Edit/Write targeting ai_files/ (framework artifacts, not code)
+#   - Read-only Bash commands (git status, ls, grep, etc.)
 #
 # Input: stdin JSON with {tool_name, tool_input} from PreToolUse event
 # Output: JSON with {additionalContext} or exit 2 to block
@@ -31,6 +35,69 @@ fi
 if ! command -v jq &> /dev/null; then
   echo '{}'
   exit 0
+fi
+
+# --- Extract tool info ---
+TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty' 2>/dev/null)
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
+
+# --- Whitelist: writes to ai_files/ are always allowed ---
+# Framework artifacts (blueprints, roadmaps, logbooks, schemas, manifests) are not code.
+# The agent must be able to create logbooks, update roadmaps, etc. without a logbook existing.
+if [ "$TOOL_NAME" = "Edit" ] || [ "$TOOL_NAME" = "Write" ]; then
+  if [[ "$FILE_PATH" == */ai_files/* ]] || [[ "$FILE_PATH" == ai_files/* ]]; then
+    echo '{}'
+    exit 0
+  fi
+fi
+
+# --- Whitelist: read-only Bash commands are always allowed ---
+if [ "$TOOL_NAME" = "Bash" ] && [ -n "$COMMAND" ]; then
+  # Extract the first word/command from the Bash command
+  FIRST_CMD=$(echo "$COMMAND" | sed 's/^[[:space:]]*//' | cut -d' ' -f1 | cut -d'/' -f1)
+
+  # Read-only commands that never modify state
+  case "$FIRST_CMD" in
+    git)
+      # Allow read-only git subcommands
+      GIT_SUB=$(echo "$COMMAND" | sed 's/^[[:space:]]*git[[:space:]]*//' | cut -d' ' -f1)
+      case "$GIT_SUB" in
+        status|log|diff|show|branch|remote|tag|ls-files|blame|shortlog|describe|rev-parse|config)
+          echo '{}'
+          exit 0
+          ;;
+      esac
+      ;;
+    ls|tree|cat|head|tail|grep|rg|find|wc|file|which|echo|printf|type|pwd|date|whoami|env|printenv)
+      echo '{}'
+      exit 0
+      ;;
+    dart|flutter)
+      # dart analyze, flutter analyze — read-only analysis
+      if echo "$COMMAND" | grep -qE 'analyze|--version|pub\s+deps'; then
+        echo '{}'
+        exit 0
+      fi
+      ;;
+    brew|node|python|python3|ruby|java|go|rustc|cargo)
+      # Version checks and package info
+      if echo "$COMMAND" | grep -qE '\-\-version|\-v$|--help|list|info|which'; then
+        echo '{}'
+        exit 0
+      fi
+      ;;
+    curl)
+      # curl for downloading (used by Homebrew SHA checks etc.)
+      echo '{}'
+      exit 0
+      ;;
+    shasum|md5|sha256sum)
+      # Hash verification
+      echo '{}'
+      exit 0
+      ;;
+  esac
 fi
 
 # --- Check Blueprint (the inflection point) ---

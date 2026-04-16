@@ -5,6 +5,15 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.4] - 2026-04-15
+
+### Fixed
+
+- **Gate deadlock resolved** — the gate no longer blocks the creation of its own prerequisites. Writes to `ai_files/` are always allowed (framework artifacts, not code), so logbooks, roadmaps, blueprints, and other Waves artifacts can be created even when a logbook doesn't exist yet.
+- **Read-only Bash whitelisted** — commands like `git status`, `git log`, `git diff`, `ls`, `tree`, `grep`, `cat`, `dart analyze` are always allowed regardless of logbook state. The gate only blocks Bash commands that modify state (`git commit`, `git push`, `rm`, etc.).
+
+---
+
 ## [2.0.3] - 2026-04-15
 
 ### Added
