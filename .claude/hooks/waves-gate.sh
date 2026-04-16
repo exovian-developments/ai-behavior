@@ -42,14 +42,49 @@ TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty' 2>/dev/null)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
 COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
 
-# --- Whitelist: writes to ai_files/ are always allowed ---
-# Framework artifacts (blueprints, roadmaps, logbooks, schemas, manifests) are not code.
-# The agent must be able to create logbooks, update roadmaps, etc. without a logbook existing.
+# --- Consent bypass: .claude/waves-gate-bypass disables blocking ---
+# For projects in transition (1.x → 2.0) or working without full artifacts.
+# The user creates this file explicitly to opt out of blocking.
+# Classification reminder is still injected.
+if [ -f "$PROJECT_DIR/.claude/waves-gate-bypass" ]; then
+  echo '{}'
+  exit 0
+fi
+
+# --- Whitelist: framework and config files are never blocked ---
+# These are infrastructure, not implementation code.
 if [ "$TOOL_NAME" = "Edit" ] || [ "$TOOL_NAME" = "Write" ]; then
+  BASENAME=$(basename "$FILE_PATH" 2>/dev/null)
+
+  # ai_files/ — Waves artifacts (blueprints, roadmaps, logbooks, schemas, manifests)
   if [[ "$FILE_PATH" == */ai_files/* ]] || [[ "$FILE_PATH" == ai_files/* ]]; then
     echo '{}'
     exit 0
   fi
+
+  # .claude/ — Claude configuration (settings, commands, hooks)
+  if [[ "$FILE_PATH" == */.claude/* ]] || [[ "$FILE_PATH" == .claude/* ]]; then
+    echo '{}'
+    exit 0
+  fi
+
+  # CLAUDE.md — Agent Operating Protocol
+  if [[ "$BASENAME" == "CLAUDE.md" ]] || [[ "$BASENAME" == "claude.md" ]]; then
+    echo '{}'
+    exit 0
+  fi
+
+  # Root-level documentation and config files
+  if [[ "$BASENAME" == *.md ]] && [[ "$FILE_PATH" != */* || "$FILE_PATH" == ./* ]]; then
+    echo '{}'
+    exit 0
+  fi
+  case "$BASENAME" in
+    .gitignore|.gitattributes|package.json|package-lock.json|pubspec.yaml|pubspec.lock|tsconfig.json|Makefile|Dockerfile|docker-compose.yml|.env.example)
+      echo '{}'
+      exit 0
+      ;;
+  esac
 fi
 
 # --- Whitelist: read-only Bash commands are always allowed ---
@@ -145,7 +180,7 @@ for logbook in "$AI_FILES"/waves/*/logbooks/*.json; do
 done
 
 if [ "$LOGBOOK_EXISTS" = false ]; then
-  echo "Waves: This project has a blueprint and roadmap but no logbook. Create one for your task: /waves:logbook-create" >&2
+  echo "Waves: This project has a blueprint and roadmap but no logbook. Create one: /waves:logbook-create — To bypass: touch .claude/waves-gate-bypass" >&2
   exit 2
 fi
 

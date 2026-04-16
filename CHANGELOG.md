@@ -5,6 +5,15 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.7] - 2026-04-15
+
+### Fixed
+
+- **Gate whitelist expanded** — CLAUDE.md, `.claude/*`, root-level `*.md` files, and common config files (package.json, pubspec.yaml, tsconfig.json, Dockerfile, .gitignore, etc.) are now always allowed. The gate only blocks source code edits without a logbook.
+- **Consent-based bypass** — create `.claude/waves-gate-bypass` to disable blocking entirely. For projects in transition from 1.x or working without full artifacts. The block message now includes the bypass instruction.
+
+---
+
 ## [2.0.6] - 2026-04-15
 
 ### Fixed
