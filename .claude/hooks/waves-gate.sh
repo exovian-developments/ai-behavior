@@ -61,10 +61,14 @@ if [ -f "$PENDING_FILE" ]; then
   fi
 fi
 if [ -f "$PENDING_FILE" ]; then
-  # Allow ai_files/ writes (to update logbook with "delegated" note)
+  # Allow ai_files/ writes AND clear the marker (delegation assumed complete)
+  # The agent spawns the subagent (Agent tool, not blocked), then writes to
+  # any ai_files/ artifact. This clears the marker so the agent can continue.
+  # Works even without an active logbook (can write to roadmap, blueprint, etc.)
   if [ "$TOOL_NAME" = "Edit" ] || [ "$TOOL_NAME" = "Write" ]; then
     FILE_PATH_CHECK=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
     if [[ "$FILE_PATH_CHECK" == */ai_files/* ]] || [[ "$FILE_PATH_CHECK" == ai_files/* ]]; then
+      rm -f "$PENDING_FILE" 2>/dev/null
       echo '{}'
       exit 0
     fi

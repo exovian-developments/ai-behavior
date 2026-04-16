@@ -5,6 +5,15 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] - 2026-04-16
+
+### Fixed
+
+- **Gate clears marker on first ai_files/ write** — previously the marker required a logbook edit to clear, which failed when no logbook was active. Now ANY write to ai_files/ (roadmap, blueprint, logbook) clears the marker, so the agent can continue working immediately after delegating the subagent.
+- **No logbook required for metacognition flow** — all three metacognition hooks now say "write to any ai_files/ artifact" instead of "update the logbook." Works in sessions without an active logbook (e.g., blueprint refinement).
+
+---
+
 ## [2.1.0] - 2026-04-16
 
 ### Added
