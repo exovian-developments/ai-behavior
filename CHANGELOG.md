@@ -5,6 +5,19 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.5] - 2026-04-15
+
+### Added
+
+- **`/waves:upgrade` command** — updates the Agent Operating Protocol in CLAUDE.md to the latest version. Intelligently finds and replaces the Waves protocol block while preserving user-added content. Required after running `waves upgrade` in terminal.
+- **Post-upgrade instruction** — `waves upgrade` now prints a clear message telling users to run `/waves:upgrade` in Claude Code to complete the update. Without this step, CLAUDE.md may be inconsistent with installed hooks.
+
+### Changed
+
+- **settings.json always overwrites on upgrade** — settings.json is framework infrastructure (like schemas and commands), not user configuration. The upgrade now always installs the latest version instead of preserving outdated configs.
+
+---
+
 ## [2.0.4] - 2026-04-15
 
 ### Fixed

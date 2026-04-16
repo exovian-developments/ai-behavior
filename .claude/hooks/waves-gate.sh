@@ -60,10 +60,16 @@ if [ "$TOOL_NAME" = "Bash" ] && [ -n "$COMMAND" ]; then
   # Read-only commands that never modify state
   case "$FIRST_CMD" in
     git)
-      # Allow read-only git subcommands
+      # Allow read-only git subcommands + essential git workflow
       GIT_SUB=$(echo "$COMMAND" | sed 's/^[[:space:]]*git[[:space:]]*//' | cut -d' ' -f1)
       case "$GIT_SUB" in
-        status|log|diff|show|branch|remote|tag|ls-files|blame|shortlog|describe|rev-parse|config)
+        status|log|diff|show|branch|remote|tag|ls-files|blame|shortlog|describe|rev-parse|config|stash)
+          echo '{}'
+          exit 0
+          ;;
+        add|commit|push|pull|fetch|merge|rebase|checkout|switch|restore|cherry-pick)
+          # Git workflow commands — always allowed. The gate protects code CREATION,
+          # not version control operations on already-written code.
           echo '{}'
           exit 0
           ;;

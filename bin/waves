@@ -11,7 +11,7 @@
 
 set -e
 
-VERSION="2.0.4"
+VERSION="2.0.5"
 
 # Colors for output
 RED='\033[0;31m'
@@ -584,18 +584,10 @@ cmd_upgrade() {
                 echo -e "  ${GREEN}✓${NC} $hook_count hooks updated"
             fi
 
-            # Update settings.json
+            # Update settings.json (always overwrite — framework infrastructure, not user config)
             if [ -f "$data_dir/.claude/settings.json" ]; then
-                if [ ! -f ".claude/settings.json" ]; then
-                    cp "$data_dir/.claude/settings.json" ".claude/settings.json"
-                    echo -e "  ${GREEN}✓${NC} settings.json installed (hooks configuration)"
-                elif ! grep -q '"type": "prompt"' ".claude/settings.json" 2>/dev/null; then
-                    # Upgrade: add mandatory artifact loading prompt hook (v2.0.2)
-                    cp "$data_dir/.claude/settings.json" ".claude/settings.json"
-                    echo -e "  ${GREEN}✓${NC} settings.json updated (added mandatory artifact loading)"
-                else
-                    echo -e "  ${CYAN}✓${NC} settings.json preserved (already exists)"
-                fi
+                cp "$data_dir/.claude/settings.json" ".claude/settings.json"
+                echo -e "  ${GREEN}✓${NC} settings.json updated (hooks configuration)"
             fi
         fi
 
@@ -630,6 +622,18 @@ cmd_upgrade() {
 
     echo ""
     echo -e "${GREEN}${BOLD}Upgrade complete!${NC} (v${VERSION})"
+
+    # Post-upgrade instruction
+    if $has_claude || $has_ai_files; then
+        echo ""
+        echo -e "${YELLOW}${BOLD}Important:${NC} To finish the upgrade, open Claude Code in this project and run:"
+        echo ""
+        echo -e "  ${CYAN}/waves:upgrade${NC}"
+        echo ""
+        echo -e "This updates the Agent Operating Protocol in CLAUDE.md with the latest"
+        echo -e "decision classification, metacognition, and enforcement rules."
+        echo -e "Without this step, your CLAUDE.md may be inconsistent with the installed hooks."
+    fi
 }
 
 # Main entry point
