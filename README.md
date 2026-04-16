@@ -177,12 +177,13 @@ cp waves/schemas/*.json your-project/ai_files/schemas/
 ```bash
 # With Homebrew:
 brew upgrade waves
-cd your-project && waves update
+cd your-project && waves upgrade
 
-# Or from local clone:
-cd your-project
-/path/to/waves/bin/waves update
+# Then in Claude Code:
+/waves:upgrade
 ```
+
+> Both steps are required. `waves upgrade` updates schemas, commands, hooks, and settings. `/waves:upgrade` updates the Agent Operating Protocol in CLAUDE.md. Without both, your project may be in an inconsistent state.
 
 ### 2. Initialize
 
@@ -230,6 +231,7 @@ Update progress, change objective statuses, add new objectives discovered during
 | `/waves:manifest-update` | Update existing manifest with changes | 🟢 Ready |
 | `/waves:rules-create` | Extract coding rules from codebase | 🟢 Ready |
 | `/waves:rules-update` | Update rules based on code changes | 🟢 Ready |
+| `/waves:upgrade` | Update Agent Operating Protocol in CLAUDE.md after `waves upgrade` | 🟢 Ready |
 | `/waves:user-pref-create` | Create detailed user preferences | 🟢 Ready |
 | `/waves:user-pref-update` | Edit existing preferences | 🟢 Ready |
 | `/waves:logbook-create` | Create new development logbook | 🟢 Ready |
