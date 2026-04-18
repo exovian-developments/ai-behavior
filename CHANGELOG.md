@@ -5,6 +5,14 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.3] - 2026-04-18
+
+### Fixed
+
+- **Circular metacognition re-trigger** — writing "delegated" to a logbook would trigger the metacognition hook again, which detected a stale count mismatch (from absolute vs relative path hashing) and re-created the pending marker, causing an infinite block loop. Fixed with: (1) path normalization before hashing, (2) 60-second cooldown after gate clears a marker — during cooldown, metacognition skips without re-triggering.
+
+---
+
 ## [2.1.2] - 2026-04-18
 
 ### Added

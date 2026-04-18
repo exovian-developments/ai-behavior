@@ -69,6 +69,8 @@ if [ -f "$PENDING_FILE" ]; then
     FILE_PATH_CHECK=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
     if [[ "$FILE_PATH_CHECK" == */ai_files/* ]] || [[ "$FILE_PATH_CHECK" == ai_files/* ]]; then
       rm -f "$PENDING_FILE" 2>/dev/null
+      # Write cooldown to prevent metacognition hook from re-creating marker
+      touch "/tmp/waves-metacognition-cooldown" 2>/dev/null
       echo '{}'
       exit 0
     fi

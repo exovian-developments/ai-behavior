@@ -39,14 +39,32 @@ fi
 # Simple heuristic: count main objectives with "achieved" status
 MAIN_COMPLETED=$(jq '[.objectives.main[] | select(.status == "achieved" or .status == "completed")] | length' "$FILE" 2>/dev/null || echo 0)
 
+# Normalize file path to prevent hash mismatches (absolute vs relative)
+NORM_FILE=$(cd "$(dirname "$FILE")" 2>/dev/null && echo "$(pwd)/$(basename "$FILE")" || echo "$FILE")
+
 # Read a marker file to track last known count
 MARKER_DIR="/tmp/waves-metacognition"
 mkdir -p "$MARKER_DIR" 2>/dev/null
-MARKER_FILE="$MARKER_DIR/$(echo "$FILE" | md5 2>/dev/null || echo "$FILE" | md5sum 2>/dev/null | cut -d' ' -f1)"
+MARKER_FILE="$MARKER_DIR/$(echo "$NORM_FILE" | md5 2>/dev/null || echo "$NORM_FILE" | md5sum 2>/dev/null | cut -d' ' -f1)"
 LAST_COUNT=$(cat "$MARKER_FILE" 2>/dev/null || echo 0)
 
 # Update marker
 echo "$MAIN_COMPLETED" > "$MARKER_FILE"
+
+# Cooldown: skip if metacognition was recently delegated (prevents circular re-trigger)
+COOLDOWN_FILE="/tmp/waves-metacognition-cooldown"
+if [ -f "$COOLDOWN_FILE" ]; then
+  if [ "$(uname)" = "Darwin" ]; then
+    COOLDOWN_AGE=$(( $(date +%s) - $(stat -f %m "$COOLDOWN_FILE") ))
+  else
+    COOLDOWN_AGE=$(( $(date +%s) - $(stat -c %Y "$COOLDOWN_FILE") ))
+  fi
+  if [ "$COOLDOWN_AGE" -lt 60 ]; then
+    echo '{}'
+    exit 0
+  fi
+  rm -f "$COOLDOWN_FILE"
+fi
 
 # If count increased, a main objective was just completed
 if [ "$MAIN_COMPLETED" -gt "$LAST_COUNT" ]; then
