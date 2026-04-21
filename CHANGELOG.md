@@ -5,6 +5,14 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.6] - 2026-04-21
+
+### Changed
+
+- **`/waves:upgrade` is now incremental and version-aware** — reads `.claude/waves-version` and executes only the migrations needed to go from the local version to the current version. Each migration has its own narrative (shown only when relevant), configuration questions (asked only if settings are missing), and artifact patches (applied only if fields are missing). Old projects (pre-2.1.2, no version file) get all migrations. Projects already up to date get "Already up to date." The Agent Operating Protocol in CLAUDE.md now includes rule scope governance and cross-vertical serendipity detection in metacognition.
+
+---
+
 ## [2.1.5] - 2026-04-21
 
 ### Added

@@ -1,113 +1,188 @@
-# /waves:upgrade — Complete the Waves upgrade after running `waves upgrade` in terminal
+# /waves:upgrade — Incremental upgrade with version-aware migrations
 
-You are completing a Waves upgrade. The terminal command already updated schemas, commands, hooks, and settings. Your job is to update what requires intelligence: CLAUDE.md and user preferences.
+You are completing a Waves upgrade. The terminal command (`waves upgrade`) already updated schemas, commands, hooks, and settings. Your job is to apply intelligent migrations: update CLAUDE.md, patch artifacts with new fields, configure new settings, and show the user what changed — ALL based on their current version.
 
-## Step 1: Read current state
+## Step 1: Detect version and language
 
-1. Read `ai_files/user_pref.json` (or `user_pref.json`). Extract `preferred_language`. If not found, use English.
-2. Read `CLAUDE.md` if it exists.
+1. Read `.claude/waves-version`. If missing, set `local_version = "0.0.0"` (pre-upgrade project).
+2. Set `current_version = "2.1.5"`.
+3. Read `ai_files/user_pref.json` (or `user_pref.json`). Extract `preferred_language`. If not found, use English.
 
 **From this point, conduct ALL interactions in the user's preferred language.**
 
-## Step 2: Show What's New
+4. If `local_version == current_version`:
+   ```
+   ✅ Already up to date (v2.1.5). No migrations needed.
+   ```
+   → EXIT
 
-Display this narrative summary (translate to user's language):
+5. Display:
+   ```
+   Waves upgrade: v[local_version] → v[current_version]
+   Applying [count] migrations...
+   ```
 
+## Step 2: Execute migrations in order
+
+Execute ONLY the migrations where `version > local_version`. Skip all others. Execute in ascending version order.
+
+---
+
+### Migration: 2.0.0
+
+**Narrative:**
 ```
-=== Waves 2.1 — What's New ===
+WAVES 2.0 — Product Consciousness Framework
 
-Your AI agent just got smarter about your business.
+Your AI agent is no longer just an executor. With 2.0, it becomes a
+strategic advisor with mechanical enforcement:
 
-1. BACKGROUND METACOGNITION
-   When you complete a primary objective, modify your blueprint, or finish a
-   roadmap phase, Waves now automatically launches a background analysis.
-   A second agent reads your entire project snapshot (blueprint, roadmaps,
-   logbooks) and looks for three things:
-   - Blockers: missing prerequisites that will prevent upcoming work
-   - Design improvements: things your plan doesn't contemplate but should
-   - Effort savings: faster paths to your product's mission
-   You keep working. If the analysis finds something critical, you'll be
-   alerted. If not, it's noted silently and you continue uninterrupted.
-
-2. MECHANICAL ROADMAP PROGRESS
-   Your roadmap now automatically receives progress notes when primary
-   objectives complete — even if you never finish the logbook. If priorities
-   shift and you abandon a logbook, the roadmap still knows exactly how far
-   you got (e.g., "main 2/3, secondary 4/7"). No more silent gaps.
-
-3. SMARTER GATE
-   The gate no longer blocks you from reading code, running git commands,
-   or creating Waves artifacts. It only blocks source code changes when
-   you don't have a logbook. And if you need to bypass it temporarily,
-   you can: touch .claude/waves-gate-bypass
-
-4. SESSION AWARENESS
-   Every session starts with your agent reading the full blueprint, active
-   roadmaps, active logbooks, rules, and manifest — automatically. No more
-   "what project is this?" at the start of every conversation.
-
-===
+- 7 hooks enforce rules that can't be ignored (no more degrading CLAUDE.md)
+- 5-level decision classification (the agent knows when to proceed and when to stop)
+- The agent starts every session informed of your product state
 ```
 
-## Step 3: Configuration questions (only if settings are missing)
+**CLAUDE.md:** Update required (will be applied at the end).
 
-Read `ai_files/user_pref.json` and check for missing settings. ONLY ask questions for settings that don't exist yet. If all settings exist, skip to Step 4.
+---
 
-### Check: agent_config.metacognition_model
+### Migration: 2.0.7
 
-IF `agent_config.metacognition_model` does NOT exist in user_pref.json:
+**Narrative:**
+```
+SMARTER GATE
 
+The gate no longer blocks reading, git operations, or framework artifact
+creation. It only blocks source code changes without a logbook. And if you
+need to bypass it: touch .claude/waves-gate-bypass
+```
+
+**No artifact patches. No questions.**
+
+---
+
+### Migration: 2.1.0
+
+**Narrative:**
+```
+BACKGROUND METACOGNITION
+
+When you complete primary objectives, modify the blueprint, or finish a
+roadmap phase, a background analysis now runs automatically. A second agent
+reads your entire project snapshot and looks for blockers, design improvements,
+and effort savings. You keep working — only interrupted if something critical
+is found.
+
+MECHANICAL ROADMAP PROGRESS
+
+Your roadmap automatically receives progress notes when objectives complete —
+even if the logbook is never finished. No more silent gaps when priorities shift.
+```
+
+**Question (only if `agent_config.metacognition_model` is missing from user_pref.json):**
 ```
 NEW SETTING: Metacognition Model
 
-The background analysis that runs after objectives, blueprint changes,
-and phase completions uses a separate AI model. You can choose which one:
+The background analysis uses a separate AI model. Choose:
 
-  opus   — Deepest analysis. Best for complex products with many
-           capabilities and dependencies. (recommended)
-  sonnet — Good balance of speed and depth. Works well for most projects.
-  haiku  — Fastest and lightest. Basic checks only.
+  opus   — Deepest analysis. Recommended for complex products. (default)
+  sonnet — Balance of speed and depth. Good for most projects.
+  haiku  — Fastest. Basic checks only.
 
-Which model for metacognition? (opus/sonnet/haiku) [default: opus]:
+Which model? (opus/sonnet/haiku) [default: opus]:
+```
+Store as `agent_config.metacognition_model` in user_pref.json.
+
+---
+
+### Migration: 2.1.4
+
+**Narrative:**
+```
+RULE GOVERNANCE (ecosystem / local)
+
+Rules now have a scope field: "ecosystem" (shared across all projects in
+your organization, not modifiable locally) or "local" (specific to this
+project). This enables consistent governance across multiple projects while
+keeping project-specific rules isolated.
 ```
 
-Store the answer as `agent_config.metacognition_model` in user_pref.json. If user presses Enter or says "default", store "opus".
+**Artifact patch: project_rules.json**
+Read `ai_files/project_rules.json` (or `project_rules.json`). If it exists:
+- Check if any rule is missing the `scope` field.
+- If rules are missing scope, tell the user:
+  ```
+  Your project_rules.json has rules without the "scope" field (new in 2.1.4).
+  Each rule needs scope: "ecosystem" (shared across all projects) or "local"
+  (this project only).
 
-IF the setting already exists, do NOT ask. Just note it in the summary.
+  Would you like me to:
+  1. Set all existing rules to "local" (safe default — you reclassify later)
+  2. Review each rule and ask you (takes longer but accurate)
+  ```
+- Apply based on user's choice.
 
-## Step 4: Update CLAUDE.md
+---
+
+### Migration: 2.1.5
+
+**Narrative:**
+```
+PRODUCT LIVING MEMORY
+
+Your blueprint now has recent_context and history_summary — a rolling
+narrative of your product's evolution. Strategic events (capability changes,
+market discoveries, metacognition findings) are captured here. When context
+exceeds 20 entries, it compacts to history_summary. The agent reads this at
+session start to understand not just WHAT the product is, but what has been
+HAPPENING with it.
+
+SERENDIPITY DETECTION
+
+Metacognition now explicitly looks for cross-vertical opportunities: does
+what you're building directly solve an operational problem in another area
+or business vertical you haven't considered?
+```
+
+**Artifact patch: blueprint.json**
+Read the blueprint (`ai_files/blueprint.json` or `ai_files/product_blueprint.json` or `blueprint.json`). If it exists:
+- If `recent_context` field is missing: add `"recent_context": []`
+- If `history_summary` field is missing: add `"history_summary": []`
+- Show: `Blueprint patched: added recent_context and history_summary`
+
+---
+
+## Step 3: Update CLAUDE.md (once, at the end)
 
 1. Read `CLAUDE.md` in the project root.
 
-2. Look for the section that starts with `# Waves Framework — Agent Operating Protocol`.
+2. Look for `# Waves Framework — Agent Operating Protocol`.
 
-3. IF FOUND:
-   - Identify where the Waves protocol block starts (`# Waves Framework — Agent Operating Protocol`)
-   - Identify where it ends (the next `# ` H1 heading, or `---` followed by non-Waves content, or end of file)
-   - Preserve everything OUTSIDE the Waves protocol block
-   - Replace the Waves protocol block with the LATEST version below
+3. IF FOUND: replace the entire protocol block (from `# Waves Framework` to the next `# ` H1 or end of file) with the LATEST version below. Preserve everything outside.
 
-4. IF NOT FOUND:
-   - Prepend the protocol block at the top of CLAUDE.md
+4. IF NOT FOUND: prepend at the top.
 
-5. IF CLAUDE.md DOES NOT EXIST:
-   - Create it with the protocol block
+5. IF CLAUDE.md doesn't exist: create it.
 
-## Step 5: Show upgrade summary
+## Step 4: Write version marker
+
+Write `current_version` to `.claude/waves-version`.
+
+## Step 5: Show summary
 
 ```
-=== Upgrade Complete ===
+=== Upgrade Complete: v[local_version] → v[current_version] ===
 
-What was updated:
-  CLAUDE.md — Agent Operating Protocol updated to v2.1
-  [If metacognition_model was set:] user_pref.json — Metacognition model: [model]
-  [If metacognition_model already existed:] user_pref.json — Metacognition model already configured: [model]
+Migrations applied:
+  [List each migration version and one-line summary]
 
-What's ready:
-  - 7 hooks active (perception, gate, enforcement, metacognition x3, dart-analyze)
-  - Background metacognition will trigger on objective/blueprint/phase changes
-  - Roadmap receives automatic progress notes
-  - Gate allows reading and artifact creation without logbook
+Artifacts patched:
+  [List each file and what was added]
+
+Settings configured:
+  [List each setting and its value]
+
+CLAUDE.md: Agent Operating Protocol updated to v2.1
 
 Restart your Claude Code session to activate the new hooks.
 ===
@@ -185,6 +260,7 @@ Information flows DOWNWARD. Never duplicate detail upward. If you need strategic
 2. **Reference the blueprint** when discussing features — mention which capability you're supporting
 3. **Update the logbook** when completing objectives or making decisions — context entries preserve institutional knowledge
 4. **Check the roadmap** to understand priorities and dependencies before starting a new milestone
+5. **Respect rule scope** — rules with `scope: "ecosystem"` are organizational governance and must NOT be modified locally. Only `scope: "local"` rules can be changed.
 
 ### When Something Doesn't Fit
 - If you're asked to build something that **doesn't trace to any blueprint capability** → alert: "This work doesn't appear in the blueprint. Should we add it via a Blueprint Refinement, or is this out of scope?"
@@ -238,7 +314,7 @@ Every decision you make must be classified by impact level. When hooks are activ
 ### Metacognition Checkpoints
 
 At these moments, a background analysis runs automatically. If critical findings are detected, you will be interrupted:
-- **Primary objective completed** → Background agent analyzes for blockers, design improvements, and effort savings
+- **Primary objective completed** → Background agent analyzes for blockers, design improvements, effort savings, and cross-vertical opportunities
 - **Blueprint changed** → Background agent projects cascading impacts on roadmaps and logbooks
 - **Roadmap phase completed** → Background agent performs strategic readiness audit for the next phase
 
@@ -248,6 +324,7 @@ At these moments, a background analysis runs automatically. If critical findings
 - You **alert on gaps** — missing artifacts, untracked work, misaligned tasks
 - You **follow the order** — don't skip from idea to code without the intermediate artifacts
 - You **classify decisions** — you know when to proceed and when to stop
+- You **respect governance** — ecosystem rules are read-only, local rules are yours to manage
 - You **reference artifacts** — "This implements capability #3 from the blueprint" instead of just "I added the feature"
 - You **preserve context** — update logbooks with decisions and learnings so the next session (or the next agent) doesn't start blind
 - You **don't invent** — if the blueprint doesn't mention it, ask before building it
