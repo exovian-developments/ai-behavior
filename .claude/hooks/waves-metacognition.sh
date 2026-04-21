@@ -83,17 +83,38 @@ if [ "$MAIN_COMPLETED" -gt "$LAST_COUNT" ]; then
   # Get the completed objective's content
   OBJ_CONTENT=$(jq -r --argjson last "$LAST_COUNT" '[.objectives.main[] | select(.status == "achieved" or .status == "completed")][$last].content // "objective completed"' "$FILE" 2>/dev/null)
 
-  if [ -f "$ROADMAP" ]; then
-    # Build objective status snapshot from the logbook
-    MAIN_TOTAL=$(jq '[.objectives.main[]] | length' "$FILE" 2>/dev/null || echo 0)
-    MAIN_ACHIEVED=$(jq '[.objectives.main[] | select(.status == "achieved" or .status == "completed")] | length' "$FILE" 2>/dev/null || echo 0)
-    SEC_TOTAL=$(jq '[.objectives.secondary[]] | length' "$FILE" 2>/dev/null || echo 0)
-    SEC_ACHIEVED=$(jq '[.objectives.secondary[] | select(.status == "achieved" or .status == "completed")] | length' "$FILE" 2>/dev/null || echo 0)
+  # Build objective status snapshot
+  MAIN_TOTAL=$(jq '[.objectives.main[]] | length' "$FILE" 2>/dev/null || echo 0)
+  MAIN_ACHIEVED=$(jq '[.objectives.main[] | select(.status == "achieved" or .status == "completed")] | length' "$FILE" 2>/dev/null || echo 0)
+  SEC_TOTAL=$(jq '[.objectives.secondary[]] | length' "$FILE" 2>/dev/null || echo 0)
+  SEC_ACHIEVED=$(jq '[.objectives.secondary[] | select(.status == "achieved" or .status == "completed")] | length' "$FILE" 2>/dev/null || echo 0)
 
+  # --- MECHANICAL ROADMAP NOTE (always fires on every objective) ---
+  if [ -f "$ROADMAP" ]; then
     PROGRESS_NOTE="[AUTO] Logbook $LOGBOOK_NAME: primary objective completed — $OBJ_CONTENT. State: main $MAIN_ACHIEVED/$MAIN_TOTAL, secondary $SEC_ACHIEVED/$SEC_TOTAL"
     jq --arg note "$PROGRESS_NOTE" --arg ts "$TIMESTAMP" \
       '.decisions += [{"id": (.decisions | length + 1), "created_at": $ts, "decision": $note}]' \
       "$ROADMAP" > "${ROADMAP}.tmp" 2>/dev/null && mv "${ROADMAP}.tmp" "$ROADMAP"
+  fi
+
+  # --- THROTTLED METACOGNITION (only at threshold intervals) ---
+  # Threshold = floor(total_main / 2), minimum 1
+  # Fires when completed is a multiple of threshold OR when all done
+  THRESHOLD=$((MAIN_TOTAL / 2))
+  [ "$THRESHOLD" -lt 1 ] && THRESHOLD=1
+
+  SHOULD_TRIGGER=false
+  if [ $((MAIN_COMPLETED % THRESHOLD)) -eq 0 ]; then
+    SHOULD_TRIGGER=true
+  fi
+  if [ "$MAIN_COMPLETED" -eq "$MAIN_TOTAL" ]; then
+    SHOULD_TRIGGER=true
+  fi
+
+  if [ "$SHOULD_TRIGGER" = false ]; then
+    # Not at threshold — roadmap note was written, but no subagent needed
+    echo '{}'
+    exit 0
   fi
 
   # --- Write pending marker for gate blocking ---
@@ -133,7 +154,7 @@ if [ "$MAIN_COMPLETED" -gt "$LAST_COUNT" ]; then
     LOGBOOKS="${LOGBOOKS}${LOGBOOKS:+, }$lb"
   done
 
-  MSG="METACOGNITION — Objective completed in $LOGBOOK_NAME. BLOCKED until you delegate.\n\nFirst: update roadmap decisions with OBJECTIVE COMPLETION STATE from this logbook (achieved/in-progress/not-started/blocked counts).\n\nThen:\n1. Spawn background Agent (run_in_background=true, model=$META_MODEL) — COPY THE PROMPT BELOW EXACTLY. Do NOT rewrite, shorten, or paraphrase it.\n2. Write to any ai_files/ artifact — this clears the gate.\n\nWhen subagent returns: CRITICAL → stop and present. No findings → note and continue.\n\nPROMPT (copy as-is into the Agent prompt parameter):\nObjective completed: '$OBJ_CONTENT' in $LOGBOOK_NAME ($MAIN_COMPLETED/$MAIN_TOTAL main done). Read ALL these files completely:\n${BP:-blueprint not found}\n${ROADMAPS:-no roadmaps}\n${LOGBOOKS:-no logbooks}\n\nThink like a business advisor seeing a project snapshot. The team is focused on the immediate task — your job is to see what they cannot.\n1. BLOCKERS: upcoming objectives/capabilities that lack prerequisites. Missing accounts, APIs, infrastructure, legal, design assets? Information gaps that will cause rework? Ambiguities in flows/views?\n2. DESIGN IMPROVEMENTS: does the blueprint promise things the implementation reveals are incomplete? Missing flow steps? Capabilities that need splitting? Dependencies not visible during planning?\n3. EFFORT SAVINGS: external services that eliminate planned work? Architectural changes that simplify multiple phases? Phase reordering that unblocks parallel work? Capabilities to descope without affecting the hypothesis?\n\nReference capability IDs, phase numbers, objective IDs. Start with CRITICAL: if findings, or 'No critical findings.' if none. Under 400 words."
+  MSG="METACOGNITION — Objective completed in $LOGBOOK_NAME ($MAIN_COMPLETED/$MAIN_TOTAL). BLOCKED until you delegate.\n\nFirst: update roadmap decisions with OBJECTIVE COMPLETION STATE from this logbook.\n\nThen:\n1. Spawn background Agent (run_in_background=true, model=$META_MODEL) — COPY THE PROMPT BELOW EXACTLY.\n2. Write to any ai_files/ artifact — this clears the gate.\n\nWhen subagent returns with observations → share with the user. If nothing relevant → note and continue.\n\nPROMPT (copy as-is into the Agent prompt parameter):\nYou are an expert advisor reviewing a project snapshot. A primary objective was just completed: '$OBJ_CONTENT' in logbook $LOGBOOK_NAME (progress: $MAIN_COMPLETED/$MAIN_TOTAL main objectives done).\n\nRead ALL these files:\n${BP:-blueprint not found}\n${ROADMAPS:-no roadmaps}\n${LOGBOOKS:-no logbooks}\n\nNow step back and look at the whole picture. The team is deep in implementation and cannot see what you can see from the outside. Share your honest observations:\n\n- What risks or blockers do you see for what comes next? Are there prerequisites missing that nobody has planned for? Things that will cause rework or delays if not addressed now?\n- Does the current implementation reveal something the blueprint or roadmap didn't anticipate? A missing step, a wrong assumption, a dependency that wasn't visible during planning?\n- Is there a simpler, faster, or cheaper way to achieve what the blueprint promises? An external service, a different architecture, a reordering of work that would save significant effort?\n- SERENDIPITY: did you find something unexpected with independent value? A pattern that could become reusable, a solution that solves a broader problem, an insight that changes how you understand this product?\n\nBe specific — reference capability IDs, phase numbers, objective IDs. If you have observations worth sharing, share them conversationally (not as a checklist). If you genuinely see nothing noteworthy, just say so briefly. Under 400 words."
 
   jq -n --arg ctx "$MSG" '{"additionalContext": $ctx}'
   exit 0
