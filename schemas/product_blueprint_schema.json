@@ -287,6 +287,72 @@
       }
     },
 
+    "recent_context": {
+      "type": "array",
+      "maxItems": 20,
+      "description": "Rolling narrative of the product's evolution. Captures strategic events that shape the product direction: capability changes, market discoveries, architectural pivots, metacognition findings, and cross-session insights. This is the product's living memory — not implementation detail (that belongs in logbooks) nor formal decisions (that belongs in product_decisions).",
+      "$comment": "Write an entry when: (1) a capability is added, removed, or significantly changed, (2) a metacognition analysis reveals something strategic about the product, (3) the product direction shifts based on market feedback or implementation discoveries, (4) a wave completes and the product state changes meaningfully, (5) a Blueprint Refinement session produces insights beyond the formal decision. Do NOT write entries for: implementation progress (use logbook recent_context), phase completion details (use roadmap decisions), or routine updates. Each entry should answer: 'If a new team member reads this, will they understand what happened to this product and why?' Newest entries at index 0. When array exceeds maxItems, compact oldest entries to history_summary via /waves:logbook-update compaction pattern.",
+      "items": {
+        "type": "object",
+        "description": "Single product-level context entry capturing a strategic event or insight.",
+        "$comment": "Keep entries product-level, not implementation-level. Good: 'Capability #3 expanded with governance scope — ecosystem rules shared across all projects. Discovered that this transforms Waves from per-developer to per-organization governance.' Bad: 'Fixed bug in waves-gate.sh line 45.' The first is product evolution. The second is implementation detail that belongs in a logbook.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Unique identifier. Immutable once created.",
+            "$comment": "Start at 1, increment by 1 globally. Never reuse."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp (ISO 8601). Immutable.",
+            "$comment": "Set once at creation. Never modify."
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 1600,
+            "description": "What happened to the product and why it matters. Should provide enough context for a future agent or team member to understand the product's trajectory.",
+            "$comment": "Write at the product level: what changed, why it changed, what it means for the product's mission/vision/hypothesis. Include references to capability IDs, wave numbers, or decision IDs when relevant. Longer than logbook entries (1600 vs 1200 chars) because product-level context needs more narrative to be useful across sessions and team members."
+          }
+        },
+        "required": ["id", "created_at", "content"]
+      },
+      "default": []
+    },
+
+    "history_summary": {
+      "type": "array",
+      "maxItems": 10,
+      "description": "Compacted summaries of entries removed from recent_context. Preserves product history continuity when the rolling window is full.",
+      "$comment": "Write here ONLY when compacting recent_context. Summarize the removed entry in max 280 chars — capture the strategic essence, not the detail. Newest at index 0. If exceeds maxItems, remove oldest. The combination of history_summary + recent_context gives any agent a complete picture: history_summary is 'what happened long ago', recent_context is 'what's happening now'.",
+      "items": {
+        "type": "object",
+        "description": "Compressed summary of a removed recent_context entry.",
+        "$comment": "Capture only the strategic essence: what changed in the product and the single most important consequence. If the original entry had a Level 5 discovery or a market insight, that is what the summary should preserve.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Unique identifier. Immutable.",
+            "$comment": "Start at 1, increment by 1. Separate sequence from recent_context IDs."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp (ISO 8601). Immutable."
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 280,
+            "description": "Compressed strategic summary of the original entry."
+          }
+        },
+        "required": ["id", "created_at", "content"]
+      },
+      "default": []
+    },
+
     "product_roadmaps": {
       "type": "array",
       "description": "Ordered list of roadmaps associated with this product. Most recent roadmap first (prepend-only).",

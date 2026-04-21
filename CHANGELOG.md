@@ -5,6 +5,14 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.5] - 2026-04-21
+
+### Added
+
+- **Product-level `recent_context` and `history_summary`** in `product_blueprint_schema.json` — rolling narrative of the product's evolution. Captures strategic events: capability changes, market discoveries, architectural pivots, metacognition findings. Compacts to history_summary when > 20 entries. Entries are 1600 chars max (longer than logbook's 1200) for richer product-level narrative. Summaries are 280 chars. Both arrays default to empty for backward compatibility.
+
+---
+
 ## [2.1.4] - 2026-04-18
 
 ### Added
