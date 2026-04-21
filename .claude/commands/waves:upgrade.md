@@ -5,14 +5,14 @@ You are completing a Waves upgrade. The terminal command (`waves upgrade`) alrea
 ## Step 1: Detect version and language
 
 1. Read `.claude/waves-version`. If missing, set `local_version = "0.0.0"` (pre-upgrade project).
-2. Set `current_version = "2.1.5"`.
+2. Set `current_version = "{{CURRENT_VERSION}}"`.
 3. Read `ai_files/user_pref.json` (or `user_pref.json`). Extract `preferred_language`. If not found, use English.
 
 **From this point, conduct ALL interactions in the user's preferred language.**
 
 4. If `local_version == current_version`:
    ```
-   ✅ Already up to date (v2.1.5). No migrations needed.
+   ✅ Already up to date (v{{CURRENT_VERSION}}). No migrations needed.
    ```
    → EXIT
 

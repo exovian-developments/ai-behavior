@@ -11,7 +11,7 @@
 
 set -e
 
-VERSION="2.1.6"
+VERSION="2.1.7"
 
 # Colors for output
 RED='\033[0;31m'
@@ -271,14 +271,14 @@ init_claude() {
     done
     echo -e "  ${GREEN}$schema_count schemas copied${NC}"
 
-    # Copy commands
+    # Copy commands (substitute {{CURRENT_VERSION}} placeholder)
     echo ""
     echo -e "${BLUE}Copying slash commands...${NC}"
     local cmd_count=0
     for cmd in "$data_dir/.claude/commands/"*.md; do
         if [ -f "$cmd" ]; then
             local filename=$(basename "$cmd")
-            cp "$cmd" ".claude/commands/$filename"
+            sed "s|{{CURRENT_VERSION}}|$VERSION|g" "$cmd" > ".claude/commands/$filename"
             echo -e "  ${GREEN}+${NC} $filename"
             cmd_count=$((cmd_count + 1))
         fi
@@ -579,11 +579,11 @@ cmd_upgrade() {
             done
             [ $migrated -gt 0 ] && echo -e "  ${GREEN}✓${NC} Removed $migrated legacy ai-behavior commands"
 
-            # Copy latest waves commands
+            # Copy latest waves commands (substitute {{CURRENT_VERSION}} placeholder)
             local cmd_count=0
             for cmd in "$data_dir/.claude/commands/"waves:*.md; do
                 if [ -f "$cmd" ]; then
-                    cp "$cmd" ".claude/commands/$(basename "$cmd")"
+                    sed "s|{{CURRENT_VERSION}}|$VERSION|g" "$cmd" > ".claude/commands/$(basename "$cmd")"
                     cmd_count=$((cmd_count + 1))
                 fi
             done
@@ -637,12 +637,6 @@ cmd_upgrade() {
     else
         echo -e "${CYAN}Not inside a waves project — only global installation was upgraded.${NC}"
         echo -e "To update a project, ${CYAN}cd${NC} into it and run ${CYAN}waves upgrade${NC} again."
-    fi
-
-    # Write local version marker
-    if $has_claude || $has_ai_files; then
-        mkdir -p .claude 2>/dev/null
-        echo "$VERSION" > ".claude/waves-version"
     fi
 
     echo ""

@@ -5,6 +5,19 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.7] - 2026-04-21
+
+### Fixed
+
+- **`waves upgrade` no longer writes `.claude/waves-version` prematurely** — previously, the terminal command bumped the version marker before `/waves:upgrade` had a chance to run migrations. Projects upgrading from older versions (e.g. pre-2.1.2 → 2.1.6) would then see the marker already at the target version and skip all migrations (2.0.0 CLAUDE.md protocol, 2.1.0 metacognition_model question, 2.1.4 rule scope patch, 2.1.5 blueprint recent_context patch). The slash command `/waves:upgrade` now owns the marker exclusively — written only after all migrations complete.
+- **`/waves:upgrade` target version is now auto-synced with the binary** — previously, `current_version` was hardcoded in the slash command markdown, requiring a manual bump on every release (and forgotten for 2.1.6, causing a false "already up to date" message). The slash command now uses a `{{CURRENT_VERSION}}` placeholder that `bin/waves` substitutes from its own `VERSION` at copy time, in both `waves init` and `waves upgrade`.
+
+### Remediation
+
+Projects whose `.claude/waves-version` was prematurely bumped to `2.1.6` (skipping migrations) can be remediated by deleting or downgrading the marker file, then running `/waves:upgrade` in Claude Code. The migrations are idempotent — already-applied patches are detected and skipped.
+
+---
+
 ## [2.1.6] - 2026-04-21
 
 ### Changed
