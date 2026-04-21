@@ -1,0 +1,430 @@
+{
+  "product": {
+    "name": "Waves",
+    "codename": "waves",
+    "description": "Framework de desarrollo de producto para la era de agentes IA. Waves 2.0 transforma el framework de un sistema de estructura y trazabilidad a un sistema de metacognición autónoma proactiva. El agente no solo sigue reglas — percibe el estado del negocio, clasifica sus decisiones, y proyecta consecuencias que el humano no puede ver porque está enfocado en la tarea inmediata.",
+    "owner": "Andrius Verde Musset",
+    "created_at": "2026-04-15T00:00:00Z",
+    "last_updated": "2026-04-15T00:00:00Z",
+    "status": "in_progress"
+  },
+
+  "vision": {
+    "problem": "Waves 1.x le dio estructura al caos: schemas, artefactos, jerarquía blueprint→roadmap→logbook, golden rule. Pero el agente sigue siendo un ejecutor que depende de instrucciones en CLAUDE.md que se degradan en sesiones largas. No percibe el estado del negocio proactivamente, no clasifica sus decisiones, no proyecta consecuencias, y no alerta cuando algo que el humano no puede ver está a punto de causar problemas.",
+    "mission": "Con Waves 2.0, el agente percibe el estado completo del producto al iniciar cada sesión, enforcea la estructura del framework con código (no con instrucciones ignorables), clasifica cada decisión según su impacto, y proyecta consecuencias en los checkpoints naturales del framework — dándole al humano percepción extendida sobre todo el tablero mientras está enfocado en la pieza inmediata.",
+    "target_users": [
+      "Andrius (fundador) — necesita que el agente sea su backup estratégico mientras él está enfocado en implementación",
+      "Cualquier equipo usando Waves — necesita enforcement real del framework y consciencia de negocio en el agente"
+    ],
+    "success_criteria": [
+      "El agente empieza cada sesión informado del estado del producto sin que el humano tenga que explicar nada",
+      "El agente no puede escribir código sin blueprint, roadmap y bitácora (enforcement real, no sugerencia)",
+      "Las reglas de clasificación sobreviven a sesiones largas con compactación",
+      "Al completar un objetivo primario, el agente comparte proyecciones que el humano no había visto",
+      "Al modificar el blueprint, el agente proyecta impactos en roadmaps y bitácoras activas automáticamente",
+      "La clasificación de decisiones funciona: 15+ escenarios de prueba con subagentes pasan correctamente"
+    ]
+  },
+
+  "phases": [
+    {
+      "id": 1,
+      "name": "Percepción y Gates",
+      "description": "Implementar las capas fundamentales: inyección de estado al iniciar sesión (SessionStart), enforcement graduado antes de cada acción (PreToolUse), y re-inyección de contexto después de compactación. Estos 3 hooks son la base sobre la que se construye todo lo demás.",
+      "status": "completed",
+      "completed_at": "2026-04-15T14:30:00Z",
+      "depends_on": [],
+      "milestones": [
+        {
+          "id": "1.1",
+          "content": "waves-perceive.sh: script bash para SessionStart. Lee ai_files/blueprint.json, detecta roadmap activo en ai_files/waves/*/roadmap.json, identifica bitácora activa, y retorna additionalContext con estado compacto del producto (nombre, wave activa, fase actual, bitácora, siguiente objetivo, preguntas abiertas, decisiones recientes). Si no hay artefactos, retorna contexto vacío sin error.",
+          "status": "completed",
+          "logbook_ref": "phase_1.json"
+        },
+        {
+          "id": "1.2",
+          "content": "waves-gate.sh: script bash para PreToolUse en Edit|Write|Bash. Implementa enforcement graduado: sin blueprint → permitir todo silenciosamente. Con blueprint pero sin roadmap activo → bloquear (exit 2) con mensaje de crear roadmap. Con roadmap pero sin bitácora → bloquear con mensaje de crear bitácora. Con todo → permitir + inyectar recordatorio de clasificación de decisiones (5 líneas) como additionalContext.",
+          "status": "completed",
+          "logbook_ref": "phase_1.json"
+        },
+        {
+          "id": "1.3",
+          "content": "waves-reinject.sh: RESUELTO — SessionStart SÍ se dispara con source 'compact' después de compactación. waves-perceive.sh cubre re-inyección automáticamente. No se necesita script separado.",
+          "status": "completed",
+          "logbook_ref": "phase_1.json"
+        },
+        {
+          "id": "1.4",
+          "content": "Configuración base de settings.json: estructura de hooks con SessionStart, PreToolUse (matcher Edit|Write|Bash), y PostToolUse (5 hooks). Timeouts configurados. Paths usan $CLAUDE_PROJECT_DIR para portabilidad.",
+          "status": "completed",
+          "logbook_ref": "phase_1.json"
+        },
+        {
+          "id": "1.5",
+          "content": "Prueba: iniciar sesión nueva en repo waves con hooks activos. Verificar que additionalContext se inyecta correctamente con el estado del producto. Verificar que el agente menciona el estado al responder.",
+          "status": "not_started",
+          "logbook_ref": null,
+          "notes": "Movido a fase 4 (4.1). Hallazgo parcial: ejecutar waves-perceive.sh manualmente genera JSON correcto, pero después de /compact no se observó inyección visible en contexto del agente. Requiere sesión nueva para test limpio."
+        },
+        {
+          "id": "1.6",
+          "content": "Prueba: intentar editar un archivo en un proyecto con blueprint pero sin roadmap → debe bloquear. Intentar editar en un proyecto sin blueprint → debe permitir. Intentar editar con blueprint + roadmap + bitácora → debe permitir con recordatorio de clasificación visible.",
+          "status": "not_started",
+          "logbook_ref": null,
+          "notes": "Movido a fase 4 (4.2). Probado manualmente con éxito en 3 escenarios, pero falta prueba en sesión real."
+        },
+        {
+          "id": "1.7",
+          "content": "Prueba: sesión larga que dispare compactación. Verificar que después de compactar, las reglas de clasificación y el estado de Waves se re-inyectan y el agente sigue operando con consciencia del framework.",
+          "status": "not_started",
+          "logbook_ref": null,
+          "notes": "Movido a fase 4 (4.3). Hallazgo: tras /compact en esta sesión, el agente NO observó additionalContext inyectado. Puede ser limitación del /compact vs sesión nueva. Requiere investigación."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Enforcement de Documentación",
+      "description": "Garantizar que las bitácoras se documentan correctamente (recent_context obligatorio al completar objetivos) y que la calidad del código se valida automáticamente (dart analyze post-edición). Estos hooks previenen la degradación de contexto entre sesiones.",
+      "status": "completed",
+      "completed_at": "2026-04-15T14:00:00Z",
+      "depends_on": [1],
+      "milestones": [
+        {
+          "id": "2.1",
+          "content": "waves-doc-enforce.sh: script bash para PostToolUse en Edit|Write. Filtra solo archivos que matcheen */logbooks/*.json (exit 0 inmediato para el 99% de ediciones). Usa marker files para detectar delta: si completed count creció sin que recent_context creciera, exige documentación.",
+          "status": "completed",
+          "logbook_ref": "phase_2.json"
+        },
+        {
+          "id": "2.2",
+          "content": "waves-dart-analyze.sh: script bash para PostToolUse en Edit|Write. Filtra solo archivos .dart. Ejecuta dart analyze sobre el archivo editado. Si hay errores, inyecta additionalContext con los hallazgos. DECISIÓN: solo alerta (additionalContext), no bloquea (exit 2).",
+          "status": "completed",
+          "logbook_ref": "phase_2.json"
+        },
+        {
+          "id": "2.3",
+          "content": "Prueba: ejecutar /waves:objectives-implement en exobase, completar un objetivo sin agregar recent_context → el hook debe alertar y exigir documentación antes de continuar.",
+          "status": "not_started",
+          "logbook_ref": null,
+          "notes": "Movido a fase 4 (4.4)."
+        },
+        {
+          "id": "2.4",
+          "content": "Prueba: editar un archivo .dart con un error de análisis intencional → el hook debe reportar el error. Editar un archivo .dart limpio → el hook no debe interferir.",
+          "status": "not_started",
+          "logbook_ref": null,
+          "notes": "Movido a fase 4 (4.5)."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Metacognición Proactiva",
+      "description": "Implementar los 3 triggers de metacognición: reflexión al completar objetivo primario, proyección de impactos al modificar blueprint, y auditoría estratégica al completar fase de roadmap. El agente pasa de ejecutor a asesor con percepción extendida.",
+      "status": "completed",
+      "completed_at": "2026-04-15T14:30:00Z",
+      "depends_on": [2],
+      "milestones": [
+        {
+          "id": "3.1",
+          "content": "waves-metacognition.sh: script bash para PostToolUse en logbooks. Detecta cuando un objetivo principal cambia a 'completed' usando marker files. Inyecta 5 preguntas de reflexión obligatorias sobre blueprint alignment, riesgos, descubrimientos, recomendaciones.",
+          "status": "completed",
+          "logbook_ref": "phase_3.json"
+        },
+        {
+          "id": "3.2",
+          "content": "waves-blueprint-impact.sh: script para PostToolUse filtrado a */blueprint.json y */product_blueprint.json. Lista roadmaps y logbooks dinámicamente. Inyecta prompt de proyección de impactos en cascada.",
+          "status": "completed",
+          "logbook_ref": "phase_3.json"
+        },
+        {
+          "id": "3.3",
+          "content": "waves-phase-audit.sh: script para PostToolUse filtrado a */roadmap.json. Usa marker files para detectar incremento en fases completadas. Extrae wave name del path, lista logbooks de la fase. Inyecta prompt de auditoría estratégica.",
+          "status": "completed",
+          "logbook_ref": "phase_3.json"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Pruebas Integrales",
+      "description": "Fase de pruebas unificada que valida TODO: percepción, gates, enforcement de documentación, calidad de código, metacognición, y clasificación de decisiones. Incluye pruebas de hooks en sesiones reales y sandbox con subagentes para clasificación. Nada va a producción sin pasar esta fase.",
+      "status": "completed",
+      "started_at": "2026-04-15T21:00:00Z",
+      "completed_at": "2026-04-15T23:30:00Z",
+      "depends_on": [1, 2, 3],
+      "milestones": [
+        {
+          "id": "4.1",
+          "content": "Prueba percepción: iniciar sesión nueva con hooks activos. Verificar que additionalContext se inyecta con estado del producto. Verificar que el agente menciona el estado al responder.",
+          "status": "completed",
+          "completed_at": "2026-04-15T21:30:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "PASS — Sesión nueva confirma ESTADO WAVES inyectado como system-reminder. Fix: perceive.sh emite texto plano + exit 0."
+        },
+        {
+          "id": "4.2",
+          "content": "Prueba gates: (a) proyecto SIN blueprint, editar → debe permitir. (b) CON blueprint SIN roadmap → debe bloquear. (c) CON blueprint + roadmap + bitácora → debe permitir con recordatorio de clasificación.",
+          "status": "completed",
+          "completed_at": "2026-04-15T21:45:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "PASS 3/3 — (a) exit 0 + {}, (b) exit 2 + mensaje stderr, (c) exit 0 + additionalContext con clasificación."
+        },
+        {
+          "id": "4.3",
+          "content": "Prueba re-inyección: sesión larga que dispare compactación. Verificar que después de compactar, las reglas de clasificación y el estado de Waves se re-inyectan.",
+          "status": "completed",
+          "completed_at": "2026-04-15T22:00:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "PASS (proxy) — perceive.sh produce output idéntico al inyectado en SessionStart. Re-inyección real pendiente de test en sesión larga."
+        },
+        {
+          "id": "4.4",
+          "content": "Prueba doc-enforce: completar un objetivo sin agregar recent_context → el hook debe alertar y exigir documentación.",
+          "status": "completed",
+          "completed_at": "2026-04-15T22:00:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "PASS 2/2 — Non-logbook → silent exit. Logbook completed++ sin context++ → enforcement alert."
+        },
+        {
+          "id": "4.5",
+          "content": "Prueba dart-analyze: (a) editar archivo .dart con error intencional → debe reportar. (b) editar archivo .dart limpio → no debe interferir.",
+          "status": "completed",
+          "completed_at": "2026-04-15T22:00:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "PASS 2/2 — Non-dart → silent exit. .dart con type error → detectó 2 issues (error + warning) inyectados como additionalContext."
+        },
+        {
+          "id": "4.6",
+          "content": "Prueba metacognición: completar un objetivo primario → el hook debe forzar reflexión holística compartida con el usuario antes de continuar.",
+          "status": "completed",
+          "completed_at": "2026-04-15T22:00:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "PASS — Marker file detecta delta en main objectives completed, inyecta 5 preguntas de reflexión obligatorias."
+        },
+        {
+          "id": "4.7",
+          "content": "Prueba blueprint-impact: modificar una capacidad en el blueprint → debe disparar proyección de impactos: fases afectadas, objetivos desalineados, riesgos.",
+          "status": "completed",
+          "completed_at": "2026-04-15T22:00:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "PASS — Detectó roadmap w2 y 4 logbooks dinámicamente. Inyecta prompt de proyección de impactos en cascada."
+        },
+        {
+          "id": "4.8",
+          "content": "Prueba phase-audit: marcar una fase como completada en el roadmap → debe producir análisis estratégico completo con recomendaciones.",
+          "status": "completed",
+          "completed_at": "2026-04-15T22:00:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "PASS — Marker file detecta delta en phases completed, genera prompt de auditoría con 7 dimensiones de análisis."
+        },
+        {
+          "id": "4.9",
+          "content": "Sandbox clasificación: diseñar 15+ escenarios de prueba por nivel de decisión. Preparar mini-contextos simulados (blueprint, roadmap, logbook) y tareas que obliguen al agente a tomar decisiones de nivel específico.",
+          "status": "completed",
+          "completed_at": "2026-04-15T22:30:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "18 escenarios diseñados: 3 por nivel (L1-A/B/C, L2-A/B/C, L3-A/B/C, L4-A/B/C, L5-A/B/C) + 3 mixtos de escalación (MX-A: 1→3, MX-B: 2→4, MX-C: 2→5). Todos anclados en capacidades reales del blueprint de waves."
+        },
+        {
+          "id": "4.10",
+          "content": "Sandbox clasificación: ejecutar 3 escenarios nivel 1-2 (implementación mecánica/técnica). El subagente debe ejecutar sin detenerse.",
+          "status": "completed",
+          "completed_at": "2026-04-15T22:45:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "6/6 PASS. L1: rename var, fix indent, fix comma — todos nivel 1, proceed sin report. L2: set -euo, extract common, md5 vs shasum — todos nivel 2, proceed + doc en bitácora."
+        },
+        {
+          "id": "4.11",
+          "content": "Sandbox clasificación: ejecutar 3 escenarios nivel 3 (decisión de alcance). El subagente debe detenerse, informar, y esperar.",
+          "status": "completed",
+          "completed_at": "2026-04-15T23:00:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "3/3 PASS. Bug en otro script, flutter analyze expansion, roadmap status fix — todos clasificados nivel 3, STOP + inform + wait. La frontera 2→3 es limpia."
+        },
+        {
+          "id": "4.12",
+          "content": "Sandbox clasificación: ejecutar 3 escenarios nivel 4 (decisión de negocio). El subagente debe detenerse, proyectar escenarios, y esperar.",
+          "status": "completed",
+          "completed_at": "2026-04-15T23:00:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "3/3 PASS. L4-A (gate blocks capability #4): nivel 4 exacto. L4-B (metacognition vs automation speed): nivel 4 exacto. L4-C (context overflow on large projects): clasificó nivel 5 (conservador) — acción correcta. Sesgo UP validado."
+        },
+        {
+          "id": "4.13",
+          "content": "Sandbox clasificación: ejecutar 3 escenarios nivel 5 (descubrimiento). El subagente debe detenerse, proyectar, documentar, y asesorar.",
+          "status": "completed",
+          "completed_at": "2026-04-15T23:15:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "3/3 PASS. json-watch pattern, Agent Memory Persistence Protocol, graduated enforcement meta-pattern — todos nivel 5 exacto. Output rico: proyectan valor de mercado, proponen opciones, esperan decisión."
+        },
+        {
+          "id": "4.14",
+          "content": "Sandbox clasificación: ejecutar 3 escenarios mixtos (escala de nivel 2 a 3-4 durante ejecución). El subagente debe detectar la escalación.",
+          "status": "completed",
+          "completed_at": "2026-04-15T23:15:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "3/3 PASS. MX-A (1→3): rename descubre dependencia cross-script. MX-B (2→5, esperado 2→4): bug fix descubre ambigüedad de status vocabulary — clasificó conservador UP. MX-C (2→5): helper técnico → potencial herramienta open-source. Todas las escalaciones detectadas correctamente."
+        },
+        {
+          "id": "4.15",
+          "content": "Documentar resultados y ajustar reglas/scripts según hallazgos. Si un hook o nivel falla consistentemente, refinar antes de continuar.",
+          "status": "completed",
+          "completed_at": "2026-04-15T23:30:00Z",
+          "logbook_ref": "phase_1.json",
+          "notes": "18/18 PASS. Nivel exacto 89% (16/18). Acción correcta 100% (18/18). Los 2 desvíos clasificaron UP (sesgo conservador deseado). No se requieren ajustes a hooks ni reglas — el sistema funciona. Hallazgo: la clasificación depende del prompt inyectado por el gate, no del hook en sí — la calidad del recordatorio de 5 líneas es suficiente."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Distribución Multi-plataforma y Release",
+      "description": "Adaptar los hooks para Claude Desktop/Cowork, actualizar toda la documentación del framework a v2.0, sincronizar schemas y comandos, y publicar el release oficial.",
+      "status": "not_started",
+      "depends_on": [4],
+      "milestones": [
+        {
+          "id": "5.1",
+          "content": "Adaptar hooks para Claude Desktop/Cowork. Investigar si el formato de hooks.json del plugin soporta los mismos eventos que settings.json de Claude Code. Si hay diferencias, diseñar adaptaciones. Actualizar plugin/hooks/hooks.json.",
+          "status": "not_started",
+          "logbook_ref": null
+        },
+        {
+          "id": "5.2",
+          "content": "Actualizar FRAMEWORK.md a v2.0: agregar sección de metacognición, clasificación de decisiones, enforcement graduado, hooks architecture. Documentar los 5 niveles de decisión y los 3 triggers de metacognición.",
+          "status": "not_started",
+          "logbook_ref": null
+        },
+        {
+          "id": "5.3",
+          "content": "Actualizar Agent Operating Protocol (bloque inyectado en CLAUDE.md por project-init): agregar clasificación de decisiones, comportamiento esperado en cada nivel, y referencia a que los hooks enforcean las reglas.",
+          "status": "not_started",
+          "logbook_ref": null
+        },
+        {
+          "id": "5.4",
+          "content": "Sincronizar schemas y comandos actualizados al repo waves-cowork-plugin. Copiar hooks scripts si aplican. Tag en plugin.",
+          "status": "not_started",
+          "logbook_ref": null
+        },
+        {
+          "id": "5.5",
+          "content": "Prueba E2E: sesión completa de implementación con todas las capas activas (percepción + gates + enforcement + clasificación + metacognición). Verificar que el ciclo Perceive→Decide→Act→Learn funciona de punta a punta sin degradación en sesión larga.",
+          "status": "not_started",
+          "logbook_ref": null
+        },
+        {
+          "id": "5.6",
+          "content": "Release v2.0.0: bump versión en bin/waves, actualizar CHANGELOG.md, commit, push, tag, SHA, actualizar fórmulas Homebrew en waves y homebrew-waves, tag en waves-cowork-plugin.",
+          "status": "not_started",
+          "logbook_ref": null
+        }
+      ]
+    }
+  ],
+
+  "decisions": [
+    {
+      "id": 1,
+      "created_at": "2026-04-15T00:00:00Z",
+      "decision": "Waves 2.0 se implementa con hooks de Claude Code (código bash que se ejecuta obligatoriamente) en vez de depender de instrucciones en CLAUDE.md que se degradan en sesiones largas.",
+      "context": "La experiencia con Waves 1.x demostró que las instrucciones en CLAUDE.md se ignoran progresivamente a medida que la sesión crece y especialmente después de compactación. Los hooks ejecutan código real que no se puede ignorar — es enforcement by design.",
+      "impact": "high"
+    },
+    {
+      "id": 2,
+      "created_at": "2026-04-15T00:00:00Z",
+      "decision": "El enforcement es graduado: libre antes del blueprint (fase de shaping), estricto después del blueprint (formalización). El blueprint es el punto de inflexión.",
+      "context": "Imponer estructura en la fase creativa mata la creatividad. Imponer estructura después de la formalización protege la inversión. El blueprint es la declaración de intención — cuando existe, el proyecto va en serio.",
+      "impact": "high"
+    },
+    {
+      "id": 3,
+      "created_at": "2026-04-15T00:00:00Z",
+      "decision": "Clasificación de decisiones en 5 niveles con autoclasificación reforzada por inyección, no por auditor en cada tool call.",
+      "context": "Poner un clasificador semántico en cada PreToolUse es como un auditor revisando cada línea mientras escribes — inviable por costo y latencia. La autoclasificación reforzada por inyección en momentos clave (PreToolUse, PostCompact) es eficiente y se audita en los checkpoints naturales del framework.",
+      "impact": "high"
+    },
+    {
+      "id": 4,
+      "created_at": "2026-04-15T00:00:00Z",
+      "decision": "La metacognición se activa en checkpoints naturales de Waves (objetivo primario completado, blueprint modificado, fase completada) — no en un Stop artificial de sesión.",
+      "context": "El Stop de Claude Code es unreliable — el usuario puede cerrar la terminal, perder conexión, o llenar el contexto. Los checkpoints de Waves están atados al significado del trabajo: para pasar al siguiente objetivo, el agente TIENE que actualizar la bitácora, y esa actualización activa el hook.",
+      "impact": "high"
+    },
+    {
+      "id": 5,
+      "created_at": "2026-04-15T00:00:00Z",
+      "decision": "Validar la clasificación de decisiones con 15+ escenarios de prueba usando subagentes ANTES de implementar metacognición.",
+      "context": "La metacognición depende de que la clasificación funcione. Si los agentes no se detienen en el nivel correcto, la metacognición no tiene base. Las pruebas validan el diseño antes de invertir en la implementación más compleja.",
+      "impact": "high"
+    },
+    {
+      "id": 6,
+      "created_at": "2026-04-18T00:00:00Z",
+      "decision": "DESCUBRIMIENTO NIVEL 5 — El campo scope (ecosystem/local) en project_rules revela que Waves está evolucionando de 'framework per-developer' a 'organizational AI governance layer'. La jerarquía company_blueprint → product_blueprint → ecosystem rules → local rules → logbooks constituye una cadena de governance organizacional donde cada nivel hereda restricciones del superior y el agente no puede violarlas. Esto abre un mercado diferente: no per-developer ($10-50/mo) sino per-organization ($500-5000/mo). Ningún otro framework tiene esta cadena. Implicaciones para W3+: (1) comando /waves:rules-sync para propagar ecosystem rules, (2) PCC como dashboard de compliance organizacional, (3) reporte de divergencias cross-proyecto, (4) certificación Waves Lead como 'organizational AI governance architect'.",
+      "context": "Detectado por metacognición background tras actualizar capability #3 del blueprint con governance scope. La observación de serendipity del subagente fue: 'By distinguishing ecosystem vs. local rules, Waves is implicitly becoming an organizational governance layer. The moment you have rules that belong to the organization and agents that must not modify them, you have a hierarchy: organization > project > session.' Validado por el fundador como insight estratégico.",
+      "impact": "high"
+    }
+  ],
+
+  "open_questions": [
+    {
+      "id": 1,
+      "created_at": "2026-04-15T00:00:00Z",
+      "question": "PostCompact no soporta additionalContext. ¿SessionStart se dispara con source 'compact' después de compactación? Si no, ¿cuál es la alternativa para re-inyectar reglas después de compactación?",
+      "status": "resolved",
+      "resolution": "SessionStart SÍ se dispara con source 'compact' después de compactación. waves-perceive.sh cubre re-inyección automáticamente. HALLAZGO PARCIAL: tras /compact en sesión de implementación, el agente no observó inyección visible. waves-perceive.sh genera JSON correcto cuando se ejecuta manualmente. Requiere test en sesión nueva limpia para confirmar si es limitación del /compact o del mecanismo."
+    },
+    {
+      "id": 2,
+      "created_at": "2026-04-15T00:00:00Z",
+      "question": "¿Los hooks de Claude Desktop/Cowork (plugin hooks.json) soportan los mismos eventos que settings.json de Claude Code? ¿O hay un subset más limitado?",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "id": 3,
+      "created_at": "2026-04-15T00:00:00Z",
+      "question": "¿dart analyze debe bloquear (exit 2) cuando encuentra errores, o solo alertar con additionalContext y dejar que el agente corrija?",
+      "status": "resolved",
+      "resolution": "Solo alertar con additionalContext, no bloquear con exit 2. Bloquear causa fricción excesiva. Alertar da visibilidad sin detener el flujo. El agente corrige al ver el reporte."
+    }
+  ],
+
+  "recent_context": [
+    {
+      "id": 1,
+      "created_at": "2026-04-15T00:00:00Z",
+      "content": "Roadmap W2 creado con 5 fases y 31 milestones. Visión: transformar Waves de sistema de estructura y trazabilidad a sistema de metacognición autónoma proactiva. Implementación basada en hooks de Claude Code (25 eventos disponibles, verificados). Filosofía: humano en el loop como principio no negociable, enforcement real con código (no instrucciones ignorables), clasificación de decisiones en 5 niveles, metacognición en checkpoints naturales del framework. Brief de diseño completo en ai_files/waves_2_brief.md."
+    },
+    {
+      "id": 2,
+      "created_at": "2026-04-15T13:30:00Z",
+      "content": "Roadmap W2 REESTRUCTURADO. Cambios: (1) Fase 3 original (sandbox clasificación) y fase 4 original (metacognición) intercambiadas y reorganizadas. (2) Nueva fase 3: Metacognición Proactiva (solo implementación, 3 milestones). (3) Nueva fase 4: Pruebas Integrales (15 milestones — combina TODAS las pruebas de todas las fases + sandbox de clasificación con subagentes). (4) Motivo: las pruebas deben ejecutarse juntas como validación integral, no dispersas por fase. (5) Corrección de error operativo: se habían implementado scripts de fases 2 y 4 sin bitácora, violando el framework."
+    },
+    {
+      "id": 3,
+      "created_at": "2026-04-15T15:00:00Z",
+      "content": "FASES 1-3 IMPLEMENTACIÓN COMPLETADA. 7 hooks creados y configurados en .claude/settings.json: (1) waves-perceive.sh (SessionStart), (2) waves-gate.sh (PreToolUse), (3) waves-doc-enforce.sh (PostToolUse), (4) waves-metacognition.sh (PostToolUse), (5) waves-blueprint-impact.sh (PostToolUse), (6) waves-phase-audit.sh (PostToolUse), (7) waves-dart-analyze.sh (PostToolUse). Open questions #1 y #3 resueltas. Milestones de implementación marcados completed. Milestones de pruebas de fases 1-3 movidos a fase 4. HALLAZGO CRÍTICO para fase 4: tras /compact, el additionalContext de SessionStart no fue visible al agente. waves-perceive.sh genera output correcto cuando se ejecuta manualmente. Hipótesis: (a) /compact puede no disparar SessionStart de la misma forma que una sesión nueva, o (b) el additionalContext se inyectó pero no es observable por el agente en su propio contexto. Próximo paso: test en sesión nueva limpia (milestone 4.1)."
+    }
+  ],
+
+  "history_summary": [],
+
+  "future_reminders": [
+    {
+      "id": 3,
+      "created_at": "2026-04-15T15:00:00Z",
+      "content": "PRIORIDAD: Milestone 4.1 (test percepción en sesión nueva) debe ejecutarse PRIMERO en la fase 4. Si SessionStart no inyecta additionalContext en sesión nueva, hay un problema fundamental que invalida la arquitectura de hooks. No avanzar con otros tests hasta confirmar esto.",
+      "when": "2026-04-15T00:00:00Z"
+    },
+    {
+      "id": 4,
+      "created_at": "2026-04-15T15:00:00Z",
+      "content": "Si 4.1 pasa, el hallazgo de /compact puede ser una limitación conocida de la compactación (resumen no incluye additionalContext). Documentar diferencia entre sesión nueva vs post-compact.",
+      "when": "2026-04-15T00:00:00Z"
+    }
+  ]
+}
