@@ -5,6 +5,14 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.8] - 2026-04-21
+
+### Fixed
+
+- **`logbook_software_schema.json` was malformed** — the `recommendations` property added in an earlier commit left `properties` closed before the new field and a stray `},` after it, corrupting the root object. `jq` refused to parse the schema and any tooling validating logbooks against it would have failed. Moved `recommendations` inside `properties` where it semantically belongs and removed the extra closing brace. Schema now parses cleanly.
+
+---
+
 ## [2.1.7] - 2026-04-21
 
 ### Fixed

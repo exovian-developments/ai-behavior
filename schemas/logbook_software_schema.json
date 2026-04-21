@@ -164,10 +164,9 @@
         },
         "required": ["id", "created_at", "content", "when"]
       }
-    }
-  },
+    },
 
-  "recommendations": {
+    "recommendations": {
       "type": "array",
       "description": "Recommendations discovered during implementation. These are improvements or follow-ups that aren't blocking but should be considered.",
       "$comment": "Populated by objectives-implement command when code-implementer finds opportunities for improvement. Review periodically.",
