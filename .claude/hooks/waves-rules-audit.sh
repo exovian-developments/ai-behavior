@@ -128,6 +128,35 @@ for pref in "$AI_FILES/user_pref.json" "user_pref.json"; do
   fi
 done
 
+# Build sibling primaries context (scope-by-elimination for the auditor).
+# When the logbook decomposes a ticket into multiple primaries (orthogonality_review),
+# the auditor must NOT flag absences that belong to sibling primaries.
+SIBLINGS_TOTAL=$(jq '[.objectives.main[]] | length' "$FILE" 2>/dev/null || echo 1)
+if [ "$SIBLINGS_TOTAL" -gt 1 ]; then
+  SIBLINGS_BLOCK=$(jq -r --argjson pid "$PRIMARY_ID" '
+    .objectives.main
+    | sort_by(.id)
+    | map(
+        if .id == $pid then
+          "  • Primary " + (.id | tostring) + " (THIS): \"" + .content + "\""
+        elif (.status == "achieved" or .status == "completed") then
+          "  • Primary " + (.id | tostring) + " [DONE]: \"" + .content + "\" — its scope is already implemented; do NOT flag absence of its concerns in THIS audit"
+        else
+          "  • Primary " + (.id | tostring) + " [DEFERRED]: \"" + .content + "\" — will be addressed later; do NOT flag absence of its concerns in THIS audit"
+        end
+      )
+    | join("\n")
+  ' "$FILE" 2>/dev/null)
+  SIBLINGS_SECTION="
+
+This logbook is decomposed into ${SIBLINGS_TOTAL} orthogonal primaries (per orthogonality_review):
+${SIBLINGS_BLOCK}
+
+Scope-by-elimination: audit ONLY the dimension this primary addresses. If a sibling primary is responsible for behavior/state/styling/etc., absence of that concern in the current code is NOT a violation — it is correct separation. Only flag rule violations that fall within THIS primary's dimension."
+else
+  SIBLINGS_SECTION=""
+fi
+
 # Build the subagent prompt
 PROMPT=$(cat <<EOF
 You are a code rules auditor. A primary objective just completed and you must verify the code complies with all applicable project rules.
@@ -136,7 +165,7 @@ Primary objective: "$PRIMARY_CONTENT" (id: $PRIMARY_ID)
 Logbook: $NORM_FILE
 Project rules: ${RULES:-(no rules file found)}
 Audit output target: $AUDIT_FILE
-Iteration: $ITERATION of 3
+Iteration: $ITERATION of 3${SIBLINGS_SECTION}
 
 Your job:
 

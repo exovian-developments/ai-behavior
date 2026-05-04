@@ -5,6 +5,27 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-05-04
+
+### Added — Multi-focus decomposition + logbook integrity audit
+
+Two complementary subagent-based mechanisms that close the rule-drift loop opened in 2.1.9. The diagnosis: rule violations in frontend code persist not because rules are missing, but because (a) work with multiple orthogonal dimensions saturates the main agent's attention and (b) the logbook itself is sometimes generated with empty `scope.rules` or completion_guides missing the inline rule references, so the implementer never sees the constraints in the first place. Both failures happen silently.
+
+- **Orthogonality reviewer subagent** in `waves:logbook-create` Step A2.5. Before generating main objectives, an adversarial subagent (Opus by default, configurable via `agent_config.metacognition_model`) evaluates whether the ticket has 2+ orthogonal dimensions. The subagent is briefed to prefer multi_focus when in doubt — the main agent is biased toward single_focus because it is faster, and a fresh adversarial reviewer catches that bias. If multi_focus, Step A3 generates one main objective per dimension with distinctive non-overlapping content. The decision and full reasoning are persisted in `resolved_decisions` with `method: "orthogonality_review"`. No schema change — the decomposition is observable from the number of main objectives and their content; siblings are reconstructed at implementation time.
+- **Sibling primaries banner** in `waves:objectives-implement`. When a logbook has 2+ main objectives, the implementer prints a banner showing which primary is current and which siblings are DONE / DEFERRED. Tells the LLM explicitly what NOT to attend in the current objective — as valuable as telling it what to attend.
+- **Logbook integrity audit subagent** in `waves:logbook-create` Step A6 (post-persist) and `waves:logbook-update` (when objectives or scope.rules change). After the logbook is persisted, an adversarial subagent reads the artifact from disk and surfaces critical/warning findings: empty `scope.rules` on primaries that touch layers with rules, completion_guide missing the inline `Apply rule #N: ...` entries, rule_id references that don't exist, decomposition mismatch with the orthogonality_review decision, duplicate primary content, scope.files paths not found. Findings are textual suggestions only — the main agent applies fixes with full context. Output is persisted to `ai_files/waves/wN/audits/logbook-<basename>.json`.
+- **Sibling context for the rules audit hook (Layer C)**. `waves-rules-audit.sh` now passes the list of sibling primaries to the auditor subagent so it audits scope-by-elimination. If primary 1 is "structure" and primary 3 is "behavior" (deferred), the auditor of primary 2 ("positioning") does not flag absence of structure or behavior — those are correct separation, not violations.
+
+### Changed
+
+- `logbook_software_schema.json` adds a required `audit` object at root: `is_already_audited` (boolean, defaults to `false`) and `audit_file` (optional string, populated after the integrity reviewer runs). New logbooks initialize the field at Save File; the integrity reviewer flips it to `true`. Logbooks created before 2.2.0 won't have the field — this is intentional and accepted: the framework does not retro-validate old logbooks, and any old logbook reopened via `logbook-update` will have the field added on first material edit.
+
+### Why this targets where it hurts
+
+Backend implementation typically has 1-3 design decisions per function with fast feedback loops (tests fail loudly). Frontend has 10+ decisions per widget across orthogonal dimensions (structure, positioning, behavior, a11y, i18n) where convention violations are syntactically valid and tests don't catch them. The orthogonality reviewer prevents one primary from absorbing all dimensions and saturating the implementer's attention; the integrity audit prevents the logbook from shipping with the omissions that make Layer A and B (rule inlining + banner) decorative instead of operative. With Layers A+B+C+D plus the orthogonality reviewer in place, the framework now has four independent defenses against rule drift, calibrated for where drift actually happens.
+
+---
+
 ## [2.1.9] - 2026-05-04
 
 ### Added — Rules Enforcement (Layer A + B + C)

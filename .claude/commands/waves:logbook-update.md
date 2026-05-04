@@ -517,6 +517,28 @@ Return to calling step.
 
 **Save to `ai_files/waves/[wave_name]/logbooks/[filename].json`**
 
+## STEP AUDIT: Re-audit if structurally modified
+
+Detect whether this update materially changed the logbook (and therefore needs a fresh integrity audit):
+
+**Trigger conditions** (any of):
+- A new main or secondary objective was added (Operations 3A or 3B).
+- A `scope.rules` field changed on any objective.
+- A `completion_guide` was modified or added.
+
+**If none of the trigger conditions match** (e.g. only progress entries or status updates were added), skip this step. Set `audit.is_already_audited = false` only if the logbook had `audit.is_already_audited = true` AND a structural change occurred — otherwise leave the field as-is.
+
+**If a trigger condition matched:**
+
+1. Set `audit.is_already_audited = false` in the logbook (a fresh audit is owed).
+2. Save the logbook with the flag updated.
+3. Spawn the integrity reviewer subagent following the **same protocol as Step A6 in `waves:logbook-create`** (blocking, model from `agent_config.metacognition_model`, output to `ai_files/waves/[wave_name]/audits/logbook-[basename].json`, same adversarial prompt).
+4. Process findings the same way: critical findings reviewed and applied with full context; warnings decided per-finding; rejections recorded in `resolved_decisions` with `method: "integrity_audit_override"`.
+5. Update the logbook with `audit.is_already_audited = true` and `audit.audit_file` after the audit completes.
+6. Append a `recent_context` entry: `"Integrity audit re-run after structural update: [N] critical, [M] warnings. Audit report: ai_files/waves/[wave_name]/audits/logbook-[basename].json"`.
+
+This step exists because rules and objectives added during update are exactly the kind of change that drifts from project standards — the omissions the integrity reviewer was designed to catch.
+
 **Show summary:**
 
 ```
@@ -529,6 +551,8 @@ Return to calling step.
 • Objectives updated: [count]
 • New objectives: [count]
 • Reminders: [count]
+[If integrity audit ran:]
+• Integrity audit: [N] critical, [M] warnings ([applied/noted breakdown])
 
 🎯 Next objective to work on:
 [First not_started or active secondary objective]

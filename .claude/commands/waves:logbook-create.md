@@ -430,12 +430,98 @@ Store all resolutions for inclusion in logbook:
 }
 ```
 
+## Step A2.5: Orthogonality Review (subagent, blocking)
+
+Before generating main objectives, **delegate the decomposition decision to a fresh adversarial subagent**. The main agent at this point is saturated with ticket context, blueprint context, design decisions, and rule analysis — exactly the conditions where it tends to under-decompose ("one primary is enough, let me move on"). A subagent with no accumulated context and an adversarial brief catches this systematically.
+
+### Spawn the subagent
+
+Spawn an Agent with `run_in_background=false` (blocking — the result conditions Step A3) using the model from `agent_config.metacognition_model` in user_pref.json (default: `opus`).
+
+The subagent receives a payload containing:
+- The ticket (title, description, ui_requirements)
+- The matched blueprint capability/flow/view (if any) including `description`, `is_essential`, `acceptance_criteria`, related `design_principles` and `product_rules`
+- The list of rule **categories** present in `project_rules.json` (architecture, presentation_layer, data_layer, api_layer, testing, naming_conventions, infra) — not the rule text itself
+- The list of **layers** identified from `project_manifest.json` that the ticket touches
+- The reference files identified during initial analysis
+
+The subagent prompt is **adversarial by default**:
+
+```
+You are a decomposition critic. Your job is NOT to confirm the main agent's plan — it is to challenge it. Assume the main agent is biased toward single_focus because it is faster and produces less code. Your job is to find arguments for splitting this ticket into multiple orthogonal primary objectives.
+
+A "dimension" is orthogonal when it requires:
+  - A distinct mindset to address
+  - A distinct subset of project rules to apply
+  - A distinct success criterion to verify
+  - It does not depend on other dimensions for its definition (only for its execution order)
+
+Common decomposition patterns to evaluate:
+  - Frontend UI: structure (which elements exist) → positioning (visual layout, spacing, design system tokens) → behavior (state, actions, side effects). Almost always 3 dimensions.
+  - Migration: schema change → data backfill/transformation → cleanup of legacy fields. 3 dimensions.
+  - API endpoint: request validation/contract → business logic → response shaping/serialization. Sometimes 3, sometimes 1 if trivial.
+  - Refactor: extract pattern → rewire callers → remove dead code. Often 3.
+
+Return single_focus ONLY when you genuinely cannot argue independent dimensions with distinct mindsets. When in doubt, prefer multi_focus — the cost of one extra primary is marginal; the cost of mixing dimensions in one primary is real and shows up as silent rule drift.
+
+Be specific. Cite the matched capability id or name. Cite manifest layers. Cite rule categories. Do NOT recommend dimensions that have no rules backing them in this project.
+
+Return ONLY a JSON object of this shape:
+
+{
+  "decision": "multi_focus" | "single_focus",
+  "dimensions": [
+    {
+      "name": "<short label, e.g. 'structure'>",
+      "mindset": "<one-line description of the mental stance for this dimension>",
+      "rules_categories": ["<category from project_rules.json>"],
+      "success_criterion": "<one-line definition of done for this dimension>",
+      "independent_of_others": true | false
+    }
+  ],
+  "reasoning": "<2-4 sentences. Why this decision. If single_focus, justify why other dimensions don't apply or are deferred. If multi_focus, justify why mixing them would dilute attention.>",
+  "suggested_primaries": [
+    {
+      "content_draft": "<verifiable outcome for this dimension, ~140 chars max>",
+      "scope_files_hint": ["<files this primary will touch — entry points only>"],
+      "rules_categories_in_scope": ["<categories from project_rules.json relevant to this primary>"]
+    }
+  ]
+}
+```
+
+### Process the subagent response
+
+When the subagent returns:
+
+1. **Persist the decision** in `resolved_decisions` of the logbook with `method: "orthogonality_review"`:
+
+```json
+{
+  "uncertainty": "Should this ticket decompose into multiple orthogonal primaries?",
+  "resolution": "<decision>: <reasoning summary>",
+  "method": "orthogonality_review",
+  "reasoning": "<full reasoning from the subagent>",
+  "dimensions_evaluated": [...],
+  "subagent_output": {...}
+}
+```
+
+2. **If `decision == single_focus`**: proceed to Step A3 normally — generate one main objective. The reasoning is recorded; if it turns out to be wrong later, the audit trail exists.
+
+3. **If `decision == multi_focus`**: Step A3 is constrained. You **must** generate one main objective per dimension declared by the subagent. You may refine the `content`, the `scope.files`, and the `scope.rules` of each — but you cannot collapse two dimensions into one primary. If you genuinely believe the subagent over-decomposed, surface this to the user before proceeding (this is a Level 3 escalation per the trust contract — outside the current objective's autonomy).
+
+### Why this step exists
+
+The same principle that justifies the rules audit subagent (Layer C) applies here: a fresh agent without the accumulated context of `logbook-create` produces less biased decomposition decisions. The cost is +30-60s of latency per logbook creation, paid once per ticket — negligible vs. the cost of a logbook that mixes dimensions and produces drifted code. The decision is recorded in `resolved_decisions` so the trail is auditable.
+
 ## Step A3: Generate Main Objectives
 
-Based on ticket, analysis, resolved decisions, and product context, generate main objectives autonomously:
+Based on ticket, analysis, resolved decisions, **and the orthogonality review from Step A2.5**, generate main objectives:
+- If A2.5 returned `single_focus`: generate one main objective.
+- If A2.5 returned `multi_focus`: generate one main objective per dimension. The contents must be distinctive and non-overlapping — a reader should be able to tell from `content` alone which dimension each primary attends, without needing a `focus` label. If two contents could be swapped without losing meaning, they are not orthogonal — collapse or re-evaluate.
 - Each objective must have: content, context, scope (files + rules)
-- Prioritize by dependency order
-- Typically 1-3 main objectives
+- Prioritize by dependency order (in multi_focus, typically the order returned by the subagent)
 - Include resolved decisions in context
 - Apply YAGNI: only objectives that directly satisfy the ticket requirements
 
@@ -668,9 +754,14 @@ Create logbook structure:
     }
   ],
   "history_summary": [],
-  "future_reminders": []
+  "future_reminders": [],
+  "audit": {
+    "is_already_audited": false
+  }
 }
 ```
+
+The `audit` object is required by the schema. Initialize it with `is_already_audited: false` at creation; Step A6 (post-persist integrity audit) will flip this to `true` and add `audit_file` after the integrity reviewer subagent runs.
 
 ## Validate Against Schema
 
@@ -683,6 +774,129 @@ Validate against appropriate schema:
 Save to `ai_files/waves/[target_wave]/logbooks/[filename].json`
 
 Ensure `ai_files/waves/[target_wave]/logbooks/` directory exists, create if needed.
+
+## Step A6: Post-persist Integrity Audit (subagent, blocking)
+
+Once the logbook is persisted, **delegate an integrity audit to a fresh adversarial subagent** that reads the persisted file from disk (not memory). The main agent has just finished a long generation flow and is biased toward "done, move on." A fresh subagent reads the artifact as-is and surfaces the omissions you would miss.
+
+### Spawn the subagent
+
+Spawn an Agent with `run_in_background=false` (blocking — the result determines whether fixes need to be applied before declaring the logbook ready) using the model from `agent_config.metacognition_model` in user_pref.json (default: `opus`).
+
+Pass these inputs as paths (not content) so the subagent reads from disk:
+- The persisted logbook path: `ai_files/waves/[target_wave]/logbooks/[filename].json`
+- `ai_files/project_rules.json` (or equivalent rules file)
+- `ai_files/project_manifest.json` (for layer detection)
+- The blueprint path if it exists (`ai_files/blueprint.json`, `ai_files/product_blueprint.json`, etc.)
+
+The subagent writes its output to `ai_files/waves/[target_wave]/audits/logbook-[basename].json` (create the audits directory if missing). The path follows the same convention as the rules audit hook (Layer C).
+
+### Adversarial subagent prompt
+
+```
+You are a logbook integrity reviewer. Your job is NOT to validate that the logbook looks good — it is to assume it is wrong and find where. The main agent that produced this logbook just finished a long generation flow and is biased toward "done, persist, move on." Your job is to find the omissions a future implementer would not detect until the damage is done.
+
+Read these files from disk:
+- Logbook: <path>
+- Project rules: <path>
+- Project manifest: <path>
+- Blueprint (if present): <path>
+
+Be especially strict with these patterns:
+
+1. missing_rules_in_primary — A primary touches a layer (per the manifest) whose category in project_rules.json contains rules, yet scope.rules is empty or missing those rules. Example: primary touches 'lib/widgets/' (presentation per manifest), project_rules has rules in 'presentation_layer' category, but scope.rules=[]. There is NO excuse for this — flag it as critical.
+
+2. completion_guide_missing_apply_rule_lines — A secondary's parent primary has scope.rules=[3,7,12], but the secondary's completion_guide does not include lines like 'Apply rule #3: ...', 'Apply rule #7: ...', 'Apply rule #12: ...'. This is the silent failure mode of Layer A. Flag every occurrence as critical.
+
+3. rule_id_not_found — scope.rules references a rule id that does not exist in project_rules.json. Critical (broken reference).
+
+4. decomposition_mismatch — resolved_decisions contains an orthogonality_review with decision='multi_focus' but the logbook has only 1 main objective, OR decision='single_focus' but there are 2+ main objectives. Critical.
+
+5. duplicate_primary_content — Two primaries with semantically equivalent content. If 'Build login form' and 'Style login form' are both primaries, they are not orthogonal — they are the same task with different verbs. Critical.
+
+6. primary_empty_scope_files — A primary that is supposed to implement something but scope.files=[]. Critical.
+
+7. secondary_missing_completion_guide — A secondary without completion_guide or with completion_guide=[]. Critical (schema violation).
+
+8. scope_files_path_not_found — scope.files references a path that does not exist in the working tree and is not marked '(new)'. Warning (could be intentional if the file is about to be created, but should be flagged).
+
+9. completion_guide_too_generic — completion_guide entries that don't cite file:line or a concrete pattern, just generic advice ('apply best practices', 'handle errors'). Warning.
+
+10. orphan_secondary — A secondary whose content does not contribute to any specific primary's outcome. Warning.
+
+Only flag items you can justify with structural citation: primary id, secondary id, file path, rule id. No speculation. If you cannot cite, downgrade to warning or omit.
+
+Severity rules:
+- critical: omission that will cause the implementer to write drifted code or fail.
+- warning: imperfection that the agent should review but may be intentional.
+- DO NOT use any other severity. If something doesn't reach 'warning', omit it.
+
+Output JSON to <audit file path> in this exact shape:
+
+{
+  "logbook_path": "<absolute path of the audited logbook>",
+  "audited_at": "<UTC ISO 8601>",
+  "model": "<model name>",
+  "summary": { "critical": <int>, "warning": <int> },
+  "findings": [
+    {
+      "id": <int starting at 1>,
+      "severity": "critical" | "warning",
+      "category": "<one of the categories above>",
+      "location": { "primary_id": <int or null>, "secondary_id": <int or null> },
+      "message": "<one-paragraph explanation citing the structural elements>",
+      "suggested_action": "<a textual suggestion for what to correct. Do NOT prescribe exact JSON edits — the main agent has the full context and will decide how to apply.>"
+    }
+  ]
+}
+
+If summary.critical == 0 && summary.warning == 0, the logbook passed clean — emit findings: [] and the main agent will know.
+
+Write ONLY the JSON file. No prose, no commentary outside the file.
+```
+
+### Process the subagent response
+
+After the subagent finishes:
+
+1. Read the audit file at `ai_files/waves/[target_wave]/audits/logbook-[basename].json`.
+2. Update the logbook's `audit` object:
+   - Set `audit.is_already_audited = true`.
+   - Set `audit.audit_file = "<relative path to the audit JSON>"`.
+   - Save the logbook (Edit tool, atomic write).
+3. Process findings:
+   - **For each critical finding**: review the message and suggested_action. Apply the correction by editing the logbook with the full context you have (rules text, manifest layers, blueprint capability, secondaries you generated). Decisions are level 1-2 of the Waves trust contract — proceed without user approval. If a critical finding is genuinely incorrect (false positive after your review), record the rejection in `resolved_decisions` with `method: "integrity_audit_override"` and a reasoning paragraph.
+   - **For each warning finding**: decide whether to apply. If you apply, do so. If you don't, no action needed (warnings are not blocking).
+4. After applying any fixes, append a new entry to the logbook's `recent_context` summarizing what was applied:
+   ```
+   "Integrity audit applied: [N] critical findings addressed, [M] warnings reviewed ([X] applied, [Y] noted). Audit report: ai_files/waves/[target_wave]/audits/logbook-[basename].json"
+   ```
+
+### Display the audit summary
+
+```
+🔍 Integrity audit complete:
+
+  Critical: [N]
+  Warning: [M]
+
+  [If N==0 && M==0:]
+  ✅ Logbook passed clean.
+
+  [If N>0 || M>0:]
+  Findings applied:
+    [For each finding the agent applied:]
+    [severity icon] #[id] [category] — [one-line summary of the fix]
+  Findings noted (not applied):
+    [For each finding the agent decided to leave:]
+    [severity icon] #[id] [category] — [one-line reason]
+
+  📁 Full audit report: ai_files/waves/[target_wave]/audits/logbook-[basename].json
+```
+
+### Why Step A6 lives post-persist
+
+The audit reads the logbook from disk so it can be re-run later (logbook-update, manual re-audit) without re-implementing the same logic in three commands. The audit file is a persistent artifact alongside the logbook — anyone reading the logbook months later can see whether it was audited and consult the report. This separation also keeps the main agent's context light during the audit: the subagent reads files, the main agent doesn't have to keep them all in memory.
 
 ## Success Message
 

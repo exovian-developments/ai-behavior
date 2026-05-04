@@ -306,6 +306,28 @@ Display:
 
 ## Step 5: Implement Code Directly
 
+### Sibling primaries banner (mandatory when logbook has 2+ main objectives)
+
+When the logbook has more than one main objective, the work is decomposed into orthogonal dimensions (per the `orthogonality_review` resolved decision in Step A2.5 of `logbook-create`). Before any code, print:
+
+```
+═══ Decomposition context ═══
+Implementing primary [N] of [TOTAL]:
+  • Primary 1: "[content]" — [DONE | DEFERRED]
+  • Primary 2 (THIS): "[content]"
+  • Primary 3: "[content]" — [DEFERRED]
+
+This objective addresses ONE dimension. Do NOT anticipate work that belongs to deferred primaries. Do NOT modify scope.files of primaries marked DONE except where strictly necessary for this primary's success.
+═══════════════════════════════════
+```
+
+Build the list dynamically from `logbook.objectives.main` ordered by id. For each sibling, derive the state:
+- DONE if status is `achieved` or `completed`
+- THIS if it is `current_objective`
+- DEFERRED otherwise
+
+If the logbook has only one main objective, **skip this banner entirely** — there is no decomposition to scope around.
+
 ### Rules-in-scope banner (mandatory)
 
 Before doing ANY implementation work, print the full text of every rule that applies to this objective. The IDs alone are insufficient — rules are not constraints if they are not present in the active context.
