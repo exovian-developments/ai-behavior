@@ -150,6 +150,22 @@ if [ -n "$ACTIVE_WAVE" ]; then
   if [ -n "$RECENT_DECISIONS" ]; then
     printf -- "- Recent decisions: %s\n" "$RECENT_DECISIONS"
   fi
+
+  # Pending rules-audit findings (Layer C of rules enforcement)
+  PENDING_AUDITS=$(find "$AI_FILES"/waves -path "*/audits/*.json" -type f 2>/dev/null | while read -r af; do
+    s=$(jq -r '.status // ""' "$af" 2>/dev/null)
+    [ "$s" = "completed_pending_injection" ] || [ "$s" = "injected" ] || [ "$s" = "escalated" ] && echo "$af|$s"
+  done)
+  if [ -n "$PENDING_AUDITS" ]; then
+    printf -- "- Pending rules-audit findings:\n"
+    while IFS='|' read -r af status; do
+      [ -z "$af" ] && continue
+      pid=$(jq -r '.primary_id // "?"' "$af" 2>/dev/null)
+      vcount=$(jq '.violations // [] | length' "$af" 2>/dev/null || echo 0)
+      printf -- "    • %s (primary %s, %s violations, status=%s)\n" "$af" "$pid" "$vcount" "$status"
+    done <<< "$PENDING_AUDITS"
+    printf -- "    The injector hook will surface these at your next Edit/Write.\n"
+  fi
 else
   printf -- "- No active wave detected\n"
 fi

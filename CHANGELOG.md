@@ -5,6 +5,27 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.9] - 2026-05-04
+
+### Added — Rules Enforcement (Layer A + B + C)
+
+Three coordinated changes target a recurring problem: agents ignored project rules, especially in frontend code. Even with a strong rule set, drift was silent because (1) rules lived in a separate file the agent had to remember to consult, (2) the audit step in `objectives-implement` was self-audit with optimistic bias, and (3) frontend rule violations are convention-based and not caught by AST or tests.
+
+- **A — Inline rule text in `completion_guide`** (`waves:logbook-create`). Step A4 now mandates that for every secondary objective, after the implementation steps, an entry per applicable rule is appended in the form `Apply rule #N: <full rule text from project_rules.json>`. Rule IDs alone forced the implementer to mentally jump to the rules file at every step — a context switch the agent silently skipped. Inline text makes the constraint physically present during implementation.
+- **B — Rules-in-scope banner in `objectives-implement`**. Step 5 now opens with a mandatory banner that prints the full text of every rule in scope before any code is written. Sub-step 2 was rewritten from "read applicable project rules" to "treat every rule in the banner as a hard constraint." The banner ensures rules are present in the active context at the moment of writing, not in a separate file the agent has to remember to consult.
+- **C — Background subagent audit, non-blocking** (`waves-rules-audit.sh` + `waves-rules-audit-injector.sh`). When a primary objective transitions to completed, a background subagent (Opus by default, configurable via `agent_config.metacognition_model`) audits the diff against the rules in scope and writes findings to `ai_files/waves/wN/audits/primary-N.json`. The injector hook surfaces violations at the agent's next Edit/Write via `additionalContext` (no gate exit 2 — auto-edits are not interrupted). The subagent classifies each violation by Waves trust contract level (1-5): levels 1-2 the main agent auto-fixes silently, levels 3+ surface to the user. If the agent edits a scope file after seeing violations, a re-audit is dispatched automatically. Iteration cap of 3 prevents loops; on cap, the audit escalates to the user with persistent-violation context.
+
+### Changed
+
+- `waves-perceive.sh` (SessionStart) now detects pending rules-audit findings and surfaces them so cross-session work doesn't lose context.
+- `.claude/settings.json` registers both new PostToolUse hooks.
+
+### Why this targets frontend specifically
+
+Backend code drifts less because (a) tests fail loudly when contracts break, (b) rules typically align with the LLM's training defaults (clean architecture, freezed, Result types), and (c) decisions per line of code are sparse. Frontend (Flutter/React) has 10+ design decisions per widget, conventions vary by project, and convention violations (hardcoded colors, missing theme tokens, lifecycle misuse) are sintactically valid — neither AST nor tests catch them. Layer A puts the rules in the objective; Layer B puts them in front of the implementer; Layer C verifies mechanically with an independent reviewer. Defense in depth, calibrated for where the drift actually happens.
+
+---
+
 ## [2.1.8] - 2026-04-21
 
 ### Fixed

@@ -306,6 +306,31 @@ Display:
 
 ## Step 5: Implement Code Directly
 
+### Rules-in-scope banner (mandatory)
+
+Before doing ANY implementation work, print the full text of every rule that applies to this objective. The IDs alone are insufficient — rules are not constraints if they are not present in the active context.
+
+For the current objective, look up `current_objective.scope.rules` (for main objectives) or the parent main's `scope.rules` (for secondary objectives). For each rule ID, look up the full text in `project_rules.json` and print:
+
+```
+═══ Rules in scope for this objective ═══
+#3 [<category>, <scope>]: <full rule description>
+#7 [<category>, <scope>]: <full rule description>
+#12 [<category>, <scope>]: <full rule description>
+═══════════════════════════════════════════
+```
+
+If `scope.rules` is empty for this objective, print:
+```
+═══ Rules in scope for this objective ═══
+(no rules in scope — apply framework defaults + YAGNI)
+═══════════════════════════════════════════
+```
+
+This banner is **not optional**. Skipping it is the single biggest reason rules drift in frontend code where the implementation context is dense and rule violations are not caught by AST or tests. The banner makes the constraints physically present at the moment of writing code.
+
+### Implementation
+
 Display:
 ```
 🤖 Starting implementation...
@@ -319,7 +344,7 @@ Business context: [capability/flow name] — [business_intent summary]
 **Execute the implementation directly (no subagents).** Using the context from Step 4:
 
 1. **Read all reference files** from the completion guide
-2. **Read applicable project rules** to ensure compliance during writing
+2. **Treat every rule in the banner as a hard constraint.** Each line of code you write must comply with all rules in scope. If a rule seems to conflict with a completion_guide step, stop and surface the conflict instead of silently choosing one.
 3. **If business_context exists**, keep the business intent in mind:
    - Code should fulfill the capability's acceptance_criteria, not just the technical objective
    - For essential capabilities: be thorough, cover edge cases, ensure robustness

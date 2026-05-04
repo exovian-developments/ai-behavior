@@ -463,11 +463,23 @@ For each main objective, perform deep code analysis directly (no subagent delega
 
 1. Deep trace from `scope.files`
 2. Discover related code, patterns, dependencies
-3. Read referenced rules from project_rules.json
+3. Read referenced rules from `project_rules.json` — **load full rule text, not just IDs**
 4. Incorporate UI requirements if present
 5. Incorporate product context (blueprint capabilities, flows, principles)
 6. Generate secondary objectives with `completion_guide`
 7. Apply YAGNI to completion_guide: only actionable steps, no speculative items
+
+### Rule injection (mandatory)
+
+For every secondary objective, after writing the implementation steps, **append one `completion_guide` entry per applicable rule** using this exact format:
+
+```
+Apply rule #<id>: <full rule description text from project_rules.json>
+```
+
+Rationale: rule IDs alone force the implementer to mentally jump to `project_rules.json` on every step — a context switch the agent often skips silently. Having the rule text inline makes the constraint physically visible during implementation. Truncate rules over 200 chars only if absolutely necessary (the schema caps `completion_guide` items at 200 chars); otherwise include verbatim.
+
+The applicable rules for a secondary objective are inherited from its parent main objective's `scope.rules`. If the parent's rules don't all apply to this specific secondary, narrow the list with judgment — but **never silently drop a rule**: if you exclude one, document why in the secondary's preceding step.
 
 **Present secondary objectives as a declaration (NOT asking for approval):**
 
@@ -478,14 +490,15 @@ For Main Objective 1:
 ┌─────────────────────────────────────────────────────────────┐
 │ 1.1 [Secondary objective content]                           │
 │     Guide:                                                  │
-│     • [completion_guide item 1]                             │
-│     • [completion_guide item 2]                             │
-│     • [completion_guide item 3]                             │
+│     • [completion_guide item 1: implementation step]        │
+│     • [completion_guide item 2: implementation step]        │
+│     • Apply rule #3: <rule text>                            │
+│     • Apply rule #7: <rule text>                            │
 ├─────────────────────────────────────────────────────────────┤
 │ 1.2 [Secondary objective content]                           │
 │     Guide:                                                  │
-│     • [completion_guide item 1]                             │
-│     • [completion_guide item 2]                             │
+│     • [completion_guide item 1: implementation step]        │
+│     • Apply rule #3: <rule text>                            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
