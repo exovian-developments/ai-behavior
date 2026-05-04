@@ -32,18 +32,60 @@ IF EXISTS:
 
 ## Step 0: Parameter Check and Logbook Selection
 
-Check if filename parameter was provided with the command.
+The command accepts up to two arguments: `[filename] [instruction]`. Both are optional.
 
-**IF parameter provided:**
+Parse `$ARGUMENTS` as `<filename> <rest_of_string>`:
+- `filename`: first whitespace-delimited token. Optional.
+- `instruction`: everything after the first token. Optional. Free-form natural language OR one of the reserved tokens listed below.
+
+### Reserved instruction tokens (deterministic, no LLM interpretation)
+
+| Token | Meaning |
+|---|---|
+| `audit` | Skip the operations menu entirely. Go directly to the schema migration check, then to STEP AUDIT. Used when the user only wants to verify integrity of an existing logbook without modifying content. |
+| (empty) | Open the operations menu (current behavior). |
+
+### Free-form instruction (interpreted)
+
+If `instruction` is non-empty and not a reserved token, treat it as a natural-language description of operations to perform. Map to operations 1-4 (Add Progress, Update Objective Status, Add New Objective, Add Reminder). Multiple operations can be chained in one instruction.
+
+**Plan-before-execute is mandatory** for free-form instructions. Show the interpreted plan and wait for confirmation before applying:
+
+```
+📋 Interpretación de tu instrucción:
+
+1. Operation [N]: [name]
+   → [concrete action with the parameters inferred]
+2. Operation [M]: [name]
+   → [concrete action]
+
+Después: STEP AUDIT (siempre).
+
+¿Procedo? (Yes/No/Adjust)
+```
+
+If `Adjust` → ask the user for clarifications, re-build the plan.
+If `No` → fall back to the operations menu (Step 3).
+If `Yes` → execute the plan in order, then proceed to STEP AUDIT.
+
+For ambiguities the agent cannot resolve confidently (e.g. "marca completado" without specifying which objective), STOP and ask the user to disambiguate before showing the plan.
+
+### Loading the logbook
+
+**IF `filename` provided:**
 1. Search for file in `ai_files/waves/*/logbooks/[filename].json`
 2. IF NOT EXISTS → Error: "Logbook not found: [filename]"
-3. IF EXISTS → Load logbook, note which wave it belongs to, continue
+3. IF EXISTS → Load logbook, note which wave it belongs to, continue to schema migration.
 
-**IF NO parameter:**
+**IF `filename` NOT provided:**
 1. Show tip:
 ```
 💡 TIP: You can run faster with:
-   /waves:logbook-update TICKET-123.json
+   /waves:logbook-update TICKET-123 [instruction]
+
+   Examples:
+   /waves:logbook-update TICKET-123 audit
+   /waves:logbook-update TICKET-123 "marca objetivo 3 completado"
 ```
 
 2. List available logbooks from all waves `ai_files/waves/*/logbooks/*.json`, grouped by wave:
@@ -60,7 +102,20 @@ Wave w0:
 Choose 1-[N] or type the filename:
 ```
 
-3. User selects → Load logbook
+3. User selects → Load logbook.
+
+### Step 0.5: Schema Migration (soft, automatic)
+
+After loading the logbook and before any other step, normalize the JSON to the current schema by adding any required fields that are missing. This is a **soft migration**: it only adds, never modifies existing values.
+
+Concrete actions for this version:
+- If `audit` is missing entirely, add `audit: { "is_already_audited": false }`. This applies to logbooks created before Waves 2.2.0.
+
+If migration applied any changes, persist the logbook immediately (atomic write) before proceeding. Append a `recent_context` entry: `"Schema migration applied: <list of fields added>"` so the trail is auditable.
+
+If no migration was needed, skip silently.
+
+In future versions, additional required fields are added here following the same pattern (one short check per field).
 
 ## Step 1: Check Due Reminders
 
@@ -112,6 +167,12 @@ Display logbook summary:
 
 ## Step 3: Select Operation
 
+**Skip this step entirely if:**
+- The user invoked the command with the reserved token `audit` → go directly to STEP SAVE then STEP AUDIT.
+- The user invoked the command with a free-form instruction that was interpreted and confirmed → execute the planned operations in order, then proceed to STEP SAVE + STEP AUDIT.
+
+**Otherwise (interactive mode):**
+
 ```
 What would you like to do?
 
@@ -119,12 +180,16 @@ What would you like to do?
 2. ✅ Update objective status
 3. ➕ Add new objective
 4. ⏰ Add reminder
-5. 💾 Save and exit
+5. 🔍 None (just audit and exit)
+6. 💾 Save and exit (skip audit)
 
-Choose 1-5:
+Choose 1-6:
 ```
 
-Route to corresponding operation.
+Route to corresponding operation. After any operation 1-4 completes, the user can return to this menu (loop) until they choose 5 or 6.
+
+- **Option 5 (None — just audit)**: skip operations entirely. Go to STEP SAVE (which is a no-op since no content changed), then STEP AUDIT.
+- **Option 6 (Save and exit, skip audit)**: rare escape hatch when the user knows the integrity check is unnecessary or has been done recently. Go directly to STEP SAVE without auditing. The `audit.is_already_audited` flag remains as it was. Use sparingly.
 
 ---
 
@@ -517,27 +582,29 @@ Return to calling step.
 
 **Save to `ai_files/waves/[wave_name]/logbooks/[filename].json`**
 
-## STEP AUDIT: Re-audit if structurally modified
+## STEP AUDIT: Logbook Integrity Audit (always, unless explicitly skipped)
 
-Detect whether this update materially changed the logbook (and therefore needs a fresh integrity audit):
+This step **runs every time the command reaches it**, regardless of which operations were performed. The contract: anything that passes through `logbook-update` ends with verified integrity.
 
-**Trigger conditions** (any of):
-- A new main or secondary objective was added (Operations 3A or 3B).
-- A `scope.rules` field changed on any objective.
-- A `completion_guide` was modified or added.
+**Skip only when:**
+- The user explicitly chose Step 3 option 6 ("Save and exit, skip audit"). In that case, log a `recent_context` entry: `"Integrity audit skipped by user request"` and exit.
 
-**If none of the trigger conditions match** (e.g. only progress entries or status updates were added), skip this step. Set `audit.is_already_audited = false` only if the logbook had `audit.is_already_audited = true` AND a structural change occurred — otherwise leave the field as-is.
-
-**If a trigger condition matched:**
+**Otherwise:**
 
 1. Set `audit.is_already_audited = false` in the logbook (a fresh audit is owed).
-2. Save the logbook with the flag updated.
-3. Spawn the integrity reviewer subagent following the **same protocol as Step A6 in `waves:logbook-create`** (blocking, model from `agent_config.metacognition_model`, output to `ai_files/waves/[wave_name]/audits/logbook-[basename].json`, same adversarial prompt).
-4. Process findings the same way: critical findings reviewed and applied with full context; warnings decided per-finding; rejections recorded in `resolved_decisions` with `method: "integrity_audit_override"`.
-5. Update the logbook with `audit.is_already_audited = true` and `audit.audit_file` after the audit completes.
-6. Append a `recent_context` entry: `"Integrity audit re-run after structural update: [N] critical, [M] warnings. Audit report: ai_files/waves/[wave_name]/audits/logbook-[basename].json"`.
+2. Save the logbook with the flag updated (atomic write).
+3. Spawn the integrity reviewer subagent following the **same protocol as Step A6 in `waves:logbook-create`**: blocking, model from `agent_config.metacognition_model` (default `opus`), output to `ai_files/waves/[wave_name]/audits/logbook-[basename].json`, same adversarial prompt that flags `missing_rules_in_primary`, `completion_guide_missing_apply_rule_lines`, `rule_id_not_found`, `decomposition_mismatch`, `duplicate_primary_content`, `primary_empty_scope_files`, `secondary_missing_completion_guide`, `scope_files_path_not_found`, `completion_guide_too_generic`, `orphan_secondary` (only `critical` and `warning` severities).
+4. Process findings: critical findings reviewed and applied with full context; warnings decided per-finding; rejections recorded in `resolved_decisions` with `method: "integrity_audit_override"`.
+5. After applying fixes (or determining none are needed), update the logbook: `audit.is_already_audited = true`, `audit.audit_file = "<relative path>"`.
+6. Append a `recent_context` entry: `"Integrity audit run: [N] critical, [M] warnings. Audit report: ai_files/waves/[wave_name]/audits/logbook-[basename].json"`.
 
-This step exists because rules and objectives added during update are exactly the kind of change that drifts from project standards — the omissions the integrity reviewer was designed to catch.
+### Why STEP AUDIT is unconditional
+
+Earlier designs gated this step on "structural changes only" (new objectives, scope.rules modified, completion_guide changed). That heuristic missed two important cases:
+- The user wants to audit a logbook without modifying content (e.g. one created before Waves 2.2.0, or one they just want to re-verify after a `project_rules.json` update).
+- A `recent_context` entry or status update can sometimes coincide with a stale audit on the rest of the logbook that should be re-run.
+
+By making STEP AUDIT unconditional, `logbook-update` becomes the single entry point to verify integrity of any logbook on demand. The latency (~30-60s of the subagent) is paid once per `logbook-update` invocation, which is not a hot-path command. The escape hatch (option 6) is for the rare case where the user knows the audit is unnecessary.
 
 **Show summary:**
 

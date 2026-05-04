@@ -5,6 +5,24 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2026-05-04
+
+### Changed — `waves:logbook-update` is now the universal logbook entry point
+
+Three coordinated changes turn `waves:logbook-update` into the single command for any operation on an existing logbook (modify, audit on demand, migrate from older schemas):
+
+- **Two-argument contract**: `waves:logbook-update [filename] [instruction]`. Both optional. The first argument is the logbook filename (current behavior). The second argument is either a reserved token (`audit` skips operations and goes straight to integrity audit) or a free-form natural-language instruction interpreted by the agent (e.g. `"marca objetivo 3 completado"`, `"agrega objetivo primario sobre validación de inputs"`). Free-form instructions go through a mandatory **plan-before-execute** confirmation: the agent shows the interpreted operations and waits for `Yes/No/Adjust` before applying. This is the safety net against parsing optimism — the user always sees what the agent intends to do.
+- **Soft schema migration on load (Step 0.5)**: when a logbook is loaded, the command checks for required fields missing in the JSON and adds them with their schema defaults. For 2.2.x the only field added is `audit: { is_already_audited: false }` for logbooks created before 2.2.0. The migration only adds, never modifies existing values, so user content is preserved verbatim.
+- **STEP AUDIT is now unconditional** (with one explicit escape). Every `logbook-update` invocation ends with the integrity reviewer subagent running on the persisted logbook, regardless of which operations were performed. The previous "only audit on structural changes" heuristic missed the case of "audit a logbook without modifying it", which is exactly what the user needs after creating a logbook with the old version of the framework or after `project_rules.json` evolved. Step 3 now offers two terminal options: `5. None (just audit and exit)` and `6. Save and exit (skip audit)` — the latter is the rare escape hatch when the audit is genuinely unnecessary.
+
+### Why this is an addition, not a refactor
+
+The original 2.2.0 design proposed a separate command `/waves:logbook-audit` for audit-on-demand. This release retires that idea: `logbook-update` already exists, already loads logbooks, already validates against the schema. Extending it to cover audit-on-demand and soft schema migration avoids growing the command surface (still 17 slash commands) and concentrates the integrity workflow in one place.
+
+The latency cost (~30-60s of subagent per `logbook-update` invocation) is paid once per call. `logbook-update` is not a hot-path command — it is invoked deliberately by the user when they want to act on a logbook, not as part of an inner loop. The trade is acceptable: every logbook that passes through `update` exits with verified integrity.
+
+---
+
 ## [2.2.0] - 2026-05-04
 
 ### Added — Multi-focus decomposition + logbook integrity audit
