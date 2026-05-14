@@ -14,13 +14,30 @@ The history is presented in **four eras** for clarity:
 1. **Waves Era** (2026-03-13 → present) — versions 1.2.0 onward, current framework identity
 2. **Identity Rebrand** (2026-03-13) — the commit that renamed `ai-behavior` to Waves; zero breaking changes
 3. **ai-behavior Era** (2025-11-11 → 2026-03-12) — versions 0.1.0 through 1.1.0; the framework formalized but under its original name
-4. **Genesis Era** (2025-07-10 → 2025-11-10) — pre-framework; the `ai_logbook` pattern in `givannia_desktop` (a WhatsApp business agent)
+4. **Genesis Era** (2025-06-25 → 2025-11-10) — pre-framework; the first schemas (logbook, rules, manifest) designed in disk before any git versioning, later persisted in `givannia_desktop/ai_logbook/`
+5. **Pre-history** (2024-11-29 → 2025-06-24) — the Exovian ecosystem (`networking_exovian`, `theme_exovian`, `permissions_exovian`) and the LLMs experimentation (`LLMs/RealState/whatsapp-poc`). The framework did not exist yet, but the need that would create it was being lived
 
 Most recent versions appear first.
 
 ---
 
 # Waves Era (2026-03-13 → present)
+
+## [2.4.1] - 2026-05-14
+
+### Corrected — Origin & Lineage with filesystem-verified dates
+
+This is a documentation-only patch. No code changes, no schema changes, no behavior changes. Corrects the framework's documented origin to reflect filesystem birth times verified across multiple repositories.
+
+- **FRAMEWORK.md §19 Origin & Lineage**: restructured to 6 sub-sections (was 5). New §19.1 "Pre-history" covers the Exovian ecosystem (2024-11-29) and LLMs experimentation (2025-04-11 → 2025-04-12, including the `whatsapp-poc` at `exovian_archived/Archived/LLMs/RealState/whatsapp-poc`). §19.2 "Genesis" now cites the actual first-schema date — **2025-06-25 16:02:31 UTC-6** — when `logbook_schema.json` was first written to disk, 15 days before the `git init` of `givannia_desktop` (2025-07-10).
+- **CHANGELOG.md Genesis Era**: corrected date range to **2025-06-25 → 2025-11-10** (was 2025-07-10 → 2025-11-10). Added detailed pre-git phase showing the 15-day window when the three foundational schemas existed in disk before any git versioning. Added explicit table of filesystem birth times.
+- **CHANGELOG.md Pre-history section**: new section documenting the Exovian ecosystem (`networking_exovian` 2024-11-29 12:29 UTC-6, `theme_exovian` 2024-11-29 12:49 UTC-6, `permissions_exovian` 2025-01-02), the LLMs directory creation (2025-04-11), and the `whatsapp-poc` prototype files (2025-04-12 17:09 → 17:12 UTC-6). The framework did not exist yet, but the verifiable record of the need that would create it does.
+
+### Why this matters
+
+The previous documentation cited 2025-07-10 as Day 1 — that is the `git init` date of `givannia_desktop`, not the date the first schema was written. The actual first artifact (`logbook_schema.json`) predates git versioning by 15 days. The corrected dates do not change anything about how the framework operates; they only make the public lineage truthful to what the filesystem and git can verify. Earlier internal thought certainly predated 2025-06-25, but the owner has stated no documented record survives, and this changelog does not invent dates it cannot cite.
+
+---
 
 ## [2.4.0] - 2026-05-14
 
@@ -665,33 +682,50 @@ The IMPLEMENTATION_GUIDE.md of this v0.1.0 era credited early conceptual inspira
 
 ---
 
-# Genesis Era (2025-07-10 → 2025-11-10)
+# Genesis Era (2025-06-25 → 2025-11-10)
 
-Before `ai-behavior` existed as a named framework, the pattern that would become Waves was used in production inside another project: **`givannia_desktop`**, a Flutter macOS application that ran an embedded Node.js + Baileys WhatsApp agent for business conversational AI.
+The framework as a structural artifact begins on **2025-06-25 at 16:02:31 UTC-6** — when the file `logbook_schema.json` was created in disk. There was no git versioning yet; the file existed alone on the filesystem, in a directory that would later become `givannia_desktop/ai_logbook/`. The filesystem (macOS APFS) preserved the birth time, which is the dated record we use.
 
-The problem was practical: the WhatsApp agent migrated between Claude Code, Codex, and Gemini CLI as token budgets ran out, and it needed to preserve context across those migrations without losing the conversation thread, the project state, or the agent's emotional calibration.
+For 15 days, the three foundational schemas were designed by hand without git. Then on 2025-07-10 the schemas were placed inside a new Flutter desktop project (`givannia_desktop`) and that project received its first `git init`. The schemas became the `ai_logbook/` directory of that project, and the pattern saw production use as the embedded WhatsApp business agent matured.
 
-## Genesis - 2025-07-10
+## Genesis - 2025-06-25 → 2025-07-09 (pre-git phase)
 
-**The `ai_logbook/` directory** was introduced inside `givannia_desktop` on the same day as the project's initial commit. It contained three JSON schemas that became the structural ancestors of every artifact in Waves today:
+| File | Birth time (filesystem) |
+|------|------------------------|
+| `logbook_schema.json` | **2025-06-25 16:02:31** — **Day 1** of the framework |
+| `project_rules_schema.json` | 2025-06-26 10:41:46 |
+| `project_manifest_schema.json` | 2025-07-01 11:10:49 |
 
-- **`logbook_schema.json`** — A dynamic bitácora with:
+**The three schemas existed in disk for 15 days before any git history.** Designed by hand, validated mentally against the WhatsApp agent use case that was running in `LLMs/RealState/whatsapp-poc` since 2025-04-12 (see Pre-history below).
+
+## Genesis - 2025-07-10 (first git commit)
+
+On 2025-07-10:
+- 09:27:16 — `git init` of `givannia_desktop`
+- 09:29:07 — Commit `afb1bd6` "Initial commit" (Flutter scaffolding, Node.js + Baileys assets)
+- 09:54:41 — Commit `af1c2a1` "Adding pending changes" (the `ai_logbook/` directory with the three schemas)
+
+`givannia_desktop` has only 2 commits total in its git history, both on 2025-07-10. After that, the pattern emigrated to other workflows (no longer versioned in `givannia_desktop`).
+
+## The three foundational schemas (still alive in Waves today)
+
+- **`logbook_schema.json`** — Dynamic bitácora with:
   - `recent_context` — sliding window of 15 entries (the compaction algorithm Waves uses today)
   - `history_summary` — compacted older entries (still the algorithm today)
   - `objectives_present` / `objectives_past` (precursor of main/secondary objectives)
   - `future_reminders` (still present in Waves today)
-  - `mood` (emotional state — dropped during formalization)
-- **`project_manifest_schema.json`** — tech stack, modular structure, layered architecture descriptors
-- **`project_rules_schema.json`** — rules grouped by category (architecture, testing, naming, presentation_layer, data_layer, api_layer, infra). The 7 categories are still the defaults in current `project_rules_schema.json` for software projects.
+  - `mood` (emotional state — useful for the WhatsApp use case, dropped during formalization)
+- **`project_manifest_schema.json`** — Tech stack, modular structure, layered architecture descriptors
+- **`project_rules_schema.json`** — Rules grouped by category (architecture, testing, naming, presentation_layer, data_layer, api_layer, infra). The 7 categories are still the defaults in current `project_rules_schema.json` for software projects.
 
-**This was not a framework.** It was a working pattern, validated daily in production for 4 months before being formalized.
+**This was not a framework.** It was a working pattern, validated daily in production for 4 months (July 2025 → November 2025) before being formalized as `ai-behavior`.
 
 ### What this era contributed to current Waves
 
-- The compaction algorithm in `recent_context` is unchanged from the day it was written
+- The compaction algorithm in `recent_context` is unchanged from the day it was written (2025-06-25)
 - The schema-validated JSON shape (description + $comment pattern) is the convention to this day
 - The rule categories are the defaults for software projects
-- The "future_reminders" concept survives in current logbook schemas
+- The `future_reminders` concept survives in current logbook schemas
 - The philosophy of structured-JSON-as-shared-memory is the load-bearing idea of Waves
 
 ### What did not survive
@@ -700,16 +734,41 @@ The problem was practical: the WhatsApp agent migrated between Claude Code, Code
 - The directory name `ai_logbook/` — replaced by `ai_files/` when the pattern was generalized in `ai-behavior` v0.1.0
 - The coupling to a single application (the WhatsApp agent) — generalized to "any project"
 
-### Cronology of the Genesis era
+---
+
+# Pre-history (2024-11-29 → 2025-06-24)
+
+The framework did not start the moment its first schema was written. It started in a need that was being lived, and that need had a context. This section documents the verifiable record before Waves' Day 1.
+
+## Pre-history - 2024-11-29: Exovian ecosystem begins
+
+The owner began the **Exovian** Flutter ecosystem in late November 2024 — seven months before the first schema of what would become Waves was written.
+
+| Date | Repository | First commit |
+|------|------------|--------------|
+| **2024-11-29 12:29:02 UTC-6** | `networking_exovian` | `b3eadfa` "Create project" |
+| 2024-11-29 12:49:10 UTC-6 | `theme_exovian` | `3370ea8` "Create project" |
+| 2025-01-02 11:19:18 UTC-6 | `permissions_exovian/` | filesystem birth (git init follows) |
+
+These packages are infrastructure libraries for Flutter applications. They are **not Waves**. They are the substrate on top of which the owner was working when the need for structured AI agent context emerged.
+
+## Pre-history - 2025-04-11 → 2025-04-12: LLMs experimentation, the WhatsApp PoC
+
+The pivot toward LLM agents has a dated entry point:
 
 | Date | Event |
 |------|-------|
-| 2025-07-10 | First commit of `givannia_desktop`. Same day: `ai_logbook/` directory created with the three foundational schemas. |
-| 2025-07 → 2025-11 | Daily production use as part of the WhatsApp business agent. Pattern stabilizes. |
-| 2025-11-10 | Last day of "Genesis era". The next day, the pattern was extracted as a standalone framework. |
+| **2025-04-11 09:44:52 UTC-6** | Directory `LLMs/` created in `exovian_archived/Archived/` (no git versioning) |
+| **2025-04-12 17:09:23 UTC-6** | `LLMs/RealState/whatsapp-poc/package.json` — first file of the first WhatsApp proof of concept |
+| 2025-04-12 17:10:11 UTC-6 | `LLMs/RealState/whatsapp-poc/package-lock.json` |
+| 2025-04-12 17:12:47 UTC-6 | `LLMs/RealState/whatsapp-poc/index.js` |
 
-The Genesis era is not a version of Waves. It is the period during which the **idea** of Waves was tested in production before it had a name.
+**`LLMs/RealState/whatsapp-poc` is where the need to preserve context between AI tools (Claude Code → Codex → Gemini CLI) was felt empirically.** The agent migrated across LLMs as token budgets ran out, and lost context every time. There is no git versioning for this prototype — only filesystem birth times mark the record.
+
+Earlier prototypes may have existed in the owner's workflow before `whatsapp-poc` (the owner has stated as much), but they are not documented in a way that can be reconstructed from disk. Their existence is real but unverifiable, and this changelog does not invent dates it cannot cite.
+
+The two months between the `whatsapp-poc` (2025-04-12) and the first schema (2025-06-25) were the gestation period: the problem was being lived; the solution was being intuited; the artifact was about to be written.
 
 ---
 
-*This changelog documents the complete lineage of Waves from the original `ai_logbook` pattern (2025-07-10) through the current 2.x line. The framework exists because a working pattern was used long enough to deserve formalization. The authority of every defense layer, every adversarial subagent, every schema field traces to a real failure that the framework was designed to prevent.*
+*This changelog documents the complete verifiable lineage of Waves: from the Exovian ecosystem packages (2024-11-29) through the LLMs experimentation (2025-04-11) to the first schema of the framework proper (2025-06-25), the formalization as `ai-behavior` (2025-11-11), the rebrand to Waves (2026-03-13), and the current 2.x line. The framework exists because a working pattern was used long enough to deserve formalization, and the dates above are the record the filesystem and git can verify. Earlier internal thought is real but not documented here, in keeping with the discipline of citing only what can be cited.*

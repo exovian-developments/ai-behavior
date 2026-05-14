@@ -1,6 +1,6 @@
 # Waves™ Framework
 
-**Version:** 2.4.0
+**Version:** 2.4.1
 **Last updated:** 2026-05-14
 **Status:** Active
 
@@ -1063,23 +1063,45 @@ When `git tag v*` is executed, a PreToolUse hook validates that the tagged commi
 
 ## 19. Origin & Lineage
 
-Waves did not begin as a framework. It began as a workaround.
+Waves did not begin as a framework. It began as a workaround. The dated record traces back to filesystem birth times (preserved by macOS APFS) and git commits across multiple repositories. The cronology below is what the filesystem and git can verify; earlier internal thought predates the verifiable record but is not documented here.
 
-### 19.1 Genesis (2025-07-10 → 2025-11-10): the WhatsApp agent and `ai_logbook`
+### 19.1 Pre-history: Exovian ecosystem & LLMs experimentation (2024-11-29 → 2025-06-24)
 
-In July 2025, the project that would become Waves did not exist by that name. The owner was building **givannia_desktop**, a Flutter desktop application that ran a Node.js + Baileys WhatsApp agent embedded in sandbox — a conversational AI agent for businesses. The technical problem was acute: the agent migrated between Claude Code, Codex, and Gemini CLI as token budgets ran out, and the agent needed to preserve context across those migrations.
+The framework Waves emerged inside an existing ecosystem. Seven months before the first Waves schema was written, the owner began building **Exovian**, a portfolio of Flutter packages intended to share infrastructure across applications:
 
-The solution was structural. On 2025-07-10, the same day as the project's initial commit, the directory `ai_logbook/` was introduced containing three JSON schemas:
+- **2024-11-29 12:29:02 UTC-6** — `networking_exovian` "Create project". Committed in a dedicated git repo. The earliest verifiable Exovian commit.
+- **2024-11-29 12:49:10 UTC-6** — `theme_exovian` "Create project". 20 minutes later, in its own repo.
+- **2025-01-02 11:19:18 UTC-6** — `permissions_exovian/` directory created. Third package in the ecosystem.
 
-- `logbook_schema.json` — dynamic bitácora with `recent_context` (15-entry sliding window), `history_summary` (compacted history), `objectives_present/past`, `future_reminders`, and an emotional `mood` field
-- `project_manifest_schema.json` — tech stack, modular structure, layered architecture
-- `project_rules_schema.json` — project rules grouped by category (architecture, testing, naming, presentation, data, API, infra)
+These packages predate the framework by more than half a year. They are not Waves. They are the substrate on top of which the owner was working when the need for structured AI agent context emerged.
 
-This was not a framework. It was a working pattern. The compaction algorithm (when `recent_context` filled, the oldest entry was summarized and archived to `history_summary`) and the schema-validated JSON shape are unchanged in Waves 2.3.0 four years later. **Every artifact in Waves today inherits its lineage from `ai_logbook`.**
+The pivot toward AI agents has a dated entry point as well:
 
-### 19.2 Formalization as `ai-behavior` (2025-11-11 → 2026-03-12)
+- **2025-04-11 09:44:52 UTC-6** — Directory `LLMs/` created (no git). The owner begins working with LLMs.
+- **2025-04-12 17:09:23 UTC-6** — First file inside `LLMs/RealState/whatsapp-poc/`: `package.json`. **This is the first prototype where the need to preserve context between AI tools (Claude Code → Codex → Gemini CLI) was felt empirically.** Subsequent files (`package-lock.json`, `index.js`) follow within minutes the same day.
 
-After 4 months of using the `ai_logbook` pattern in production, the owner generalized it into a standalone framework: **ai-behavior**. The first commit (`0c033b3` on 2025-11-11) was an "Initial commit". By 2026-02-13 the framework had structured releases:
+The `whatsapp-poc` proof of concept under `LLMs/RealState/` was the operational laboratory: a real conversational agent for businesses, running locally, migrating between LLMs as token budgets ran out. There was no git versioning during this phase — the directory and its files exist in the filesystem with their birth times intact, but no commit history. Earlier prototypes (before `LLMs/`) may have existed in the owner's workflow but are not documented in a way that can be reconstructed from disk; their existence is real but unverifiable.
+
+This is the **pre-history** of Waves. The need was being lived. The pattern was being intuited. But no formal artifact yet existed.
+
+### 19.2 Genesis: first schemas (2025-06-25 → 2025-11-10)
+
+The framework as a structural artifact begins with a single file, two months after the `whatsapp-poc` prototype:
+
+- **2025-06-25 16:02:31 UTC-6** — `logbook_schema.json` created. **This is the verifiable Day 1 of the framework.** The schema declares the bitácora structure with `recent_context` (15-entry sliding window), `history_summary` (compacted older entries), `objectives_present` / `objectives_past`, `future_reminders`, and an emotional `mood` field. The compaction algorithm written that day is unchanged in Waves 2.4.0 today.
+- **2025-06-26 10:41:46 UTC-6** — `project_rules_schema.json` created. Rules grouped by category (architecture, testing, naming, presentation, data, API, infra). The 7 categories are still the defaults for software projects.
+- **2025-07-01 11:10:49 UTC-6** — `project_manifest_schema.json` created. Tech stack, modular structure, layered architecture.
+
+For **15 days** between 2025-06-25 and 2025-07-10, the schemas existed in disk but were not versioned in git. Andrius was designing the framework manually, file by file, before deciding it deserved a repository.
+
+- **2025-07-09 16:43:00 UTC-6** — Directory `givannia_desktop/` created — a new Flutter desktop project that would embed a Node.js + Baileys WhatsApp agent.
+- **2025-07-10 09:27:16 UTC-6** — `git init` of `givannia_desktop`. Initial commit follows two minutes later. The `ai_logbook/` directory containing the three schemas is added in the second commit, 25 minutes after the initial commit. The repository has only 2 commits total (both that day); after that, the pattern emigrated to other workflows.
+
+The 4 months between July 2025 and November 2025 are when the pattern was used in production daily but not pushed into a standalone framework. The compaction algorithm, the schema shapes, the philosophy of "schema-validated JSON as shared memory between AI agents" — all were validated empirically before being named.
+
+### 19.3 Formalization as `ai-behavior` (2025-11-11 → 2026-03-12)
+
+After 4 months of using the `ai_logbook` pattern in production, the owner extracted it as a standalone framework: **ai-behavior**. The first commit (`0c033b3` on 2025-11-11) was an "Initial commit". By 2026-02-13 the framework had structured releases:
 
 - **v0.1.0** (2026-02-13) — Core protocol: 9 JSON schemas, 31 subagents, 11 slash commands, cowork plugin
 - **v0.2.0** (2026-02-26) — Roadmap schema + commands
@@ -1090,21 +1112,21 @@ After 4 months of using the `ai_logbook` pattern in production, the owner genera
 
 The IMPLEMENTATION_GUIDE.md of the ai-behavior era credited early conceptual inspiration to the **Agent OS framework** (Cased). That conceptual heritage was absorbed and does not appear in the current Waves implementation, but it deserves acknowledgement: ai-behavior was the first version to formalize "AI agent as team member" rather than "AI as tool", and Agent OS was part of the conversation that made the framing thinkable.
 
-### 19.3 Rebrand to Waves (2026-03-13)
+### 19.4 Rebrand to Waves (2026-03-13)
 
 Commit `2cda84d` — "rebrand: rename ai-behavior to Waves". 102 files renamed. The identity changed; the philosophy did not. The commit message itself states the rationale: *"Identity change reflecting AI-era product development philosophy. Wave-based delivery cycles replace fixed-cadence sprints in AI-assisted development."* The name "Waves" was already the term used internally for delivery cycles since v0.1.0 — the rebrand promoted it from concept to identity.
 
-### 19.4 Product Consciousness (2026-04-15 onward)
+### 19.5 Product Consciousness (2026-04-15 onward)
 
 Waves 2.0 introduced what the framework now calls **Product Consciousness**: hooks that enforce rules mechanically instead of relying on social CLAUDE.md instructions; a 5-level decision classification (the trust contract); SessionStart perception of the artifact graph; proactive metacognition triggers. This was not a new framework. It was the moment the existing framework gained the property that distinguishes it from documentation systems: **rules that cannot be ignored**.
 
-The 2.1 line moved metacognition to background subagents. The 2.2 line added orthogonality and integrity gates that catch logbook construction failures before code is written. The 2.3 line added the `agentic` project type, validated empirically with the medical corpus pipeline that was itself a descendant of the original WhatsApp agent.
+The 2.1 line moved metacognition to background subagents. The 2.2 line added orthogonality and integrity gates that catch logbook construction failures before code is written. The 2.3 line added the `agentic` project type, validated empirically with the medical corpus pipeline that was itself a descendant of the original WhatsApp agent. The 2.4 line — this release — closes the documentation regression that allowed FRAMEWORK.md to fall behind 17 shipped versions, and adds the `waves-doc-sync.sh` hook to prevent it from happening again.
 
-### 19.5 What this lineage means
+### 19.6 What this lineage means
 
-Waves is what happens when a working pattern is used in production long enough to be generalized, then formalized, then renamed, then hardened against its own failure modes. The result is not academic. Every defense layer, every adversarial subagent, every schema field exists because a real project failed without it. The compaction algorithm in `recent_context` predates the framework by months. The decision to remove subagent delegation predates Waves by a year. The trust contract (5-level decision classification) was named in 2026-04 but its essence — "agent stops on scope, business, and discovery decisions" — was in the schemas from day one.
+Waves is what happens when a working pattern is used in production long enough to be generalized, then formalized, then renamed, then hardened against its own failure modes. The result is not academic. Every defense layer, every adversarial subagent, every schema field exists because a real project failed without it. The compaction algorithm in `recent_context` was written on 2025-06-25 and is unchanged today. The decision to remove subagent delegation (2026-03-08) predates Waves by 5 days and is still load-bearing. The trust contract (5-level decision classification) was named in 2026-04 but its essence — "agent stops on scope, business, and discovery decisions" — was in the schemas from day one.
 
-The framework's authority comes from its origin: it was used before it was designed.
+The framework's authority comes from its origin: **it was used before it was designed**. From the Exovian Flutter packages (2024-11-29) to the LLMs experimentation (2025-04-11) to the first schema (2025-06-25) to today's 2.4.0 — every artifact answers a question that was first asked in production.
 
 ---
 
@@ -1161,4 +1183,4 @@ The framework's authority comes from its origin: it was used before it was desig
 
 ---
 
-*Waves™ Framework v2.4.0 — Created from the ai_logbook pattern on 2025-07-10. Formalized as ai-behavior on 2025-11-11. Renamed to Waves on 2026-03-13. Current version published 2026-05-14 by Exovian™ Developments.*
+*Waves™ Framework v2.4.1 — First schema written on 2025-06-25 (pre-git). Persisted with `git init` of `givannia_desktop` on 2025-07-10. Formalized as `ai-behavior` on 2025-11-11. Renamed to Waves on 2026-03-13. Current version published 2026-05-14 by Exovian™ Developments. The Exovian ecosystem itself dates back to 2024-11-29 with the `networking_exovian` package.*
