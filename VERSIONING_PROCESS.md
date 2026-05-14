@@ -96,7 +96,20 @@ done
 
 A non-zero exit here means **do not tag or publish** until the schema is fixed. Waves 2.1.7 shipped with a broken `logbook_software_schema.json` precisely because this step was skipped.
 
-### 5. Commit and tag
+### 5. Doc-sync check (mechanical, enforced by hook)
+
+The release commit must modify **both** `FRAMEWORK.md` and `CHANGELOG.md`. The PreToolUse hook `waves-doc-sync.sh` (introduced in Waves 2.3.x) enforces this when you run `git tag vN.N.N` — if either file is missing from the tagged commit, the hook exits 2 with a descriptive message.
+
+Why this exists: between Waves 2.0.0 and 2.3.0, 17 releases shipped while `FRAMEWORK.md` remained frozen at 2.0. The website agent derives content from `FRAMEWORK.md`, so a frozen framework doc means a stale public site. The hook makes the discipline mechanical instead of social.
+
+**Bypass (rare cases — patch-only release, out-of-band tag):**
+
+```bash
+echo "patch-only — no doc surface change" > .claude/waves-doc-sync-bypass
+# then re-run git tag (single-use file; auto-deleted; usage logged to /tmp/waves-doc-sync-bypass.log)
+```
+
+### 6. Commit and tag
 
 ```bash
 git add .
@@ -105,7 +118,7 @@ git tag v0.2.0
 git push origin main --tags
 ```
 
-### 6. Build and publish
+### 7. Build and publish
 
 ```bash
 cd plugin/

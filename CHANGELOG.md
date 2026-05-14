@@ -1,9 +1,49 @@
 # Changelog
 
-All notable changes to waves will be documented in this file.
+All notable changes to Waves are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## About this changelog
+
+Waves did not begin as a framework. It began as a workaround. This changelog is intentionally complete — it documents the entire lineage from the original `ai_logbook` pattern (July 2025) through the formalization as `ai-behavior` (November 2025), the identity rebrand to Waves (March 2026), and the current 2.x line.
+
+The history is presented in **four eras** for clarity:
+
+1. **Waves Era** (2026-03-13 → present) — versions 1.2.0 onward, current framework identity
+2. **Identity Rebrand** (2026-03-13) — the commit that renamed `ai-behavior` to Waves; zero breaking changes
+3. **ai-behavior Era** (2025-11-11 → 2026-03-12) — versions 0.1.0 through 1.1.0; the framework formalized but under its original name
+4. **Genesis Era** (2025-07-10 → 2025-11-10) — pre-framework; the `ai_logbook` pattern in `givannia_desktop` (a WhatsApp business agent)
+
+Most recent versions appear first.
+
+---
+
+# Waves Era (2026-03-13 → present)
+
+## [2.4.0] - 2026-05-14
+
+### Added — Documentation sync hook + complete framework lineage
+
+This release closes a regression and formalizes the framework's complete history.
+
+- **`FRAMEWORK.md` brought up to date with all 2.x shipped features.** From Waves 2.0.0 (2026-04-15) through 2.3.0, FRAMEWORK.md remained frozen at the 2.0 narrative while 17 releases shipped substantial defense layers, adversarial subagents, and the agentic project category. The document now reflects the actual 2.x line via expanded Sections 1.4 (cumulative narrative), 13 (9-hook inventory), and new Sections 14 (Defense Layers A+B+C+D), 15 (Adversarial Subagents), 16 (Project Types), 17 (Background Metacognition), 18 (Upgrade Discipline), and 19 (Origin & Lineage). Glossary expanded with 12 new terms.
+- **`waves-doc-sync.sh` hook (`PreToolUse`, matcher `Bash`).** Triggers when `git tag vN.N.N` is executed. Blocks (exit 2) when the tagged commit does not modify BOTH `FRAMEWORK.md` and `CHANGELOG.md`. Single-use bypass via `.claude/waves-doc-sync-bypass` for documented exceptions; usage logged to `/tmp/waves-doc-sync-bypass.log`. Prevents the very regression this release closes.
+- **`VERSIONING_PROCESS.md` Step 5: Doc-sync check** added between schema pre-flight (Step 4) and tag/commit (Step 6, renumbered from 5). The release procedure now explicitly enumerates the doc-sync requirement and the bypass mechanism.
+- **Complete CHANGELOG lineage**. The changelog now displays the four eras of the framework with explicit headers: Waves Era (current), Identity Rebrand (commit `2cda84d`, 2026-03-13), ai-behavior Era (2025-11-11 → 2026-03-12), and Genesis Era (2025-07-10 → 2025-11-10 — the `ai_logbook` pattern in `givannia_desktop`, predecessor of `ai_files/`). The Agent OS framework (Cased) is acknowledged as conceptual heritage under v0.1.0.
+- **Retroactive tags**. `v0.3.0` (commit `5bd6b7f`), `v1.1.1` (commit `4b914ab`) created. Existing tags `1.0.0` and `1.1.0` renormalized to `v1.0.0` and `v1.1.0` for consistency with all subsequent versions.
+- **`WAVES_SITE_UPDATE_PROMPT.md`** at repo root: a self-contained handoff prompt for the `exovian_web_v1` agent to update the public Waves site to 2.4.0, including a new `changelog.html` (visible full lineage) and `agentic.html` (hub for the agentic category).
+
+### Why this is the right shape of release
+
+Bumped to 2.4.0 (minor) rather than 2.3.1 (patch) because the doc-sync hook is a new mechanism, not a fix. The hook is backward-compatible — existing projects do not need it; new releases that propagate it will enforce the discipline from that point forward. No artifact migrations are required.
+
+### Backward compatibility
+
+The hook itself is opt-in per repository (lives in `.claude/hooks/` and `settings.json` of the consuming project). Existing tags and existing CHANGELOG entries are unchanged. The renormalized tags `1.0.0` → `v1.0.0` and `1.1.0` → `v1.1.0` were removed from the remote and re-pushed under the new names; no Homebrew formula or consumer depends on the legacy tag names.
+
+---
 
 ## [2.3.0] - 2026-05-14
 
@@ -322,6 +362,12 @@ Projects whose `.claude/waves-version` was prematurely bumped to `2.1.6` (skippi
 
 ---
 
+## Versions 1.1.1 → 1.3.4 (2026-03-11 → 2026-03-19)
+
+Patch and tooling iterations during the rebrand period. The rebrand to Waves landed in v1.1.1; subsequent patches (1.2.0, 1.3.1 → 1.3.4) focused on Homebrew formula fixes, CLI banner restyling, and incremental schema tightening. Git tags exist for these versions but the CHANGELOG was not updated per-patch; see `git log v1.1.1..v1.3.4` for commit-level granularity. The hook added in 2.3.x (see Section 18.6 of FRAMEWORK.md) prevents this pattern from recurring.
+
+---
+
 ## [1.3.0] - 2026-03-19
 
 ### Added
@@ -364,6 +410,37 @@ Projects whose `.claude/waves-version` was prematurely bumped to `2.1.6` (skippi
 ### Removed
 
 - Obsolete pre-rebrand files: `CONTINUATION_PROMPT.md`, `IMPLEMENTATION_GUIDE.md`, `Prompt para continuar sesión de ai-behav.md`
+
+---
+
+# Identity Rebrand: ai-behavior → Waves
+
+**Commit:** [`2cda84d`](https://github.com/exovian-developments/waves/commit/2cda84d) (2026-03-13, 10:22 UTC-6)
+**Files changed:** 102
+
+On March 13, 2026, the framework was rebranded from **ai-behavior** to **Waves**. The commit message:
+
+> rebrand: rename ai-behavior to Waves
+>
+> Identity change reflecting AI-era product development philosophy:
+> - All file references: ai-behavior → waves
+> - CLI binary: bin/ai-behavior → bin/waves
+> - Command prefix: /ai-behavior:* → /waves:*
+> - Homebrew Formula: AiBehavior → Waves
+> - Plugin skill: ai-behavior-protocol → waves-protocol
+> - product_blueprint.json: Added philosophy section explaining
+>   why wave-based delivery cycles replace fixed-cadence sprints
+>   in AI-assisted development
+
+**The change was identity-only — zero breaking changes for users.** Filesystem layout, schema structure, command behavior, artifact relationships: all unchanged. The name "Waves" was already the term used internally for delivery cycles since v0.1.0 — the rebrand promoted it from concept to identity.
+
+The philosophy: *wave-based delivery cycles replace fixed-cadence sprints in AI-assisted development*. AI agents compress what used to take 6 months into days. Sprints designed for human coordination overhead lose their purpose when agents execute, track, and report through structured artifacts. Waves adapts the process to that reality.
+
+---
+
+# ai-behavior Era (2025-11-11 → 2026-03-12)
+
+The framework existed under the name **ai-behavior** for 4 months before the rebrand. All artifacts, philosophy, and command structure of current Waves were established in this era — the rebrand changed identity, not substance.
 
 ## [1.1.0] - 2026-03-11
 
@@ -581,3 +658,58 @@ Plugin agents `code-implementer` and `code-auditor` remain in `plugin/agents/` a
 | general-scanner | 09 |
 
 Subagents not mapped as standalone plugin agents (used as pipeline steps within commands): 01-08, 10, 20, 21, 25, 26, 29.
+
+### Conceptual heritage acknowledgement
+
+The IMPLEMENTATION_GUIDE.md of this v0.1.0 era credited early conceptual inspiration to the **Agent OS framework** (Cased). That heritage is acknowledged here for historical accuracy. The current Waves implementation does not depend on Agent OS code or artifacts, but the framing "AI agent as team member" was part of the conversation that made the design thinkable at the time. The reference was dropped from the codebase during the rebrand.
+
+---
+
+# Genesis Era (2025-07-10 → 2025-11-10)
+
+Before `ai-behavior` existed as a named framework, the pattern that would become Waves was used in production inside another project: **`givannia_desktop`**, a Flutter macOS application that ran an embedded Node.js + Baileys WhatsApp agent for business conversational AI.
+
+The problem was practical: the WhatsApp agent migrated between Claude Code, Codex, and Gemini CLI as token budgets ran out, and it needed to preserve context across those migrations without losing the conversation thread, the project state, or the agent's emotional calibration.
+
+## Genesis - 2025-07-10
+
+**The `ai_logbook/` directory** was introduced inside `givannia_desktop` on the same day as the project's initial commit. It contained three JSON schemas that became the structural ancestors of every artifact in Waves today:
+
+- **`logbook_schema.json`** — A dynamic bitácora with:
+  - `recent_context` — sliding window of 15 entries (the compaction algorithm Waves uses today)
+  - `history_summary` — compacted older entries (still the algorithm today)
+  - `objectives_present` / `objectives_past` (precursor of main/secondary objectives)
+  - `future_reminders` (still present in Waves today)
+  - `mood` (emotional state — dropped during formalization)
+- **`project_manifest_schema.json`** — tech stack, modular structure, layered architecture descriptors
+- **`project_rules_schema.json`** — rules grouped by category (architecture, testing, naming, presentation_layer, data_layer, api_layer, infra). The 7 categories are still the defaults in current `project_rules_schema.json` for software projects.
+
+**This was not a framework.** It was a working pattern, validated daily in production for 4 months before being formalized.
+
+### What this era contributed to current Waves
+
+- The compaction algorithm in `recent_context` is unchanged from the day it was written
+- The schema-validated JSON shape (description + $comment pattern) is the convention to this day
+- The rule categories are the defaults for software projects
+- The "future_reminders" concept survives in current logbook schemas
+- The philosophy of structured-JSON-as-shared-memory is the load-bearing idea of Waves
+
+### What did not survive
+
+- The `mood` field (emotional calibration of the agent — useful for the WhatsApp use case, abandoned during generalization)
+- The directory name `ai_logbook/` — replaced by `ai_files/` when the pattern was generalized in `ai-behavior` v0.1.0
+- The coupling to a single application (the WhatsApp agent) — generalized to "any project"
+
+### Cronology of the Genesis era
+
+| Date | Event |
+|------|-------|
+| 2025-07-10 | First commit of `givannia_desktop`. Same day: `ai_logbook/` directory created with the three foundational schemas. |
+| 2025-07 → 2025-11 | Daily production use as part of the WhatsApp business agent. Pattern stabilizes. |
+| 2025-11-10 | Last day of "Genesis era". The next day, the pattern was extracted as a standalone framework. |
+
+The Genesis era is not a version of Waves. It is the period during which the **idea** of Waves was tested in production before it had a name.
+
+---
+
+*This changelog documents the complete lineage of Waves from the original `ai_logbook` pattern (2025-07-10) through the current 2.x line. The framework exists because a working pattern was used long enough to deserve formalization. The authority of every defense layer, every adversarial subagent, every schema field traces to a real failure that the framework was designed to prevent.*

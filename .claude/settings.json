@@ -18,6 +18,11 @@
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/waves-gate.sh\"",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/waves-doc-sync.sh\"",
+            "timeout": 5
           }
         ]
       }

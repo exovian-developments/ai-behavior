@@ -1,7 +1,7 @@
 # Waves™ Framework
 
-**Version:** 2.0.0
-**Last updated:** 2026-04-15
+**Version:** 2.4.0
+**Last updated:** 2026-05-14
 **Status:** Active
 
 ---
@@ -24,11 +24,13 @@ Kanban optimizes for the flow of individual items but lacks the strategic framin
 
 AI agents have compressed what used to take 6 months of development into days or weeks. The bottleneck is no longer coding — it's human validation, QA, and decision-making. Waves adapts the process to this new reality.
 
-### 1.4 What changed in 2.0
+### 1.4 What changed across the 2.x line
 
 Waves 1.x was a framework of **structure and traceability** — it defined artifacts, order, and hierarchy. But it depended on CLAUDE.md instructions that degrade in long sessions.
 
-Waves 2.0 transforms the framework into a **Product Consciousness Framework** — the agent is no longer just an informed executor, it is a strategic advisor with graduated autonomy. The key additions:
+Waves 2.x transforms the framework into a **Product Consciousness Framework** — the agent is no longer just an informed executor, it is a strategic advisor with graduated autonomy and mechanical guardrails. The 2.x line is cumulative: each minor release adds a defense layer that the previous one could not enforce.
+
+#### 2.0 — Product Consciousness Foundation (2026-04-15)
 
 | Capability | Mechanism | Platform |
 |-----------|-----------|----------|
@@ -38,6 +40,52 @@ Waves 2.0 transforms the framework into a **Product Consciousness Framework** �
 | **Proactive metacognition** — 3 automatic triggers for strategic reflection | PostToolUse hooks detect delta in objectives, blueprint changes, and phase completion | Claude Code only |
 | **Context survival** — rules survive long sessions | SessionStart re-fires after context compaction, re-injecting state and classification rules | Claude Code only |
 | **Graduated governance** — enforcement proportional to project maturity | No blueprint → allow all. Blueprint without roadmap → block. Full artifacts → allow + classify | Claude Code only |
+
+#### 2.1 — Background subagents, governance, and product memory (2026-04-16 → 2026-05-04)
+
+The 2.1 line moved metacognition from a synchronous step that paused the main agent to a **background subagent** spawned in parallel. It also introduced governance primitives and product-level memory.
+
+| Capability | Where it lives |
+|-----------|---------------|
+| **Background metacognition** — fresh subagent with full Opus context, runs in parallel | `waves-metacognition.sh` spawns `Agent(run_in_background=true)` with adversarial framing |
+| **Throttled triggers** — fires at `floor(N/2)` intervals, not every objective | Marker counter per logbook hash, cooldown 60s to prevent loops |
+| **Mechanical roadmap progress** — `[AUTO]` notes appended on every objective completion | Hook writes to `roadmap.decisions[]` directly via jq |
+| **Rule scope governance** — `scope: "ecosystem" \| "local"` on every rule | Ecosystem rules immutable from individual projects; local rules are project-owned |
+| **Blueprint living memory** — `recent_context[]` (20 entries) + `history_summary[]` (10 entries) | Captures capability changes, market discoveries, metacognition findings; survives across sessions |
+| **Cross-vertical serendipity** — metacognition explicitly asks "does this solve another vertical's problem?" | Prompt enhancement in `waves-metacognition.sh` |
+| **Incremental `/waves:upgrade`** — version-aware migration registry | Reads `.claude/waves-version`, applies only migrations newer than local version |
+| **Layer A — inline rule text in completion_guide** | Logbook secondaries carry `Apply rule #N: <full rule text>` lines verbatim |
+| **Layer B — rules-in-scope banner** at start of every implementation | `objectives-implement` prints expanded rule text before any code is written |
+| **Layer C — post-implementation rules audit subagent** + companion injector hook | Background Opus auditor with structural citation requirement; non-blocking injection of findings classified by trust contract level |
+
+#### 2.2 — Logbook integrity and decomposition gates (2026-05-04)
+
+The 2.2 line closed the loop by adding two adversarial subagents that validate the inputs to implementation (the logbook itself) before code is written.
+
+| Capability | Where it lives |
+|-----------|---------------|
+| **Orthogonality reviewer (Step A2.5)** — adversarial subagent decides single_focus vs multi_focus before primary objectives are generated | `logbook-create` Step A2.5 spawns blocking Opus subagent biased toward multi_focus |
+| **Sibling primaries banner** — implementer sees DONE/THIS/DEFERRED siblings to scope attention | `objectives-implement` reconstructs from `logbook.objectives.main` when N>1 |
+| **Layer D — logbook integrity audit (Step A6)** | Post-persist adversarial subagent reads logbook from disk, flags critical/warning findings (missing rules, empty scope.files, decomposition mismatch, duplicate primary content) |
+| **`audit` field in logbook schema** | `is_already_audited` (bool) + `audit_file` (path). Survives across sessions; visible at SessionStart |
+| **Schema migration soft on load** — older logbooks get missing required fields auto-added at `logbook-update` | Adds `audit: { is_already_audited: false }` to pre-2.2 logbooks |
+| **Two-argument contract on `logbook-update`** — `<filename> [audit | instruction]` | Reserved token `audit` skips operations and runs the integrity reviewer; free-form instruction is interpreted with plan-before-execute confirmation |
+| **STEP AUDIT unconditional** — every `logbook-update` ends with integrity audit | Escape hatch (option 6) for the rare case the audit is genuinely unnecessary |
+
+#### 2.3 — Agentic project category (2026-05-14)
+
+The 2.3 release adds a third project category — **agentic** — alongside `software` and `general`. An agentic project's value is an orchestration of agents/subagents with skills, hooks, tools, and configurations — not traditional software, not academic content. Ratified empirically with 1 production pilot (medical corpus pipeline) + 2 projected cases (customer operations hub, compliance operations center) before the schema was frozen.
+
+| Capability | Where it lives |
+|-----------|---------------|
+| **`agentic_manifest_schema.json`** — 15 agnostic top-level sections + 8 reusable `$defs` | Models orchestration, roles (free array, NO fixed enum), subagents lifecycle (ephemeral/persistent/hybrid), skills, tools, data_sources, state_contracts, handoff_contracts, pipelines, integration_contracts, triggers, governance, observability, source_access_modes |
+| **`user_pref` enum extended** to `["software", "general", "agentic"]` | Routing key for all commands; backward compatible |
+| **`/waves:manifest-create` FLOW C: AGENTIC** | 6 elicitation groups (project identity, orchestration architecture, roles/skills/tools, data flow, pipelines/triggers, governance/observability) cover all 15 sections |
+| **`/waves:blueprint-create` Step -0.5** — Agentic Terminology Adaptation | Conceptual mapping: capabilities → subagent_capabilities; views/flows → orchestration_patterns. NO schema change |
+| **`/waves:rules-create` Flow C** — 7 default agentic categories | orchestration, prompt_engineering, tool_use, governance, data_handling, integration, observability. Project defines its own; `project_rules_schema` accepts any |
+| **Core commands accept agentic** — `objectives-implement`, `logbook-create`, `logbook-update` reuse `logbook_software_schema` | scope.files for agentic points to skill .md / hook .json / prompt files instead of source code; the 4 defense layers + orthogonality reviewer apply identically |
+
+The 4 defense layers (A inline rules + B banner + C rules audit + D logbook integrity audit) and the adversarial subagents (orthogonality reviewer, integrity reviewer, rules auditor) are agnostic by construction — they operate on diff vs rules and structural validation of logbooks, regardless of whether the diff is Dart source code or a skill markdown file.
 
 ---
 
@@ -724,23 +772,25 @@ The agent must detect these escalations and re-classify. This was validated with
 
 ---
 
-## 13. Hooks Architecture (Waves 2.0, Claude Code)
+## 13. Hooks Architecture (Waves 2.x, Claude Code)
 
-Waves 2.0 uses Claude Code hooks — bash scripts that execute obligatorily at lifecycle events. These are not suggestions; they are code that runs before, during, or after every agent action.
+Waves 2.x uses Claude Code hooks — bash scripts that execute obligatorily at lifecycle events. These are not suggestions; they are code that runs before, during, or after every agent action. The hook set has grown across the 2.x line as new defense layers were added.
 
-### 13.1 Hook inventory
+### 13.1 Current hook inventory (2.3.0)
 
-| Hook | Event | Purpose | Output |
-|------|-------|---------|--------|
-| `waves-perceive.sh` | SessionStart | Read artifact graph, inject product state | Plain text context |
-| `waves-gate.sh` | PreToolUse (Edit\|Write\|Bash) | Graduated enforcement + classification reminder | exit 0 (allow) or exit 2 (block) + stderr message |
-| `waves-doc-enforce.sh` | PostToolUse (Edit\|Write) | Ensure recent_context when objectives complete | additionalContext alert |
-| `waves-metacognition.sh` | PostToolUse (Edit\|Write) | Force reflection when primary objective completes | additionalContext with 5 reflection questions |
-| `waves-blueprint-impact.sh` | PostToolUse (Edit\|Write) | Project cascading impacts when blueprint changes | additionalContext with impact analysis prompt |
-| `waves-phase-audit.sh` | PostToolUse (Edit\|Write) | Strategic audit when roadmap phase completes | additionalContext with 7-dimension audit prompt |
-| `waves-dart-analyze.sh` | PostToolUse (Edit\|Write) | Run dart analyze on .dart files | additionalContext with analysis results |
+| Hook | Event | Purpose | Introduced |
+|------|-------|---------|------------|
+| `waves-perceive.sh` | SessionStart | Read artifact graph, inject product state, surface pending audits and decisions | 2.0 |
+| `waves-gate.sh` | PreToolUse (Edit\|Write\|Bash) | Graduated enforcement + classification reminder + metacognition pending check | 2.0 |
+| `waves-doc-enforce.sh` | PostToolUse (Edit\|Write) | Ensure recent_context entries are written when objectives complete | 2.0 |
+| `waves-metacognition.sh` | PostToolUse (Edit\|Write) | Spawn background advisor subagent when primary objective completes (throttled) | 2.0 → 2.1 |
+| `waves-blueprint-impact.sh` | PostToolUse (Edit\|Write) | Project cascading impacts when blueprint changes | 2.0 |
+| `waves-phase-audit.sh` | PostToolUse (Edit\|Write) | Strategic audit when roadmap phase completes | 2.0 |
+| `waves-dart-analyze.sh` | PostToolUse (Edit\|Write) | Run `dart analyze` on .dart files | 2.0 |
+| `waves-rules-audit.sh` | PostToolUse (Edit\|Write) | Dispatch background Opus auditor when primary completes (Layer C trigger) | 2.1.9 |
+| `waves-rules-audit-injector.sh` | PostToolUse (Edit\|Write) | Surface audit findings at next Edit/Write; trigger re-audit on scope file edits (Layer C injector) | 2.1.9 |
 
-### 13.2 Graduated enforcement logic
+### 13.2 Graduated enforcement logic (`waves-gate.sh`)
 
 ```
 Does blueprint.json exist?
@@ -758,24 +808,21 @@ Does blueprint.json exist?
     └──
 ```
 
-### 13.3 Metacognition triggers
+The gate also whitelists `ai_files/` writes (so the agent can create the missing artifacts), git workflow commands, framework-internal files, and read-only Bash commands. A consent bypass exists via `.claude/waves-gate-bypass` for one-off escapes that are logged.
 
-| Trigger | When | What the agent must do |
-|---------|------|----------------------|
-| **Objective completed** | Main objective status changes to "achieved" | Read blueprint, roadmap, all active logbooks. Share 5 reflections with user before continuing. |
-| **Blueprint changed** | Any edit to blueprint.json | Project cascading impacts: affected phases, misaligned objectives, invalidated decisions, at-risk logbooks. |
-| **Phase completed** | Phase status changes to "completed" in roadmap | Full strategic audit: phase summary, blueprint alignment, discoveries, risks, opportunities, recommendations. |
-
-### 13.4 Delta detection
+### 13.3 Delta detection
 
 PostToolUse hooks use marker files in `/tmp/waves-*/` to detect state changes:
+
 1. On first run, the hook counts completed objectives (or phases) and stores the count in a marker file.
 2. On subsequent runs, it compares the current count with the stored count.
 3. If the count increased, a trigger fires.
 
-This approach is stateless (no database), fast (<1ms for non-matching files), and resilient (marker files are per-session, automatically cleaned on reboot).
+Path normalization (`cd "$(dirname "$FILE")" && pwd`) prevents hash mismatches between absolute and relative paths — a bug that caused circular re-triggers in 2.0 and was fixed in 2.1.
 
-### 13.5 Platform availability
+This approach is stateless (no database), fast (<1ms for non-matching files), and resilient (marker files are per-session, automatically cleaned on reboot). A 60-second cooldown after marker clearance prevents the agent from re-triggering itself when writing the post-metacognition response.
+
+### 13.4 Platform availability
 
 | Feature | Claude Code | Claude Desktop (Plugin) | Codex / Gemini CLI |
 |---------|-------------|------------------------|-------------------|
@@ -783,13 +830,285 @@ This approach is stateless (no database), fast (<1ms for non-matching files), an
 | Enforcement (blocking) | Hook (exit 2, non-bypassable) | Not available | Not available |
 | Classification reminder | Hook (re-injected every action) | Prompt (session start only) | CLAUDE.md (degradable) |
 | Metacognition triggers | Hook (automatic on delta) | Not available | Not available |
+| Adversarial subagents (Layers C, D, orthogonality) | Hook (background subagent spawn) | Not available | Not available |
 | Context survival (post-compaction) | Hook (automatic re-injection) | Not available | Not available |
 | Artifact structure | Schema-validated JSON | Schema-validated JSON | Schema-validated JSON |
 | Commands | Slash commands | Slash commands | Manual prompts |
 
 ---
 
-## 14. Glossary
+## 14. Defense Layers (Waves 2.1+)
+
+Rule drift — the silent failure where an agent writes code that violates declared project rules — was the most common pattern observed in real-world Waves projects, especially in frontend code where convention violations are syntactically valid (`Color(0xFFFF0000)` compiles even when the rule says "use theme tokens"). The 2.1 and 2.2 releases introduced four coordinated defense layers, each closing a specific gap.
+
+### 14.1 Layer A — Inline rule text in `completion_guide` (2.1.9)
+
+The `completion_guide` of every secondary objective gets appended with one entry per applicable rule in the format:
+
+```
+Apply rule #N: <full rule text from project_rules.json>
+```
+
+**The gap this closes:** rule IDs alone (`scope.rules: [3, 7, 12]`) force the implementer to mentally jump to `project_rules.json` on every step. That context switch is silently skipped under cognitive load. Inline text makes the constraint physically present at the moment of writing code.
+
+### 14.2 Layer B — Rules-in-scope banner (2.1.9)
+
+Before any implementation work, `/waves:objectives-implement` prints the full rule text for every rule in the current objective's `scope.rules`:
+
+```
+═══ Rules in scope for this objective ═══
+#3 [naming_conventions, local]: <full rule description>
+#7 [presentation_layer, ecosystem]: <full rule description>
+═══════════════════════════════════════════
+```
+
+When the logbook has 2+ main objectives, a **sibling primaries banner** also prints — showing DONE, THIS (current), and DEFERRED primaries so the agent knows what NOT to attend in the current objective.
+
+**The gap this closes:** even with Layer A in place, a saturated context can lose the rules to scrollback. Reprinting them at the start of each objective re-anchors attention.
+
+### 14.3 Layer C — Post-implementation rules audit subagent (2.1.9)
+
+When a primary objective transitions to `completed`, the PostToolUse hook `waves-rules-audit.sh` dispatches a background Opus subagent that:
+
+- Reads the diff for the primary's `scope.files`
+- Loads the full text of rules in `scope.rules`
+- Sibling-aware: receives the list of sibling primaries with DONE/DEFERRED state so it audits **scope-by-elimination** (it does not flag the absence of behavior in a primary that was scoped to structure only)
+- Classifies each violation by trust contract level (1-5)
+- Writes findings to `ai_files/waves/wN/audits/primary-N.json`
+
+A companion hook `waves-rules-audit-injector.sh` surfaces findings at the agent's next Edit/Write via `additionalContext` (non-blocking — auto-edits continue). Level 1-2 violations are auto-fixed; level 3+ surface to the user with structural citation. Iteration cap of 3, then escalation.
+
+**The gap this closes:** the original auto-audit was self-audit — the same agent that wrote the code was checking it. Optimism bias made false-negatives common. A fresh adversarial subagent with structural citation requirement catches what self-audit misses.
+
+### 14.4 Layer D — Logbook integrity audit (2.2.0)
+
+When `/waves:logbook-create` finishes persisting a new logbook, Step A6 spawns an adversarial Opus subagent that reads the persisted logbook from disk (not memory) and validates:
+
+- Every primary's `scope.rules` is populated when applicable rules exist
+- Every secondary's `completion_guide` contains the `Apply rule #N` lines for inherited rules (Layer A enforcement)
+- Rule IDs reference rules that exist in `project_rules.json`
+- Multi-focus declarations match the actual count of primaries
+- Primary contents are distinctive (not duplicates with different verbs)
+- `scope.files` paths exist or are marked `(new)`
+
+Findings are written to `ai_files/waves/wN/audits/logbook-<basename>.json` with severities `critical` and `warning` only. The main agent applies fixes with full context (the subagent reports, never auto-edits).
+
+`/waves:logbook-update` runs the same audit unconditionally at the end (with a documented escape hatch for the rare case it is unnecessary).
+
+**The gap this closes:** if the logbook ships with empty `scope.rules` or missing `Apply rule` lines, Layers A/B/C have nothing to enforce. Layer D is the front-door check.
+
+### 14.5 Layer interactions
+
+The four layers operate as defense in depth, calibrated for the failure mode each one targets:
+
+- **Layer D** catches logbook construction failures *before* implementation
+- **Layer A** physically embeds rules in the unit of work
+- **Layer B** re-presents them at the moment of writing
+- **Layer C** verifies the final code against the rules *after* implementation
+
+If any one layer fails, the others still operate. If all four fail, the architectural design (`scope.rules`, `completion_guide`, adversarial subagents) provides one last social safety net via the next session's metacognition.
+
+---
+
+## 15. Adversarial Subagents (Waves 2.1+)
+
+Waves 2.x introduces several **adversarial subagents** — fresh Opus subagents spawned in background or blocking mode whose prompt explicitly instructs them to challenge the main agent's plan, not validate it.
+
+### 15.1 Pattern: fresh context + adversarial framing + structural output
+
+All adversarial subagents share three properties:
+
+1. **Fresh context**: they do NOT inherit the main agent's saturated context. They receive only the files they need to read from disk + a focused prompt. This breaks the bias of "I just wrote this, it must be correct".
+2. **Adversarial framing**: the prompt explicitly tells them to assume the main agent is biased toward speed/optimism and to look for what's missing or wrong. Without this framing, subagents tend to confirm.
+3. **Structured output**: JSON to a known disk path. The main agent reads the output, the subagent does not edit logbooks or code directly. Separation of concerns.
+
+### 15.2 Catalog
+
+| Subagent | Trigger | Job | Blocking? |
+|---|---|---|---|
+| **Orthogonality reviewer** (Step A2.5 of `logbook-create`) | Before primary objectives are generated | Decide single_focus vs multi_focus. Biased toward multi_focus. Returns dimensions + suggested primaries | Yes (blocks generation) |
+| **Logbook integrity reviewer** (Step A6) | After logbook is persisted | Audit logbook against schema and Layer A discipline. Returns critical/warning findings | Yes (blocks persist completion) |
+| **Rules auditor** (Layer C, post-impl) | When primary objective completes | Audit diff vs rules with structural citation. Classifies violations by level | No (background, surfaces at next Edit) |
+| **Background advisor** (metacognition) | Throttled at `floor(N/2)` primary completions, on blueprint change, on phase completion | Reads project snapshot, returns blockers, risks, opportunities, cross-vertical findings | No (background, interrupts only if critical) |
+
+### 15.3 Why background-with-injection (not blocking)
+
+The rules auditor and the background advisor are non-blocking. The main agent does not wait for them. Findings are surfaced at the next Edit/Write via `additionalContext` injection. This preserves auto-edit flow but still surfaces gaps the main agent missed.
+
+The orthogonality reviewer and integrity reviewer are blocking because their output conditions the next step (decomposition decision, persistence completion) and the main agent has nothing valid to do without them.
+
+---
+
+## 16. Project Types
+
+Waves 2.3 supports three project categories. The category is declared in `user_pref.json` → `project_context.project_type` and routes commands to the appropriate flow.
+
+| Type | Manifest schema | When to use |
+|---|---|---|
+| **`software`** | `software_manifest_schema.json` | Traditional applications with source code, build systems, layered architectures (presentation, domain, data). Examples: Flutter apps, web services, libraries. |
+| **`general`** | `general_manifest_schema.json` | Non-software projects: academic research, creative work, business operations. Open structure with custom sections. |
+| **`agentic`** | `agentic_manifest_schema.json` | Projects whose value is an orchestration of agents/subagents with skills, hooks, tools, and configurations. The "code" is skill markdown files, hook JSON configs, and prompts. |
+
+### 16.1 The agentic schema (15 sections)
+
+The `agentic_manifest_schema.json` was empirically ratified with three cases before being frozen — a production pilot (medical corpus ingestion pipeline orchestrated by Claude Code + Claude Browser + Claude Desktop) and two projected cases (Customer Operations Hub, Compliance Operations Center). The schema models structural concepts that recur across agentic projects without imposing domain-specific values:
+
+1. **`project`** — name, codename, description, kind (free string: pipeline, assistant, monitoring, orchestration, research)
+2. **`orchestration`** — primary_agent, communication_protocol, write_ownership_policy, approval_gates
+3. **`roles`** — array of declared roles (NO fixed enum; each project declares its own)
+4. **`subagents`** — lifecycle (ephemeral | persistent | hybrid), logbooks_dir
+5. **`skills`** — directory, format (markdown_with_frontmatter | json_definitions | code_modules), versioning_required
+6. **`tools`** — array of capabilities (MCPs, APIs, browsers, filesystems, CLIs)
+7. **`data_sources`** — origins of input data
+8. **`state_contracts`** — persistent state structures with single-writer partitioning
+9. **`handoff_contracts`** — file-based handoffs between roles
+10. **`pipelines`** — stages with state transitions and stuck_threshold_seconds
+11. **`integration_contracts`** — downstream system contracts
+12. **`triggers`** — manual / event / schedule / agent_cascade
+13. **`governance`** — owner_escape_hatch, scope_boundaries, budget_controls
+14. **`observability`** — log_level (errors_only | errors_and_outputs | decisions_full | verbose)
+15. **`source_access_modes`** — free-string array (api, scraping, manual_handoff, institutional_negotiation, etc.)
+
+### 16.2 Why roles are NOT a fixed enum
+
+The three empirical cases declared 8, 5, and 6 different roles respectively — none with full name overlap except for "orchestrator". Forcing an enum would have meant over-fitting to whichever case shipped first. Roles is a free array; each project declares its own with `tools_authorized` and `tools_forbidden` to encode the security boundary.
+
+### 16.3 Single-writer-per-file as the concurrency primitive
+
+The pilot demonstrated that with many parallel subagents writing state, the most resilient policy is **one file = one writer**. The orchestrator owns its own files; each subagent owns its own registry partition; the verifier role is strictly read-only. Locks are avoided by construction. State contracts declare their `partitioning` (by_subagent, by_specialty, by_jurisdiction, by_severity, etc.) — each partition is an independently writable file.
+
+### 16.4 The 4 defense layers + adversarial subagents apply identically to agentic projects
+
+`/waves:objectives-implement`, `/waves:logbook-create`, `/waves:logbook-update` accept `project_type === "agentic"` and reuse `logbook_software_schema.json`. The schema is structurally compatible — agentic logbooks point `scope.files` to skill markdown / hook JSON / prompt files instead of source code, but the rest is identical. Layer A still injects rule text; Layer B prints the banner; Layer C audits the diff against rules; Layer D validates the logbook integrity. The adversarial subagents operate on diffs and structural validation, agnostic to file type.
+
+---
+
+## 17. Background Metacognition (Waves 2.1)
+
+The 2.0 metacognition was synchronous and disruptive — when a primary completed, the main agent paused, reflected, and consumed Opus tokens before continuing. The 2.1 redesign moved metacognition to **background subagent spawn** while keeping all the cognitive benefits.
+
+### 17.1 Triggers (delta-detected)
+
+| Trigger | When it fires |
+|---|---|
+| Primary objective completed | Every time main objective count transitions up. Throttled at `floor(total_main / 2)` intervals; fires when all done regardless. |
+| Blueprint changed | Any edit to `blueprint.json` |
+| Phase completed | Phase status transitions to `completed` in roadmap |
+
+### 17.2 Lifecycle
+
+1. PostToolUse hook detects the delta via marker file comparison.
+2. Hook emits `additionalContext` instructing the main agent: "spawn subagent with this prompt".
+3. Main agent spawns `Agent(run_in_background=true)` with the configured model (default Opus, configurable via `agent_config.metacognition_model` in user_pref).
+4. Main agent continues with the next objective. **The metacognition does not block.**
+5. Subagent reads blueprint + roadmaps + logbooks, returns observations.
+6. Main agent surfaces findings to the user if critical; otherwise records to logbook.
+
+### 17.3 Cooldown and circular-trigger prevention
+
+A 60-second cooldown is written after the metacognition gate clears, preventing the agent from re-triggering itself when its post-metacognition write to the logbook itself fires the same hook. Path normalization (`cd + pwd`) prevents marker hash mismatches between absolute and relative paths — a subtle bug that caused infinite loops in 2.0.
+
+### 17.4 Cross-vertical serendipity (2.1.x prompt enhancement)
+
+The metacognition prompt explicitly asks: *"Does what is being built here directly solve an operational problem in another area or business vertical that the team hasn't considered — not speculatively, but with concrete and relevant impact?"* This was added after empirical observation that the same agentic pipeline pattern useful for medical corpus ingestion (pilot project) was also useful for customer operations and compliance monitoring (projected projects) — a serendipity worth surfacing automatically.
+
+### 17.5 Mechanical roadmap progress notes
+
+Independent of the throttled metacognition, every primary objective completion writes a mechanical `[AUTO]` note to the roadmap's `decisions[]` array:
+
+```
+[AUTO] Logbook <filename>: primary objective completed — <content>.
+State: main 3/5, secondary 12/19
+```
+
+This guarantees visibility of progress even when logbooks are incomplete or sessions end abruptly. The note is a fact, not a reflection — it always fires.
+
+---
+
+## 18. Upgrade Discipline
+
+Waves uses an incremental, version-aware migration system to keep deployed projects consistent with the framework.
+
+### 18.1 Marker file
+
+Each project carries `.claude/waves-version` with the version that last completed migrations. `/waves:upgrade` reads this marker, applies only migrations newer than the local version, and updates the marker only after all migrations succeed.
+
+A subtle bug in 2.1.6 had `bin/waves upgrade` writing the marker *before* `/waves:upgrade` ran migrations — causing projects to skip pending migrations silently. Fixed in 2.1.7: the slash command owns the marker exclusively.
+
+### 18.2 Migration registry
+
+The `/waves:upgrade` command markdown contains a versioned migration registry. Each migration has:
+
+- Narrative (shown only when relevant)
+- Optional question (asked only if a setting is missing — e.g. `metacognition_model` was added in 2.1.0)
+- Artifact patches (applied only if fields are missing — e.g. `recent_context` and `history_summary` were added to blueprint in 2.1.5; `audit` was added to logbook in 2.2.0)
+
+### 18.3 Template substitution for `current_version`
+
+The slash command markdown uses `{{CURRENT_VERSION}}` as a placeholder. `bin/waves` substitutes the placeholder with its own `$VERSION` at copy time. This means a release that bumps `bin/waves` propagates the new target version into the slash command automatically — no manual sync.
+
+### 18.4 Schema soft migration on logbook load
+
+`/waves:logbook-update` performs a soft schema migration when it loads a logbook: if required fields are missing (e.g. a pre-2.2 logbook lacks the `audit` object), they are added with their defaults before any operation. Pre-existing values are never modified.
+
+### 18.5 Pre-flight schema validation in releases
+
+After 2.1.7 shipped with a malformed `logbook_software_schema.json` (the `recommendations` field had been added with a stray brace that broke parsing), the release process now mandates `jq empty` validation on every schema before any tag can be created. This is enforced both in `VERSIONING_PROCESS.md` and in the doc-sync hook (see Section 18.6).
+
+### 18.6 Doc-sync hook (release-time check, added in 2.3.x)
+
+When `git tag v*` is executed, a PreToolUse hook validates that the tagged commit modified `FRAMEWORK.md` and `CHANGELOG.md` together — preventing the regression that left FRAMEWORK.md frozen at 2.0 while 17 releases shipped without it. A `.claude/waves-doc-sync-bypass` file allows documented exceptions (e.g. patch-only releases) to proceed.
+
+---
+
+## 19. Origin & Lineage
+
+Waves did not begin as a framework. It began as a workaround.
+
+### 19.1 Genesis (2025-07-10 → 2025-11-10): the WhatsApp agent and `ai_logbook`
+
+In July 2025, the project that would become Waves did not exist by that name. The owner was building **givannia_desktop**, a Flutter desktop application that ran a Node.js + Baileys WhatsApp agent embedded in sandbox — a conversational AI agent for businesses. The technical problem was acute: the agent migrated between Claude Code, Codex, and Gemini CLI as token budgets ran out, and the agent needed to preserve context across those migrations.
+
+The solution was structural. On 2025-07-10, the same day as the project's initial commit, the directory `ai_logbook/` was introduced containing three JSON schemas:
+
+- `logbook_schema.json` — dynamic bitácora with `recent_context` (15-entry sliding window), `history_summary` (compacted history), `objectives_present/past`, `future_reminders`, and an emotional `mood` field
+- `project_manifest_schema.json` — tech stack, modular structure, layered architecture
+- `project_rules_schema.json` — project rules grouped by category (architecture, testing, naming, presentation, data, API, infra)
+
+This was not a framework. It was a working pattern. The compaction algorithm (when `recent_context` filled, the oldest entry was summarized and archived to `history_summary`) and the schema-validated JSON shape are unchanged in Waves 2.3.0 four years later. **Every artifact in Waves today inherits its lineage from `ai_logbook`.**
+
+### 19.2 Formalization as `ai-behavior` (2025-11-11 → 2026-03-12)
+
+After 4 months of using the `ai_logbook` pattern in production, the owner generalized it into a standalone framework: **ai-behavior**. The first commit (`0c033b3` on 2025-11-11) was an "Initial commit". By 2026-02-13 the framework had structured releases:
+
+- **v0.1.0** (2026-02-13) — Core protocol: 9 JSON schemas, 31 subagents, 11 slash commands, cowork plugin
+- **v0.2.0** (2026-02-26) — Roadmap schema + commands
+- **v0.2.1** (2026-03-08) — **Removed subagent delegation** from `objectives-implement` after empirical evidence that delegated subagents lost the accumulated context (project rules, manifest, resolved decisions). The main agent executes; subagents only audit. This decision is still load-bearing in Waves today.
+- **v0.3.0** (2026-03-09) — Feasibility analysis with Monte Carlo + Bayesian, Homebrew formula, plugin package
+- **v1.0.0** (2026-03-10) — First stable
+- **v1.1.0** (2026-03-11) — Foundation + Blueprint commands, standardized wave naming (`roadmap_w0.json` ... `roadmap_wN.json`)
+
+The IMPLEMENTATION_GUIDE.md of the ai-behavior era credited early conceptual inspiration to the **Agent OS framework** (Cased). That conceptual heritage was absorbed and does not appear in the current Waves implementation, but it deserves acknowledgement: ai-behavior was the first version to formalize "AI agent as team member" rather than "AI as tool", and Agent OS was part of the conversation that made the framing thinkable.
+
+### 19.3 Rebrand to Waves (2026-03-13)
+
+Commit `2cda84d` — "rebrand: rename ai-behavior to Waves". 102 files renamed. The identity changed; the philosophy did not. The commit message itself states the rationale: *"Identity change reflecting AI-era product development philosophy. Wave-based delivery cycles replace fixed-cadence sprints in AI-assisted development."* The name "Waves" was already the term used internally for delivery cycles since v0.1.0 — the rebrand promoted it from concept to identity.
+
+### 19.4 Product Consciousness (2026-04-15 onward)
+
+Waves 2.0 introduced what the framework now calls **Product Consciousness**: hooks that enforce rules mechanically instead of relying on social CLAUDE.md instructions; a 5-level decision classification (the trust contract); SessionStart perception of the artifact graph; proactive metacognition triggers. This was not a new framework. It was the moment the existing framework gained the property that distinguishes it from documentation systems: **rules that cannot be ignored**.
+
+The 2.1 line moved metacognition to background subagents. The 2.2 line added orthogonality and integrity gates that catch logbook construction failures before code is written. The 2.3 line added the `agentic` project type, validated empirically with the medical corpus pipeline that was itself a descendant of the original WhatsApp agent.
+
+### 19.5 What this lineage means
+
+Waves is what happens when a working pattern is used in production long enough to be generalized, then formalized, then renamed, then hardened against its own failure modes. The result is not academic. Every defense layer, every adversarial subagent, every schema field exists because a real project failed without it. The compaction algorithm in `recent_context` predates the framework by months. The decision to remove subagent delegation predates Waves by a year. The trust contract (5-level decision classification) was named in 2026-04 but its essence — "agent stops on scope, business, and discovery decisions" — was in the schemas from day one.
+
+The framework's authority comes from its origin: it was used before it was designed.
+
+---
+
+## 20. Glossary
 
 | Term | Definition |
 |------|-----------|
@@ -815,16 +1134,31 @@ This approach is stateless (no database), fast (<1ms for non-matching files), an
 | **Perception** | The act of reading the artifact graph and injecting product state at session start. |
 | **Enforcement** | Mechanical blocking of actions when required artifacts are missing. Uses exit 2 in hooks. |
 | **Classification** | The 5-level system for categorizing agent decisions by impact. Levels 1-2 proceed; 3+ stop. |
-| **Metacognition** | Proactive reflection triggered automatically when objectives complete, blueprints change, or phases finish. |
+| **Trust contract** | The 5-level classification framed as an explicit contract: the agent retains autonomy on levels 1-2; the human retains authority on levels 3-5. When in doubt, classify up. |
+| **Metacognition** | Proactive reflection triggered automatically when objectives complete, blueprints change, or phases finish. Runs as a background subagent in 2.1+. |
 | **Marker file** | Temporary file in /tmp/ used by hooks to detect state changes (delta detection) between tool calls. |
 | **Graduated governance** | Enforcement that scales with project maturity: no blueprint → permissive; blueprint → enforced. |
+| **Layer A** | Inline rule text injection into completion_guide of every secondary objective. |
+| **Layer B** | Rules-in-scope banner printed at the start of every objective implementation. |
+| **Layer C** | Background post-implementation rules audit subagent. Surfaces violations classified by trust contract level. |
+| **Layer D** | Logbook integrity audit subagent. Runs post-persist to validate Layer A discipline, scope.rules completeness, decomposition consistency. |
+| **Orthogonality reviewer** | Adversarial subagent invoked in Step A2.5 of `logbook-create`. Decides single_focus vs multi_focus before primaries are generated. |
+| **Adversarial subagent** | A fresh subagent whose prompt explicitly instructs it to challenge the main agent's plan, not validate it. Fresh context + adversarial framing + structured output. |
+| **Project type** | `software`, `general`, or `agentic`. Declared in `user_pref.project_context.project_type`. Routes commands to the appropriate flow. |
+| **Agentic project** | A project whose value is an orchestration of agents/subagents with skills, hooks, tools, and configurations. Validated empirically across 3 cases before the schema was frozen. |
+| **State contract** | A persistent state structure governed by a JSON schema and owned by exactly one writer role. Enables single-writer-per-file concurrency without locks. |
+| **Approval gate** | A decision that requires approval (human or graduated condition) before execution. Supports free-form `auto_approve_when` conditions and `fallback` semantics. |
+| **Scope (rule)** | A rule's `scope` field is either `"ecosystem"` (shared across organization, immutable locally) or `"local"` (project-specific). The basis of organizational rule governance. |
+| **ai_logbook** | The original pattern (2025-07-10) that became `ai_files/`. Predecessor of all current artifact directories. |
+| **ai-behavior** | The framework's name from 2025-11-11 to 2026-03-13. Renamed to Waves on 2026-03-13. |
 
 ---
 
 ## References
 
 - [Spotify Squad Health Check Model](https://engineering.atspotify.com/2014/09/squad-health-check-model/) — Henrik Kniberg & Kristian Lindwall, 2014. Adapted for the Health Check meeting dimensions.
+- **Agent OS framework** (Cased) — Conceptual inspiration cited in ai-behavior's IMPLEMENTATION_GUIDE.md (v0.1.0 era). Acknowledged here for historical accuracy.
 
 ---
 
-*Waves™ Framework v2.0.0 — Created 2026-03-16, updated 2026-04-15 by Exovian™ Developments*
+*Waves™ Framework v2.4.0 — Created from the ai_logbook pattern on 2025-07-10. Formalized as ai-behavior on 2025-11-11. Renamed to Waves on 2026-03-13. Current version published 2026-05-14 by Exovian™ Developments.*
