@@ -17,10 +17,38 @@ You are the product architect. You consume the product foundation (validated fac
 ## Step -1: Prerequisites Check (CRITICAL)
 
 Check if `ai_files/user_pref.json` exists.
-- If found: Extract `preferred_language` for all interactions
+- If found: Extract `preferred_language` for all interactions AND `project_context.project_type` for terminology adaptation (see Step -0.5).
 - If not found: EXIT with message: "user_pref.json not found. Please run /waves:project-init first."
 
 **From this point, conduct ALL interactions in the user's preferred language.**
+
+## Step -0.5: Agentic Terminology Adaptation (when project_type === "agentic")
+
+The `product_blueprint_schema.json` is structurally agnostic and serves all three project types (software, general, agentic). The conceptual model — problem, target users, hypothesis, capabilities, flows, views, design principles, success metrics — applies to every product. **What changes for agentic projects is the semantic interpretation of certain fields, not the schema.**
+
+IF `project_type === "agentic"`:
+
+Apply the following conceptual mappings throughout the rest of this command. The blueprint JSON uses the same field names; only how you elicit and frame content with the owner changes:
+
+| Standard field | Agentic interpretation |
+|---|---|
+| `essential_capabilities[]` | **subagent_capabilities**: what each subagent (or the system as a whole) is able to do for the owner — "the orchestrator can dispatch extraction across N parallel subagents", "the auditor can flag policy violations with structural citations", etc. Capabilities still capture WHAT the product enables; the unit of delivery is a subagent or skill, not a UI screen. |
+| `user_flows[]` | **orchestration_patterns**: how subagents coordinate to deliver a capability — "ingestion flow: orchestrator dispatches browser_extractor → validator → indexer → state_updater, with verifier monitoring asynchronously". Steps describe role-to-role handoffs. |
+| `system_flows[]` | **internal orchestration**: pipelines + state transitions internal to the system (often map 1:1 to pipelines declared in the agentic manifest). |
+| `views[]` | **interaction surfaces**: where and how the owner converses with the primary agent — "Claude Desktop conversation", "Claude Code session", "CLI invocation". Most agentic projects have 1-3 views; some have zero (fully background). |
+| `design_principles[]` | Apply IDENTICALLY — principles like SRP, separation of concerns, single-writer-per-file, deterministic state transitions, audit trails apply at agent boundaries the same way they apply at module boundaries in software. |
+| `product_rules[]` | Apply IDENTICALLY — rules that constrain behavior (e.g. "never indexers write to browser-owned files", "all approval gates require structural citation in audit log"). |
+| `success_metrics[]` | Apply with agentic-flavored metrics: throughput per role, audit pass rate, escape-hatch invocation count, end-to-end latency, cost per task. |
+
+**Practical guidance for the elicitation:**
+- When asking "what are the essential capabilities?", explicitly frame as "what can each subagent (or the system as a whole) DO for you?". Use real examples from agentic projects (corpus pipeline, customer ops hub, compliance center) if the owner needs unblocking.
+- When asking "what are the user flows?", frame as "describe an end-to-end orchestration: which role starts, what artifact gets produced, who consumes it next, where does it terminate?".
+- When asking "what are the views?", clarify that for agentic projects this may be just "owner talks to primary agent in Claude Code" — and that is valid.
+- Cross-reference the agentic manifest's `roles[]`, `pipelines[]`, and `handoff_contracts[]` when discussing flows and capabilities — they are the source of truth for who-does-what.
+
+IF `project_type !== "agentic"`: Skip this step entirely. Proceed as before — the terminology adaptation does not apply.
+
+This step adds NO new fields to the blueprint schema. The output of `blueprint-create` for an agentic project is a `product_blueprint.json` that validates against the same `product_blueprint_schema.json` used by software and general projects.
 
 ## Step 0: Load Foundation & Validate Readiness
 

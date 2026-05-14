@@ -5,6 +5,39 @@ All notable changes to waves will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-05-14
+
+### Added — Agentic project category
+
+Waves now supports a third project category — `agentic` — alongside the existing `software` and `general`. An agentic project is one whose value is an orchestration of agents/subagents with skills, hooks, tools, and configurations — not traditional software, not academic/creative content. Examples: a corpus ingestion pipeline orchestrated by Claude Code + Claude Browser + Claude Desktop; a customer operations hub coordinating triage/drafter/escalation subagents; a compliance center monitoring regulatory feeds. The category was empirically ratified with 1 production pilot (`exobase_med_corpus`) + 2 projected cases (Customer Operations Hub, Compliance Operations Center) before the schema was frozen.
+
+- **`schemas/agentic_manifest_schema.json` (new)** — 15 agnostic top-level sections (project, orchestration, roles, subagents, skills, tools, data_sources, state_contracts, handoff_contracts, pipelines, integration_contracts, triggers, governance, observability, source_access_modes) + 8 reusable `$defs` (role, tool, data_source, state_contract, handoff_contract, pipeline_stage, trigger, approval_gate). Roles are declared as a free array — **no fixed enum** — because the 3 cases declared 8, 5, and 6 different roles respectively. The schema models structural concepts that recur across agentic projects without imposing domain-specific values. `additionalProperties: false` at root forces consistency; sub-objects with operational metadata allow extensions.
+- **`schemas/user_pref_schema.json`** — `project_context.project_type` enum extended from `["software", "general"]` to `["software", "general", "agentic"]`. Description and `$comment` enriched to explain when each category applies and which schemas/flows route from it. Backward compatible (existing projects with `project_type: "software"` or `"general"` continue to validate unchanged).
+- **`/waves:manifest-create` FLOW C: AGENTIC PROJECTS** — Step 2 routing extended with `IF project_type === "agentic" → FLOW C`. Two sub-flows (C1 NEW, C2 EXISTING with disk scan that pre-populates from `skills/`, `.claude/hooks/`, `.claude/settings.json` MCP servers). 6 elicitation groups (project identity, orchestration architecture, roles+skills+tools, data flow, pipelines+triggers, governance+observability) cover all 15 schema sections with concrete prompts and real examples from the 3 cases. FLOW A and FLOW B left literally unchanged.
+- **`/waves:blueprint-create` Step -0.5: Agentic Terminology Adaptation** — When `project_type === "agentic"`, the rest of the command applies a conceptual mapping (`essential_capabilities` → subagent_capabilities, `user_flows` → orchestration_patterns, `system_flows` → internal pipelines, `views` → interaction surfaces). **No schema change** — `product_blueprint_schema.json` is structurally agnostic and accepts the same fields with new semantic interpretation. Software/general flows untouched.
+- **`/waves:rules-create` Flow C: Agentic Default Categories** — When `project_type === "agentic"`, proposes 7 default rule categories (orchestration, prompt_engineering, tool_use, governance, data_handling, integration, observability) with concrete example rules per category. Project can accept/edit/extend. `project_rules_schema.json` accepts any category name as free string — no schema change. Flow A (software) and Flow B (general) unchanged.
+- **Core commands gated on `agentic`** — `/waves:objectives-implement`, `/waves:logbook-create`, `/waves:logbook-update` now accept `project_type === "agentic"`. They reuse `logbook_software_schema.json` because the structural model (objectives with scope.files + scope.rules) is identical — agentic logbooks point scope.files to skill markdown / hook JSON / prompt files instead of source code, but the rest is the same. The 4 defense layers (A inline rules in completion_guide + B rules-in-scope banner + C post-impl rules audit + D logbook integrity audit) and the orthogonality reviewer apply identically to agentic projects — they operate on diff vs rules, agnostic to file type.
+
+### Why this is additive, not breaking
+
+Every existing project with `project_type: "software"` or `"general"` continues to behave exactly as in 2.2.x. The only changes are: (a) one new value added to an enum, (b) one new schema file, (c) new branches in 5 commands. No flow path for software/general was modified semantically — only routing prerequisites in 3 commands were extended (`IF X` became `IF X OR agentic`). `git diff` on this release shows additions vastly outnumber modifications; the modifications themselves are routing extensions, never logic changes to existing flows.
+
+### Empirical basis
+
+Three cases analyzed before the schema was frozen:
+
+1. **exobase_med_corpus** (real pilot): 8 roles, 4 state_contracts with by_specialty/by_subagent partitioning, 9-stage pipeline, integration with facts_core + conversational_engine_ba + llm_core, observability errors_and_outputs.
+2. **Customer Operations Hub** (projected): 5 roles, hybrid subagent lifecycle (escalation-detector is persistent listener, others ephemeral), Zendesk/Slack/Notion/GitHub MCP tools, mixed binary + graduated approval gates.
+3. **Compliance Operations Center** (projected): 6 roles, decisions_full observability with audit_critical_decisions (regulated domain), budget_controls + scope_boundaries enforced, by_jurisdiction partitioning.
+
+All three fit the 15 sections without inventing top-level fields. The schema was sized minimally — if a fourth or fifth case emerges that needs structure outside these 15, we revisit. Until then, `agentic` is frozen at this surface.
+
+### Migrated
+
+- The pilot `exobase_med_corpus` had its manifest moved from `general` (with custom sections) to `agentic` at `ai_files/project_manifest.json` (validates against `agentic_manifest_schema.json`). Its `user_pref.project_context.project_type` updated to `"agentic"`.
+
+---
+
 ## [2.2.1] - 2026-05-04
 
 ### Changed — `waves:logbook-update` is now the universal logbook entry point

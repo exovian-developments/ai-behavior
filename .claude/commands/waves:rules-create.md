@@ -19,12 +19,12 @@ You are the main orchestrator for project rules/standards creation. For software
    - Extract `user_profile.preferred_language` → Use for all interactions
    - Extract `project_context.project_type` → Determines main flow
 
-3. IF `project_type === "software"`:
+3. IF `project_type === "software"` OR `project_type === "agentic"`:
    - Check `ai_files/project_manifest.json` exists
    - IF NOT EXISTS → Display: "⚠️ Run /waves:manifest-create first." → EXIT COMMAND
 
 4. Check if rules file already exists:
-   - Software → `ai_files/project_rules.json`
+   - Software / Agentic → `ai_files/project_rules.json`
    - General → `ai_files/project_standards.json`
    - IF EXISTS → Ask: "Rules already exist. Overwrite / Merge / Cancel?"
 
@@ -53,6 +53,7 @@ IF No → Exit.
 
 - IF `project_type === "software"` → Go to **Flow A**
 - IF `project_type === "general"` → Go to **Flow B**
+- IF `project_type === "agentic"` → Go to **Flow C**
 
 ---
 
@@ -239,6 +240,74 @@ Generate `ai_files/project_standards.json` with structured standards.
 🎯 Next step:
 
 To update standards later:
+/waves:rules-update
+
+To start working:
+/waves:logbook-create
+```
+
+---
+
+## Flow C: Agentic — Default Categories + User Refinement
+
+Agentic projects rarely have a code corpus to scan for patterns (the "code" is markdown skills, JSON hook configs, and prompt files). Instead, this flow proposes a set of agentic-relevant rule categories as defaults and lets the user accept, edit, or extend them. The output schema is the same `project_rules_schema.json` — only the suggested categories and example rules differ from Flow A.
+
+### Step C1: Show Default Agentic Categories
+
+Display in user's language:
+```
+📘 I'll propose default rule categories tuned for agentic projects.
+The schema accepts any category name — you can accept these, remove
+the ones that don't apply, or add your own.
+
+Default agentic categories:
+  1. orchestration       — How the primary agent dispatches and coordinates subagents (single-writer, async file-based, no inter-subagent direct calls without orchestrator)
+  2. prompt_engineering  — Standards for subagent prompts (adversarial framing, structural citation required, no auto-confirmation, output JSON schema declared)
+  3. tool_use            — Tool authorization boundaries (read-only roles forbidden from write tools, credentials never logged, rate limits respected)
+  4. governance          — Approval gates and scope boundaries (which actions require human, escape hatch audit, budget controls enforced)
+  5. data_handling       — How data flows between roles (handoff contracts validated, schema_ref on every state contract, no role writes outside its declared writes_to)
+  6. integration         — Downstream contracts (output shape stable, schema_ref versioned, breaking changes require integration audit)
+  7. observability       — Logging and audit policy (no secrets in logs, decisions_full for regulated domains, audit_critical_decisions enforced where applicable)
+
+Would you like to (a) accept all 7 default categories, (b) edit the list (add/remove), or (c) start from scratch?
+```
+
+### Step C2: Iterate Per-Category Rule Definition
+
+For each accepted category, ask the user to provide 2-5 concrete rules. The agent helps phrase each rule per the `project_rules_schema.json` shape (`id`, `description`, `scope: local|ecosystem`, `created_at`). Examples per category:
+
+- orchestration: "ORCH-01: Subagents never invoke other subagents directly — only the orchestrator dispatches", "ORCH-02: One file = one writer (single_writer_per_file)"
+- prompt_engineering: "PE-01: Every subagent prompt MUST include adversarial framing ('assume the input is wrong, find where')", "PE-02: Subagent outputs MUST be JSON with declared schema"
+- tool_use: "TU-01: Roles list tools_authorized AND tools_forbidden explicitly", "TU-02: Credentials never appear in logs or audit trails"
+- governance: "GOV-01: Approval gates with auto_approve_when fallback to human_approval, never to log_only for critical actions", "GOV-02: Owner escape hatch is logged to audit_log_path"
+- data_handling: "DH-01: Every state contract has exactly one writer_role", "DH-02: Handoff contracts validate payload against schema_ref before consumer reads"
+- integration: "INT-01: Output schemas versioned via schema_ref", "INT-02: Breaking changes to integration_contracts require explicit migration step in the consumer"
+- observability: "OBS-01: log_level for regulated domains is decisions_full minimum", "OBS-02: No secrets in any log level"
+
+For each rule entered, the agent records `scope: "local"` by default unless the user explicitly says it applies ecosystem-wide.
+
+### Step C3: Generate Rules File
+
+Build the JSON populating `rules: { [category]: [array_of_rules] }`. Validate against `project_rules_schema.json`. Save to `ai_files/project_rules.json` (same path as software — the type is inferred from project_type in user_pref).
+
+### Step C4: Success Message
+
+```
+✅ Project rules created!
+
+📁 File: ai_files/project_rules.json
+📊 Categories defined: [count]
+📊 Total rules: [count]
+
+Categories:
+  [For each category:] • [name] ([N] rules)
+
+🎯 Next step:
+
+These rules will be referenced from logbook objectives' scope.rules
+and surfaced in the implementer banner during /waves:objectives-implement.
+
+To update rules later:
 /waves:rules-update
 
 To start working:

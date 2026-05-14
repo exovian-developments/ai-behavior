@@ -31,16 +31,20 @@ You are the orchestrator AND executor for code implementation with compliance ve
    - Extract `user_profile.preferred_language`
    - Extract `project_context.project_type`
 
-3. IF `project_type !== "software"`:
+3. IF `project_type !== "software"` AND `project_type !== "agentic"`:
    ```
-   ⚠️ This command is only available for software projects.
+   ⚠️ This command is only available for software and agentic projects.
 
    Your project is configured as: [project_type]
 
-   To change this, run:
+   General projects use /waves:logbook-update with the 'audit' token instead.
+
+   To change project type, run:
    /waves:project-init
    ```
    → EXIT
+
+   **Why agentic projects qualify:** the "code" of an agentic project is markdown skill files, JSON hook configurations, and prompt files. The 4 defense layers (A inline rules + B banner + C post-impl audit + D logbook integrity audit) and the orthogonality reviewer operate on diff vs rules, which works the same regardless of whether the diff is Dart code or a skill markdown file. Logbook scope.files for an agentic project points to skill/hook/config files; scope.rules references categories from project_rules.json (which for agentic typically includes orchestration, prompt_engineering, tool_use, governance, etc.).
 
 4. Check if `ai_files/project_manifest.json` exists
    - IF NOT EXISTS → Show error, suggest `/waves:manifest-create`, EXIT

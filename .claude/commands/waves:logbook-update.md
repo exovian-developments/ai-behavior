@@ -577,7 +577,7 @@ Return to calling step.
 # STEP SAVE: Save and Exit
 
 **Validate JSON against appropriate schema:**
-- IF `project_type === "software"` → Validate against `logbook_software_schema.json`
+- IF `project_type === "software"` OR `project_type === "agentic"` → Validate against `logbook_software_schema.json` (the schema is structurally compatible with both — agentic logbooks carry scope.files pointing to skill/hook/config files)
 - IF `project_type === "general"` → Validate against `logbook_general_schema.json`
 
 **Save to `ai_files/waves/[wave_name]/logbooks/[filename].json`**
