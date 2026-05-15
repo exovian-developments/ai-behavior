@@ -23,6 +23,76 @@ Most recent versions appear first.
 
 # Waves Era (2026-03-13 → present)
 
+## [2.5.0] - 2026-05-15
+
+### Added — Agentic project rules + universal `governing_principles`
+
+Phase 7 of Waves 2.0 roadmap. Resolves the schema/command misalignment shipped in 2.3.0: the `project_rules_schema` did not accept `type=agentic` (closed enum `[frontend, backend, fullstack]`) and the `rules.additionalProperties: false` rejected categories beyond the 7 software-oriented buckets, even though the 2.3.0 release of `/waves:rules-create` Flow C proposed 7 *different* categories that the schema would reject. Double misalignment, blocking the agentic pilot from generating its `project_rules.json`.
+
+The fix was refined from the pilot's proposal by applying **SRP → KISS → YAGNI → OCP**:
+
+- **Schema** (`schemas/project_rules_schema.json`):
+  - `type` enum extended with `"agentic"` (4 values: frontend, backend, fullstack, agentic).
+  - 9 new rule categories declared as properties (1 universal + 8 agentic-native), via a shared `$def` (`rulesCommonProperties`) so they evaluate the same in every branch.
+  - **Conditional `allOf` + `if`/`then`/`else`** at the schema root, using `unevaluatedProperties` (JSON Schema 2020-12) to discriminate by `type`:
+    - `type === "agentic"` → `unevaluatedProperties: { $ref: ruleList }` — custom categories accepted, validated as rule arrays.
+    - other types → `unevaluatedProperties: false` — closed taxonomy preserved.
+  - The first implementation attempt used `additionalProperties: false` inside the `allOf` branches; **this does not work** because each `allOf` subschema evaluates in isolation and does not see properties declared at the parent level. The corrected approach uses `unevaluatedProperties` with a shared `$def`, which JSON Schema 2020-12 explicitly defines as "considers properties evaluated by sibling subschemas in the same scope". Documented in `FRAMEWORK.md §16.5` as a learning.
+
+- **Universal anchor — `governing_principles`** (`FRAMEWORK.md §16.5.1`):
+  - Promoted to top-level category, available for **every** project type (not just agentic).
+  - Houses trans-layer principles (REGLA-0: SRP→KISS→YAGNI→OCP→DRY, REGLA-RESILIENCE, REGLA-PLACEMENT).
+  - **Strategic anchor**: declared explicitly as the first citizen of the organizational governance chain (`company_blueprint → ecosystem rules → local rules → logbooks`). Roadmap w2 decision #6 — Level 5 discovery — identified that `scope: ecosystem | local` makes Waves an **organizational AI governance layer**. `governing_principles` with `scope: ecosystem` is where org-wide immutable rules live. This is what differentiates Waves from per-developer AI frameworks.
+
+- **8 agentic-native categories** (`FRAMEWORK.md §16.5`), aligned to Claude Code primitives:
+  - `role_design` — subagent responsibility, `tools_authorized`/`forbidden`, count patterns, separation of powers.
+  - `skills_management` — skill materialization (markdown + frontmatter), versioning, granularity, embedded prompts.
+  - `tool_use` — CLI vs MCP, model selection, prompt caching.
+  - `hooks_lifecycle` — PreToolUse=enforcement, PostToolUse=audit, hook clarity.
+  - `state_contracts` — single-writer-per-file, partitioning, volatility, `schema_ref` required.
+  - `pipeline_design` — granular states, `stuck_threshold_seconds` per stage, agent-driven cascade.
+  - `governance` — approval gates + audit + scope + observability policy (`ApprovalDecision` envelope).
+  - `budget_and_concurrency` — reactive throttling, `daily_max_usd`, `OWNER_INTENSIVE_MODE`.
+
+  Naming preserves `tool_use` and `governance` from the 2.3.0 command (KISS — no churn for synonyms). Resists the pilot's proposed `tool_usage` / `auditing_and_gates` for backward-compatibility reasons. `prompt_engineering` was absorbed into `skills_management` (prompts live in skill frontmatter).
+
+- **`/waves:rules-create` Flow C** realigned (`.claude/commands/waves:rules-create.md`):
+  - Step C1 now proposes the 9 refined categories (1 universal + 8 agentic-native) instead of the 7 conceptual categories from 2.3.0.
+  - Step C2 provides concrete example rules per category, **derived from the exobase_med_corpus pilot** (AGT-ROLE-001 separation of powers, AGT-SKILL-002 versioning, AGT-TOOL-001 CLI default, AGT-HOOK-001 PreToolUse=enforcement, AGT-STATE-001 single-writer, AGT-PIPE-001 granular states, AGT-GOV-001 approval gates, AGT-BUDGET-001 reactive throttling).
+  - Closing reminder: `unevaluatedProperties: true` for `type=agentic` admits custom categories — proposed only when ≥3 rules genuinely don't fit existing buckets.
+
+- **`/waves:rules-update`** extended (`.claude/commands/waves:rules-update.md`):
+  - Routing accepts `agentic` (same Flow A/B as software, with branching in Step A2/A4).
+  - Step A2 — diff-por-type: software maps files to architectural layers (existing behavior); agentic maps files to agentic-native categories by path heuristic (`skills/**` → `skills_management`, `.claude/hooks/**` → `hooks_lifecycle`, `schemas/**` → `state_contracts`, etc.).
+  - Step A4 — `category_set` differentiated: software passes the **closed enum**; agentic passes the **open set of declared categories** (existing + room for custom).
+
+- **Waves itself migrated to `type=agentic`** (eat-your-own-dogfood). Phase 7 milestone 7.8. The meta-framework is markdown skills + bash hooks + JSON schemas — patrón agentic puro. Rules reorganized into the new taxonomy without inventing new ones (KISS + YAGNI).
+
+### Why this is additive, not breaking
+
+- **frontend / backend / fullstack rules unchanged**: the `else` branch of the conditional `allOf` preserves `unevaluatedProperties: false` — closed taxonomy enforced as before.
+- **12 existing `project_rules.json` validated**: zero regressions. Each file has exactly the same error count against the new schema as against the previous one (pre-existing issues like `scope` missing or `description > 280 chars` are independent of Phase 7 and tracked separately).
+- **Agentic was blocked, not regressed**: the pilot was unable to write a valid `project_rules.json`; now it can.
+- **SemVer 2.5.0 minor**: additive feature (new enum value, new categories, new conditional), no breaking changes.
+
+### Other release artifacts
+
+- **Schema sync**: `project_rules_schema.json` synced to all **7 copies** in the repo (`schemas/`, `ai_files/schemas/`, `plugin/skills/.../references/`, `cowork_plugin/skills/.../references/`, `example_java/.../schemas/`, `example_flutter/.../schemas/`, `example_web/.../schemas/`). Byte-identical verified.
+- **Commands sync**: `waves:rules-create.md` and `waves:rules-update.md` synced across `.claude/commands/`, `plugin/commands/`, `cowork_plugin/commands/`. Byte-identical verified.
+- **`waves-doc-sync.sh` hook compliance**: this release modifies both `FRAMEWORK.md` and `CHANGELOG.md` in the tagged commit, satisfying the hook introduced in 2.4.0.
+
+### Documented but not implemented in 2.5.0
+
+Three Level-5 opportunities surfaced by background metacognition during Phase 7 planning, recorded as open_questions on roadmap w2 to avoid losing them:
+
+- **Schema versioning** as a framework capability (`schema_version` + `/waves:schema-migrate` command). The Phase 7 blockage was a symptom of the broader absence of formal schema migration.
+- **Mapping the 8 agentic-native rule categories to the Waves Lead certification curriculum** — cross-pollinate the rule catalog and the cert program.
+- **`default_agentic_rules.json`** — extract universal agentic rules (governing_principles + truly framework-agnostic ones) as a public, reusable starter set.
+
+These are roadmap items for future waves, not Phase 7 scope.
+
+---
+
 ## [2.4.1] - 2026-05-14
 
 ### Corrected — Origin & Lineage with filesystem-verified dates

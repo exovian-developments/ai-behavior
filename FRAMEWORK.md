@@ -1,7 +1,7 @@
 # Waves™ Framework
 
-**Version:** 2.4.1
-**Last updated:** 2026-05-14
+**Version:** 2.5.0
+**Last updated:** 2026-05-15
 **Status:** Active
 
 ---
@@ -981,6 +981,53 @@ The pilot demonstrated that with many parallel subagents writing state, the most
 
 `/waves:objectives-implement`, `/waves:logbook-create`, `/waves:logbook-update` accept `project_type === "agentic"` and reuse `logbook_software_schema.json`. The schema is structurally compatible — agentic logbooks point `scope.files` to skill markdown / hook JSON / prompt files instead of source code, but the rest is identical. Layer A still injects rule text; Layer B prints the banner; Layer C audits the diff against rules; Layer D validates the logbook integrity. The adversarial subagents operate on diffs and structural validation, agnostic to file type.
 
+### 16.5 Project rules for agentic (Waves 2.5)
+
+`project_rules_schema.json` discriminates the allowed rule categories by `type`:
+
+- **frontend / backend / fullstack** — closed taxonomy: only the canonical categories declared in `properties` are accepted (`unevaluatedProperties: false`). Categories like `architecture`, `testing`, `naming_conventions`, `presentation_layer`, `data_layer`, `api_layer`, `infra`. This protects mature software projects from category drift.
+- **agentic** — open taxonomy: declared categories validate as `ruleList`, AND custom categories are accepted too (`unevaluatedProperties: { $ref: "#/$defs/ruleList" }`). The domain is still emerging — patterns will solidify as more cases arrive.
+
+The conditional is enforced by an `allOf` with `if`/`then`/`else` at the schema root, applied to the `rules` object via a shared `$def` (`rulesCommonProperties`).
+
+The **13 categories** the schema declares (5 universal + 8 agentic-native):
+
+| Universal (all project types) | Aligned to |
+|---|---|
+| `governing_principles` | Trans-layer rules (SRP→KISS→YAGNI→OCP→DRY, RESILIENCE, PLACEMENT) — **the universal anchor** |
+| `architecture` | Structural patterns |
+| `testing` | Test policies |
+| `naming_conventions` | Symbol naming |
+| `infra` | Security boundaries, secrets handling |
+
+| Agentic-native (Claude Code primitives) | Aligned to |
+|---|---|
+| `role_design` | Subagent responsibility, `tools_authorized` / `tools_forbidden`, count patterns, separation of powers |
+| `skills_management` | Skill materialization (markdown + frontmatter), versioning, granularity, embedded prompts |
+| `tool_use` | CLI vs MCP, model selection, prompt caching |
+| `hooks_lifecycle` | PreToolUse=enforcement, PostToolUse=audit, hook clarity |
+| `state_contracts` | Persistent state (single-writer-per-file, partitioning, volatility, `schema_ref`) |
+| `pipeline_design` | State machine (granular states, `stuck_threshold_seconds` per stage, agent-driven cascade) |
+| `governance` | Approval gates + audit + scope + observability policy (`ApprovalDecision` envelope) |
+| `budget_and_concurrency` | Reactive throttling, `daily_max_usd`, `claude_subagent_concurrent_target`, `OWNER_INTENSIVE_MODE` |
+
+(Plus `presentation_layer` / `data_layer` / `api_layer` declared in the schema for backward compatibility with frontend/fullstack projects.)
+
+#### 16.5.1 `governing_principles` as the organizational governance anchor
+
+`governing_principles` is intentionally promoted to a **top-level universal category**, available for every project type — not just agentic. It is the slot where ecosystem-scope rules live (`scope: "ecosystem"` in the rule schema): SRP → KISS → YAGNI → OCP → DRY, REGLA-RESILIENCE, REGLA-PLACEMENT.
+
+This is a **deliberate strategic anchor**. As Waves identified in 2.0 (roadmap w2, decision #6 — Level 5 discovery), the `scope: ecosystem | local` distinction implicitly turns Waves into an **organizational AI governance layer**. The hierarchy is:
+
+```
+company_blueprint  →  ecosystem rules  →  local rules  →  logbooks
+       (org)              (per-org)        (per-project)   (per-task)
+```
+
+`governing_principles` with `scope: ecosystem` is the **first citizen of that chain**. It declares the org-wide constraints that no agent in any project may modify. Putting these rules in their own top-level category (rather than mixing them into `architecture`) makes them the **first read** for any agent loading the file, prevents dilution into technical layer rules, and gives the agent a clear semantic anchor for "these rules came from the organization, not from me".
+
+This is what differentiates Waves from per-developer AI frameworks. Other frameworks treat rules as personal preference; Waves treats `scope: ecosystem` as **immutable organizational governance** that an individual project agent cannot rewrite. The certification path (Waves Lead — organizational AI governance architect) anchors here.
+
 ---
 
 ## 17. Background Metacognition (Waves 2.1)
@@ -1173,6 +1220,16 @@ The framework's authority comes from its origin: **it was used before it was des
 | **Scope (rule)** | A rule's `scope` field is either `"ecosystem"` (shared across organization, immutable locally) or `"local"` (project-specific). The basis of organizational rule governance. |
 | **ai_logbook** | The original pattern (2025-07-10) that became `ai_files/`. Predecessor of all current artifact directories. |
 | **ai-behavior** | The framework's name from 2025-11-11 to 2026-03-13. Renamed to Waves on 2026-03-13. |
+| **governing_principles** (rule category) | Universal top-level rule category (Waves 2.5+). Houses trans-layer principles (SRP→KISS→YAGNI→OCP→DRY, RESILIENCE, PLACEMENT). Available for every project type. With `scope: ecosystem`, it is the first citizen of the organizational governance chain (company_blueprint → ecosystem rules → local rules → logbooks). |
+| **role_design** (rule category) | Agentic-native category. Rules about subagent responsibility, `tools_authorized` / `tools_forbidden`, count patterns, separation of powers. |
+| **skills_management** (rule category) | Agentic-native category. Rules about skill materialization (markdown + frontmatter), versioning, granularity, embedded prompts. |
+| **tool_use** (rule category) | Agentic-native category. Rules about CLI vs MCP policy, model selection (Haiku/Sonnet/Opus), prompt caching. |
+| **hooks_lifecycle** (rule category) | Agentic-native category. Rules about hook design — PreToolUse=enforcement, PostToolUse=audit, clear bypass messages, no state-contract mutation from hooks. |
+| **state_contracts** (rule category) | Agentic-native category. Rules about persistent state — single-writer-per-file, partitioning, volatility, `schema_ref` required. |
+| **pipeline_design** (rule category) | Agentic-native category. Rules about state machines — granular states, `stuck_threshold_seconds` per stage, agent-driven cascade, verifier cron bounds. |
+| **governance** (rule category) | Agentic-native category. Approval gates + audit + scope + observability policy. `ApprovalDecision { verdict, reason, evidence_refs[] }` envelope. `auto_approve_when` with `fallback` semantics. |
+| **budget_and_concurrency** (rule category) | Agentic-native category. Rules about reactive throttling, `daily_max_usd`, ambient Max plan usage thresholds, `OWNER_INTENSIVE_MODE`. |
+| **unevaluatedProperties** (schema mechanism) | JSON Schema 2020-12 keyword used in `project_rules_schema` to discriminate the rules object behavior by `type`: `false` for non-agentic (closed taxonomy), `{ $ref: ruleList }` for agentic (open taxonomy with custom categories validated as rule arrays). |
 
 ---
 
@@ -1183,4 +1240,4 @@ The framework's authority comes from its origin: **it was used before it was des
 
 ---
 
-*Waves™ Framework v2.4.1 — First schema written on 2025-06-25 (pre-git). Persisted with `git init` of `givannia_desktop` on 2025-07-10. Formalized as `ai-behavior` on 2025-11-11. Renamed to Waves on 2026-03-13. Current version published 2026-05-14 by Exovian™ Developments. The Exovian ecosystem itself dates back to 2024-11-29 with the `networking_exovian` package.*
+*Waves™ Framework v2.5.0 — First schema written on 2025-06-25 (pre-git). Persisted with `git init` of `givannia_desktop` on 2025-07-10. Formalized as `ai-behavior` on 2025-11-11. Renamed to Waves on 2026-03-13. Current version published 2026-05-15 by Exovian™ Developments. The Exovian ecosystem itself dates back to 2024-11-29 with the `networking_exovian` package.*

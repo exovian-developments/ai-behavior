@@ -1,0 +1,373 @@
+{
+  "ticket": {
+    "title": "Phase 7 — Reglas Agentic: project_rules_schema extension + Flow C realignment",
+    "url": "",
+    "description": "Resolver el bloqueo descubierto en el piloto exobase_med_corpus al intentar generar project_rules.json. El schema actual tiene type enum cerrado ['frontend','backend','fullstack'] y rules.additionalProperties:false con 7 categorías de software, bloqueando proyectos agentic. Además, el Flow C del comando rules-create (publicado en 2.3.0) sugiere 7 categorías conceptuales que el schema rechaza — doble desalineación. La propuesta del piloto (8 capas operacionales) fue refinada aplicando SRP→KISS→YAGNI→OCP: (a) governing_principles promovido a categoría universal top-level con doble rol — categoría de rules Y ancla declarada del organizational governance layer (link a decision #6 nivel 5 del roadmap), (b) 8 categorías agentic-nativas alineadas a primitivas Claude Code (role_design, skills_management, tool_use, hooks_lifecycle, state_contracts, pipeline_design, governance, budget_and_concurrency), (c) JSON Schema condicional if/then/else — additionalProperties:true cuando type=agentic, additionalProperties:false para frontend/backend/fullstack. Release como Waves 2.5.0 minor (additive, non-breaking para software/general; desbloquea agentic). Cierre eat-your-own-dogfood: waves itself migra a type=agentic post-release (es markdown skills + bash hooks + JSON schemas — patrón agentic puro). El piloto exobase_med_corpus queda desbloqueado para Layer A/B/C/D de objectives-implement.",
+    "ui_requirements": {
+      "has_ui": false,
+      "visual_references": [],
+      "notes": "Framework feature work — sin UI."
+    }
+  },
+  "objectives": {
+    "main": [
+      {
+        "id": 1,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Patch schemas/project_rules_schema.json: extender type enum con 'agentic', agregar 9 categorías nuevas a properties (governing_principles universal + 8 agentic-nativas), reemplazar additionalProperties:false fijo por allOf con if/then/else condicional según type. Backward compat: project_rules.json existentes de proyectos software/frontend/backend/fullstack siguen validando idénticos.",
+        "context": "Mindset puramente estructural: JSON Schema author. Cero prompt engineering, cero comportamiento de comandos. Las 9 categorías nuevas se derivan del refinamiento aplicado al hallazgo del piloto: SRP separa preocupaciones ortogonales (role≠skill≠tool≠hook≠state≠pipeline≠governance≠budget), KISS fusiona auditing+gates+observability en governance, YAGNI rechaza las 11 capas crudas del piloto y se queda en 8 que tienen casos reales, OCP abre additionalProperties solo cuando type=agentic (donde aún descubrimos patrones) y cierra para los demás types (que son maduros). Las categorías universales pre-existentes (architecture, testing, naming_conventions, infra, presentation_layer, data_layer, api_layer) se mantienen sin tocar. governing_principles se promueve a top-level porque sus reglas (REGLA-0 SRP→KISS→YAGNI→OCP→DRY, REGLA-RESILIENCE, REGLA-PLACEMENT) trascienden cualquier layer y aplican a todo project_type. La conditional via allOf+if/then/else es la única forma JSON Schema 2020-12 de tener properties hermanas que se influencian mutuamente. Validar con jq empty + smoke contra schema/draft-2020-12 con un validador real (ajv si está disponible) — si solo jq empty pasa, probar al menos con un sample software y un sample agentic para detectar invalidaciones de boundaries.",
+        "scope": {
+          "files": [
+            "schemas/project_rules_schema.json (canonical)",
+            "ai_files/schemas/project_rules_schema.json (workspace copy)",
+            "plugin/skills/waves-protocol/references/project_rules_schema.json (plugin copy)",
+            "cowork_plugin/skills/waves-protocol/references/project_rules_schema.json (cowork copy)",
+            "example_java/ai_files/schemas/project_rules_schema.json (example)",
+            "example_flutter/ai_files/schemas/project_rules_schema.json (example)",
+            "example_web/ai_files/schemas/project_rules_schema.json (example)"
+          ],
+          "rules": []
+        },
+        "status": "achieved",
+        "completed_at": "2026-05-15T00:40:00Z"
+      },
+      {
+        "id": 2,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Realinear Flow C de /waves:rules-create a las 9 categorías refinadas (governing_principles + 8 agentic-nativas). Patch /waves:rules-update para detectar diffs en las nuevas categorías Y diferenciar análisis por type: en agentic compara contra TODAS las categorías presentes (additionalProperties:true admite custom); en software/frontend/backend/fullstack compara contra el enum cerrado. Sincronizar a las 3 copias del comando (canonical + plugin + cowork_plugin). Software/general flows quedan literalmente intactos.",
+        "context": "Mindset de prompt designer + conceptual mapper: el Flow C actual publicado en 2.3.0 lista 7 categorías conceptuales (orchestration, prompt_engineering, tool_use, governance, data_handling, integration, observability) que NO matchean el schema y NO emergen de un piloto real. El refinamiento las reemplaza por 8 alineadas a primitivas Claude Code reales (role_design, skills_management, tool_use, hooks_lifecycle, state_contracts, pipeline_design, governance, budget_and_concurrency) + governing_principles universal. Mantener tool_use y governance del comando 2.3.0 (mismo nombre) facilita la mental model. Las nuevas reciben ejemplos concretos extraídos del piloto exobase_med_corpus (AGT-ROLE-001 separation of powers, AGT-SKILL-002 versioning_required, AGT-TOOL-001 CLI default sobre MCP, AGT-HOOK-001 PreToolUse=enforcement/PostToolUse=audit, AGT-STATE-001 single-writer-per-file, AGT-PIPE-001 estados granulares, AGT-AUDIT-001 ApprovalDecision envelope, AGT-BUDGET-001 throttling reactivo). Comunicar al usuario explícitamente que additionalProperties:true permite categorías custom — el catálogo es sugerencia, no enforcement. rules-update.md también extiende su lista interna de categorías reconocidas. Backward compat crítico: software/general branches NO se tocan. git diff debe mostrar solo adición y modificación del bloque Flow C.",
+        "scope": {
+          "files": [
+            ".claude/commands/waves:rules-create.md",
+            ".claude/commands/waves:rules-update.md",
+            "plugin/commands/rules-create.md",
+            "plugin/commands/rules-update.md",
+            "cowork_plugin/commands/rules-create.md",
+            "cowork_plugin/commands/rules-update.md"
+          ],
+          "rules": []
+        },
+        "status": "not_started"
+      },
+      {
+        "id": 3,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Validación cross-cutting + release Waves 2.5.0. Pre-flight obligatorio (jq empty sobre 15+ schemas + validación semántica con ajv contra fixtures pos/neg de los 3 types). Bump bin/waves a 2.5.0. Actualizar FRAMEWORK.md (§16 con 13 categorías de rules + declaración explícita de governing_principles como ancla del organizational governance layer — link a decision #6 nivel 5 del roadmap; §20 glossary). Actualizar CHANGELOG.md con entrada [2.5.0]. Commit + tag + push (cumplir doc-sync hook que exige FRAMEWORK.md + CHANGELOG.md modificados en el commit del tag). SHA256 + Homebrew formula + brew upgrade. Propagar a 18 proyectos Exovian con waves upgrade --skip-brew.",
+        "context": "Mindset de release engineer + regression auditor + doc-sync compliance + governance documentarian. Cuatro verificaciones críticas antes de tag: (a) jq empty sobre los 15+ schemas pasa; (b) validación semántica con ajv-cli (npm i -g ajv-cli si no está instalado) contra fixtures positivos (project_rules.json software real válido, agentic con categorías custom) Y fixture NEGATIVO crítico (project_rules.json type=frontend con categoría inválida — DEBE rechazar, valida que el additionalProperties:false del else branch funciona); (c) FRAMEWORK.md actualizado: §16 Project Types con las 13 categorías agentic + declaración explícita de governing_principles como ancla del organizational governance layer (referenciando decision #6 del roadmap w2 — scope:ecosystem en governing_principles es el primer ciudadano de la cadena company_blueprint → ecosystem rules → local rules → logbooks); §20 Glossary con nuevos términos; (d) CHANGELOG con narrativa de las 3 capas (schema condicional + Flow C realineado + governing_principles universal con doble rol categoría+ancla governance) y nota sobre que es additive no breaking. Release procedure: ajv pre-flight obligatorio (regla nueva post-Phase 7), bump bin/waves a 2.5.0, commit con archivos específicos (no untracked), git tag v2.5.0 (doc-sync hook waves-doc-sync.sh exige que el commit del tag modifique FRAMEWORK.md + CHANGELOG.md — ambos están staged por construcción), push, SHA tarball, homebrew-waves Formula/waves.rb, brew update + upgrade, propagar con waves upgrade --skip-brew a 18 proyectos Exovian. Si el doc-sync hook bloquea el tag, NO usar bypass — agregar las modificaciones que faltan.",
+        "scope": {
+          "files": [
+            "bin/waves",
+            "FRAMEWORK.md",
+            "CHANGELOG.md",
+            "../homebrew-waves/Formula/waves.rb"
+          ],
+          "rules": []
+        },
+        "status": "not_started"
+      },
+      {
+        "id": 4,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Desbloquear piloto exobase_med_corpus + eat-your-own-dogfood: waves itself migra a type=agentic. (a) Piloto: sincronizar a 2.5.0, verificar Flow C realineado + schema condicional, archivar propuesta original como resuelta. (b) Waves dogfooding: reclasificar el meta-framework a type=agentic (es markdown skills + bash hooks + JSON schemas — patrón agentic puro), regenerar reglas con Flow C nuevo, conservar reglas legacy de software que sigan aplicando (waves bin scripts en bash mantienen reglas de infra). Reportar resultado.",
+        "context": "Mindset de pilot operator + dogfood migration. Este primary cierra dos ciclos: (1) PILOT — el problema original era que el piloto no podía generar project_rules.json. Tras Phase 7, debe poder. Pasos: cd ../exobase_med_corpus && waves upgrade --skip-brew (asume Phase 7 P3 ya propagó); verificar que el comando /waves:rules-create local muestra el Flow C realineado con 9 categorías; NO ejecutar el comando completo (eso es trabajo del owner del piloto) pero confirmar que las 35 reglas de la propuesta caben estructuralmente en las 13 categorías; archivar otto_proposals/agentic_project_rules_extension.md con sección '## ESTADO: Resuelto en Waves 2.5.0' referenciando Phase 7. (2) WAVES DOGFOODING — leer ai_files/project_rules.json actual de waves (type=fullstack), analizar qué reglas migran a categorías agentic-nativas (skills_management captura reglas de SKILL.md, hooks_lifecycle captura reglas de bash hooks, state_contracts captura reglas de schemas, governance captura reglas de approval/audit) y cuáles se quedan en universales (architecture, naming_conventions, infra para bin/ scripts bash). Cambiar ai_files/user_pref.json project_type a agentic. Cambiar ai_files/project_rules.json type a agentic. Validar contra schema modificado (additionalProperties:true permite cualquier categoría legacy). Reportar: 'Waves itself migrated to agentic — eat-your-own-dogfood complete. Categories distribution: [N universales + M agentic].'",
+        "scope": {
+          "files": [
+            "../exobase_med_corpus/ai_files/project_rules.json (new, generated by pilot)",
+            "../exobase_med_corpus/ai_files/otto_proposals/agentic_project_rules_extension.md (mark resolved)",
+            "ai_files/user_pref.json (project_type: software → agentic)",
+            "ai_files/project_rules.json (type: fullstack → agentic + categorías migradas)"
+          ],
+          "rules": []
+        },
+        "status": "not_started"
+      }
+    ],
+    "secondary": [
+      {
+        "id": 1,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Diseñar el patch al schemas/project_rules_schema.json: type enum extension + 9 properties nuevas + allOf condicional con if/then/else.",
+        "completion_guide": [
+          "Leer schemas/project_rules_schema.json actual para confirmar estructura (type enum, rules properties, ruleList $def).",
+          "Agregar 'agentic' al type enum: ['frontend','backend','fullstack','agentic']. Update description si menciona los 3 types explícitamente.",
+          "Agregar las 9 properties al objeto rules: governing_principles, role_design, skills_management, tool_use, hooks_lifecycle, state_contracts, pipeline_design, governance, budget_and_concurrency. Cada una con $ref a #/$defs/ruleList (mismo $def existente — los rules son los mismos, solo cambia el bucket semántico).",
+          "Reemplazar el additionalProperties:false fijo en rules por allOf condicional al final del schema raíz: allOf:[{ if:{ properties:{ type:{ const:'agentic' } }, required:['type'] }, then:{ properties:{ rules:{ additionalProperties:{ $ref:'#/$defs/ruleList' } } } }, else:{ properties:{ rules:{ additionalProperties:false } } } }].",
+          "Importante: el additionalProperties:false debe REMOVERSE del nivel donde está hoy (dentro de rules properties) y quedar SOLO en la branch else del allOf. Si queda en ambos lugares, el comportamiento se inconsistencia.",
+          "Validar con jq empty. Debe retornar exit 0.",
+          "Smoke test 1: tomar un project_rules.json software real (ej. buscar con find /Users/avm/Repositories/exovian -name project_rules.json -not -path '*/node_modules/*' | head -3) y validar contra el schema modificado — debe seguir validando.",
+          "Smoke test 2: construir un project_rules.json sintético con type='agentic' que use una categoría custom NO listada (ej. 'custom_agentic_category') y validar — debe pasar (additionalProperties:true para agentic).",
+          "Smoke test 3: construir un project_rules.json sintético con type='frontend' que use una categoría custom NO listada — debe FALLAR (additionalProperties:false para no-agentic). Esto valida que el conditional discrimina correctamente."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-15T00:35:00Z"
+      },
+      {
+        "id": 2,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Aplicar el patch al schema canonical y sincronizar a las 7 copias del repo.",
+        "completion_guide": [
+          "Edit schemas/project_rules_schema.json aplicando los cambios diseñados en S1.",
+          "Sincronizar canonical → 6 copias con cp explícito: cp schemas/project_rules_schema.json ai_files/schemas/; cp schemas/project_rules_schema.json plugin/skills/waves-protocol/references/; cp schemas/project_rules_schema.json cowork_plugin/skills/waves-protocol/references/; cp schemas/project_rules_schema.json example_java/ai_files/schemas/; cp schemas/project_rules_schema.json example_flutter/ai_files/schemas/; cp schemas/project_rules_schema.json example_web/ai_files/schemas/.",
+          "Verificar que las 7 copias son byte-idénticas: for f in ai_files/schemas plugin/skills/waves-protocol/references cowork_plugin/skills/waves-protocol/references example_java/ai_files/schemas example_flutter/ai_files/schemas example_web/ai_files/schemas; do diff -q schemas/project_rules_schema.json \"$f/project_rules_schema.json\" || echo DIFFERS: $f; done. Salida esperada: vacía (todos byte-idénticos).",
+          "Verificar git diff: solo project_rules_schema.json en las 7 ubicaciones. Cualquier otro archivo modificado en git diff es red flag — revertir.",
+          "Razón de las 7 copias: canonical (schemas/) es la fuente; ai_files/schemas/ es la copia que existe en proyectos vía waves upgrade; plugin/ y cowork_plugin/ son referencias del plugin protocol; los 3 example_* son demos del repo waves. Mantener sincronía evita drift silencioso."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-15T00:40:00Z"
+      },
+      {
+        "id": 3,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Diseñar el bloque Flow C realineado de /waves:rules-create.md con las 9 categorías refinadas y ejemplos del piloto.",
+        "completion_guide": [
+          "Para cada categoría, redactar (a) propósito en una línea, (b) 2-4 ejemplos concretos con scope (ecosystem o local) tomados del piloto exobase_med_corpus.",
+          "governing_principles (universal): REGLA-0 (SRP→KISS→YAGNI→OCP→DRY antes de implementar), REGLA-RESILIENCE (extracción temprana a paquete compartido cuando reutilizable + barato), REGLA-PLACEMENT (ubicación de features reutilizables: starter kits / ecosistema / paquetes aislados). Todas scope=ecosystem.",
+          "role_design: AGT-ROLE-001 (cada subagente UNA responsabilidad — si declara >2 writes_to de dominios distintos, redesign), AGT-ROLE-002 (separación de poderes: decide≠ejecuta≠firma), AGT-ROLE-003 (sin heartbeats — granularidad de transiciones es la única señal de vitalidad), AGT-ROLE-004 (roles deterministas sin reasoning DEBEN ser Bash workers, no Claude subagents).",
+          "skills_management: AGT-SKILL-001 (skills en skills/ con markdown_with_frontmatter, no JSON, no código embebido), AGT-SKILL-002 (versioning_required:true cuando skills producen datos persistentes), AGT-SKILL-003 (una skill por (source × estadio) — composición, no extensión).",
+          "tool_use: AGT-TOOL-001 (CLI default sobre MCP cuando se puede — CLI no consume tokens API), AGT-TOOL-002 (MCP solo cuando se requiere reasoning de Claude en tiempo real), AGT-TOOL-003 (modelo más barato suficiente: Haiku>Sonnet>Opus), AGT-TOOL-004 (prompt caching obligatorio para context reutilizado).",
+          "hooks_lifecycle: AGT-HOOK-001 (PreToolUse para enforcement, PostToolUse para audit, nunca al revés), AGT-HOOK-002 (hooks NO modifican state contracts, solo validan/registran/redirigen), AGT-HOOK-003 (hooks que rechazan emiten mensaje claro con razón + cómo desbloquear).",
+          "state_contracts: AGT-STATE-001 (single-writer-per-file — un writer_role, resto solo lee), AGT-STATE-002 (partitioning explícito: singleton | by_<dimension>), AGT-STATE-003 (volatility declarada: stable | volatile | ephemeral), AGT-STATE-004 (schema-validated — todo state contract con schema_ref).",
+          "pipeline_design: AGT-PIPE-001 (estados granulares como primitiva de resiliencia — cada transición es escritura atómica), AGT-PIPE-002 (stuck_threshold_seconds por stage, no global), AGT-PIPE-003 (cascada agent-driven — ninguna etapa espera, termina/escribe/siguiente role observa), AGT-PIPE-004 (verifier cron ≤ stuck_threshold mínimo).",
+          "governance: AGT-GOV-001 (operaciones críticas requieren approval_gate con auditor sign-off), AGT-GOV-002 (gates graduados — auto_approve_when libre + fallback: human_approval | block | log_only, nunca binario sin escalación), AGT-GOV-003 (ApprovalDecision { verdict, reason, evidence_refs[] } envelope canónico), AGT-GOV-004 (log_level decisions_full para dominios regulados, audit_critical_decisions=true).",
+          "budget_and_concurrency: AGT-BUDGET-001 (throttling reactivo no preventivo — target ambicioso, bajar solo con señales medibles), AGT-BUDGET-002 (daily_max_usd declarado por proyecto), AGT-BUDGET-003 (ambient Max plan usage >70% weekly → bajar claude_subagent_concurrent_target), AGT-BUDGET-004 (OWNER_INTENSIVE_MODE env var baja proyecto a footprint mínimo).",
+          "Cierre del Flow C: nota explícita al usuario de que additionalProperties:true permite categorías custom — puede agregar nuevas si su dominio agentic lo amerita."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-15T00:50:00Z"
+      },
+      {
+        "id": 4,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Aplicar patch a .claude/commands/waves:rules-create.md reemplazando el bloque Flow C actual (7 categorías de 2.3.0) por el nuevo (9 categorías refinadas). Sincronizar a plugin/ y cowork_plugin/.",
+        "completion_guide": [
+          "Leer .claude/commands/waves:rules-create.md actual (líneas 251-316 según contexto previo — bloque Flow C).",
+          "Identificar el Step C1 (default categories list) y Step C2 (per-category rules con ejemplos). Esos son los bloques a reemplazar.",
+          "Reemplazar Step C1 listing las 9 categorías refinadas con su propósito breve.",
+          "Reemplazar Step C2 con los ejemplos por categoría diseñados en S3.",
+          "Agregar nota en Step C2 final: 'Recordatorio: additionalProperties:true para type=agentic en project_rules_schema. Puedes proponer categorías custom si tu dominio lo amerita — el schema acepta cualquier nombre como bucket.'",
+          "Verificar git diff: SOLO el bloque Flow C debe mostrar modificación. Flow A (software) y Flow B (general) deben ser byte-idénticos.",
+          "cp .claude/commands/waves:rules-create.md plugin/commands/rules-create.md (sin prefijo waves: en plugin path — verificar convención existente).",
+          "cp .claude/commands/waves:rules-create.md cowork_plugin/commands/rules-create.md.",
+          "Verificar que las 3 copias son byte-idénticas con diff -q."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-15T00:50:00Z"
+      },
+      {
+        "id": 5,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Patch .claude/commands/waves:rules-update.md: reconocer las 9 nuevas categorías + diferenciar análisis de diff por type. Sincronizar a plugin/ y cowork_plugin/.",
+        "completion_guide": [
+          "Leer .claude/commands/waves:rules-update.md y localizar dónde lista las categorías reconocidas para análisis (probablemente en un step de scan o en un prompt al subagent que clasifica cambios).",
+          "Extender la lista interna con: governing_principles, role_design, skills_management, hooks_lifecycle, state_contracts, pipeline_design, budget_and_concurrency. (tool_use y governance ya existen probablemente — verificar.)",
+          "CRÍTICO — análisis de diff diferenciado por type: si project_rules.json tiene type=agentic, el diff debe operar sobre TODAS las categorías presentes en el archivo (porque additionalProperties:true admite custom — no podemos asumir enum cerrado). Si type ∈ {software, frontend, backend, fullstack}, el diff opera contra el enum cerrado de categorías conocidas (comportamiento actual). Insertar lógica: leer type del project_rules.json al inicio, ramificar el subagent prompt según.",
+          "Sincronizar a plugin/commands/rules-update.md y cowork_plugin/commands/rules-update.md.",
+          "Smoke test mental: si el piloto cambia AGT-ROLE-002 (separation of powers) en role_design, ¿el comando detecta el cambio y propone actualización? Debe poder. Si el piloto agrega una categoría custom (ej. 'medical_compliance'), ¿el comando la detecta en agentic mode? Debe — additionalProperties:true le da espacio."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-15T00:55:00Z"
+      },
+      {
+        "id": 6,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Backward compat regression smoke test con fixtures pos/neg: project_rules.json existentes válidos siguen validando, fixture negativo crítico DEBE rechazarse para garantizar que el conditional no es laxo.",
+        "completion_guide": [
+          "Asegurar ajv-cli disponible: which ajv || npm i -g ajv-cli (validador JSON Schema 2020-12 real, no solo sintáctico).",
+          "find /Users/avm/Repositories/exovian -name project_rules.json -not -path '*/node_modules/*' -not -path '*/.git/*' | head -10 — obtener lista de project_rules.json reales.",
+          "Para cada uno: jq -r .type para confirmar type. Filtrar los que tienen type ∈ {frontend, backend, fullstack, software}.",
+          "POSITIVO 1 — Para 2-3 de ellos: ajv validate -s schemas/project_rules_schema.json -d <file> --spec=draft2020 — DEBE retornar 'valid'.",
+          "POSITIVO 2 — Construir /tmp/fixture-agentic-pos.json: project_rules.json sintético con type='agentic', categorías mezcladas (governing_principles + role_design + categoría custom 'medical_compliance'). ajv validate — DEBE retornar 'valid'.",
+          "NEGATIVO CRÍTICO — Construir /tmp/fixture-frontend-neg.json: project_rules.json sintético con type='frontend' y una categoría inválida ('nonexistent_category'). ajv validate — DEBE retornar 'invalid' (additionalProperties:false del else branch del allOf debe rechazarla). Si lo acepta, el conditional está mal construido y el schema permite drift en types maduros.",
+          "Si POSITIVO falla: el additionalProperties:false del else es más estricto que el comportamiento previo. Investigar properties faltantes y corregir.",
+          "Si NEGATIVO pasa (cuando debería fallar): el conditional no discrimina por type. Revisar la sintaxis allOf+if/then/else. Probable causa: missing required:['type'] en el if condition, o additionalProperties está al nivel equivocado.",
+          "Documentar resultados: lista de archivos validados + pass/fail + cualquier ajuste necesario al schema. NO continuar a S7 hasta que los 3 escenarios (POS1, POS2, NEG) pasen."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-15T01:00:00Z"
+      },
+      {
+        "id": 7,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Pre-flight release validation: jq empty + ajv semantic validation + bash -n + sync check sobre todos los archivos del release.",
+        "completion_guide": [
+          "Capa 1 sintáctica: for f in schemas/*.json; do jq empty \"$f\" || echo BROKEN: $f; done — todos válidos.",
+          "Capa 2 semántica: ajv compile -s schemas/project_rules_schema.json --spec=draft2020 — debe compilar sin warnings. Si reporta errores (ej. 'unknown keyword'), ajustar el schema antes de continuar.",
+          "Verificar schemas/project_rules_schema.json incluye 'agentic' en type enum (grep '\"agentic\"' schemas/project_rules_schema.json).",
+          "Verificar que el allOf condicional está al nivel raíz del schema (no dentro de rules properties): grep -A5 '\"allOf\"' schemas/project_rules_schema.json — debe mostrar if/then/else con condition sobre /properties/type.",
+          "Verificar que los fixtures POS1+POS2+NEG de S6 todavía pasan con su veredicto esperado (re-ejecutar después de cualquier ajuste).",
+          "Para los comandos modificados (.claude/commands/waves:rules-create.md, .claude/commands/waves:rules-update.md, plus copias en plugin/ y cowork_plugin/), verificar coherencia markdown (encabezados balanceados, no malformación).",
+          "diff -q de las 3 copias del comando rules-create (canonical, plugin, cowork_plugin) — deben ser byte-idénticas. Idem para rules-update.",
+          "Si algún check falla, NO continuar. Corregir y re-verificar."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-15T01:05:00Z"
+      },
+      {
+        "id": 8,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Bump bin/waves VERSION a 2.5.0. Actualizar FRAMEWORK.md §16 con las 13 categorías + declaración de governing_principles como ancla del organizational governance layer. Actualizar §20 Glossary. Update CHANGELOG.md.",
+        "completion_guide": [
+          "Editar bin/waves VERSION=\"2.4.1\" a VERSION=\"2.5.0\".",
+          "Editar FRAMEWORK.md §16 Project Types: en la sub-section agentic, agregar bloque sobre project_rules.json para agentic listando las 13 categorías (5 universales + 8 agentic-nativas). Mencionar que additionalProperties:true permite custom.",
+          "CRÍTICO — Editar FRAMEWORK.md §16 con sub-section nueva 'governing_principles as the organizational governance anchor': declarar explícitamente que governing_principles con scope:ecosystem es el primer ciudadano de la cadena company_blueprint → ecosystem rules → local rules → logbooks. Linkear a la decision id=6 del roadmap w2 (organizational AI governance layer, descubrimiento nivel 5 ratificado por el founder). Esto convierte governing_principles de 'categoría más' a 'ancla declarada' del governance layer — semilla del producto que evoluciona hacia $500-5000/mo organizational tier.",
+          "Editar FRAMEWORK.md §20 Glossary: agregar entries para governing_principles (incluyendo su doble rol: categoría de rules Y ancla de governance), role_design, skills_management, hooks_lifecycle, state_contracts, pipeline_design, budget_and_concurrency. tool_use y governance probablemente ya existen — actualizar sus definiciones.",
+          "Editar CHANGELOG.md agregando entrada [2.5.0] - 2026-05-15 al inicio de Waves Era. Estructura: ### Added — Agentic project rules support con narrativa de las 3 capas (schema condicional + Flow C realineado + governing_principles universal con doble rol categoría+ancla governance). Mencionar SRP→KISS→YAGNI→OCP como criterio de refinamiento. Nota: 'Why this is additive, not breaking' — software/general/frontend/backend/fullstack rules unchanged. Nota adicional: 'governing_principles as organizational governance anchor' linkeando al insight nivel 5 de Waves 2.0.",
+          "Verificar formato Keep a Changelog ya establecido.",
+          "El waves-doc-sync.sh hook exige que el commit del tag incluya FRAMEWORK.md + CHANGELOG.md modificados — este step satisface ambos por construcción."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-15T01:15:00Z"
+      },
+      {
+        "id": 9,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Commit + git tag v2.5.0 + push origin main + tag. Stage SOLO los archivos del release. Verificar que doc-sync hook permite el tag (FRAMEWORK.md + CHANGELOG.md están modificados).",
+        "completion_guide": [
+          "git add explicit (NO usar -A ni .): bin/waves, FRAMEWORK.md, CHANGELOG.md, schemas/project_rules_schema.json, plugin/skills/waves-protocol/references/project_rules_schema.json, .claude/commands/waves:rules-create.md, .claude/commands/waves:rules-update.md, plugin/commands/rules-create.md, plugin/commands/rules-update.md, cowork_plugin/commands/rules-create.md, cowork_plugin/commands/rules-update.md, ai_files/waves/w2/roadmap.json, ai_files/waves/w2/logbooks/phase_7.json (este logbook).",
+          "git status verifica que solo los archivos del release están staged. Untracked (.claude/settings.local.json, etc.) NO se incluyen.",
+          "git commit -m con HEREDOC siguiendo el estilo de releases previos: 'release: v2.5.0 — agentic project rules + universal governing_principles'.",
+          "git tag v2.5.0. Si waves-doc-sync.sh hook bloquea: verificar que el commit incluye FRAMEWORK.md + CHANGELOG.md. Si los incluye y aún así bloquea, leer el mensaje del hook para diagnosticar.",
+          "git push origin main v2.5.0.",
+          "Verificar push exitoso (sin errores)."
+        ],
+        "status": "not_started"
+      },
+      {
+        "id": 10,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "SHA256 del tarball v2.5.0, actualizar formula Homebrew, push, brew upgrade.",
+        "completion_guide": [
+          "curl -sL https://github.com/exovian-developments/waves/archive/refs/tags/v2.5.0.tar.gz -o /tmp/waves-2.5.0.tar.gz",
+          "shasum -a 256 /tmp/waves-2.5.0.tar.gz — guardar SHA.",
+          "Editar ../homebrew-waves/Formula/waves.rb: url al tag v2.5.0 y sha256 al valor calculado.",
+          "cd ../homebrew-waves && git add Formula/waves.rb && git commit -m 'waves 2.5.0' && git push origin main.",
+          "brew update && brew upgrade waves — confirmar 'waves --version' devuelve 2.5.0.",
+          "Verificar que /opt/homebrew/share/waves/schemas/project_rules_schema.json tiene el conditional allOf (grep '\"agentic\"' del archivo)."
+        ],
+        "status": "not_started"
+      },
+      {
+        "id": 11,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Propagar v2.5.0 a 18 proyectos Exovian con waves upgrade --skip-brew. Verificar que el schema modificado landed.",
+        "completion_guide": [
+          "Lista de proyectos: find /Users/avm/Repositories/exovian -maxdepth 2 -name ai_files -type d | xargs -I{} dirname {} — obtiene proyectos Exovian con Waves inicializado.",
+          "Para cada uno: cd <project> && waves upgrade --skip-brew.",
+          "Para cada uno post-upgrade: verificar que ai_files/schemas/project_rules_schema.json contiene 'agentic' en type enum (grep) y allOf con if/then/else (grep).",
+          "Verificar que .claude/commands/waves:rules-create.md tiene el Flow C realineado con las 9 categorías nuevas.",
+          "Si algún proyecto falla upgrade, documentar error y resolver. Si no se puede resolver mecánicamente, reportar al user y omitir ese proyecto del release.",
+          "Reportar al user: lista de proyectos upgrade-ados (count + nombres) + cualquier issue."
+        ],
+        "status": "not_started"
+      },
+      {
+        "id": 12,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Desbloqueo del piloto exobase_med_corpus: verificar que el comando rules-create local muestra el Flow C realineado. Marcar la propuesta original como resuelta. Reportar al owner del piloto.",
+        "completion_guide": [
+          "cd ../exobase_med_corpus.",
+          "Verificar que .claude/commands/waves:rules-create.md (post-upgrade del S11) muestra el Flow C con 9 categorías refinadas — NO con las 7 conceptuales del 2.3.0.",
+          "Verificar que ai_files/schemas/project_rules_schema.json tiene 'agentic' en type enum y allOf condicional.",
+          "NO ejecutar /waves:rules-create completo (eso es trabajo del owner del piloto cuando él lo decida) — pero confirmar mentalmente que las 35 reglas mencionadas en otto_proposals/agentic_project_rules_extension.md caben estructuralmente en las 13 categorías disponibles. Si caben, todo OK.",
+          "Editar ai_files/otto_proposals/agentic_project_rules_extension.md agregando al final una sección: '## ESTADO: Resuelto en Waves 2.5.0 (2026-05-15)' con resumen breve del refinamiento aplicado (SRP→KISS→YAGNI→OCP) y referencia a Phase 7 del roadmap de waves.",
+          "Reportar al user (owner del piloto): 'Piloto exobase_med_corpus desbloqueado en Waves 2.5.0. El project_rules_schema acepta type=agentic con additionalProperties:true para categorías custom. El Flow C de /waves:rules-create propone 9 categorías refinadas (governing_principles universal + 8 agentic-nativas alineadas a primitivas Claude Code). El piloto puede ejecutar /waves:rules-create cuando esté listo.'"
+        ],
+        "status": "not_started"
+      },
+      {
+        "id": 13,
+        "created_at": "2026-05-15T00:00:00Z",
+        "content": "Waves self-migration: reclasificar waves itself a type=agentic (eat-your-own-dogfood). Migrar project_rules.json conservando reglas legacy aplicables + reorganizando en categorías agentic-nativas.",
+        "completion_guide": [
+          "Leer ai_files/project_rules.json actual de waves (type=fullstack según roadmap audit).",
+          "Analizar el catálogo de reglas existente y clasificar cada una según la nueva taxonomía: governing_principles (REGLA-0 si existe), architecture (single-writer, separation of powers, async cascade donde aplique), naming_conventions (mantener), testing (mantener si hay reglas de bash testing), infra (security boundaries de hooks, secrets handling).",
+          "Identificar reglas agentic-nativas implícitas en el codebase de waves que merezcan ser explicitadas: skills_management (markdown_with_frontmatter de SKILL.md, una skill por concern), hooks_lifecycle (PreToolUse=enforcement waves-gate.sh, PostToolUse=audit waves-rules-audit.sh, doc-sync hook como ejemplo), state_contracts (schemas/*.json son los state contracts del framework, single-writer en logbooks).",
+          "Aplicar KISS: NO inventar reglas — solo mover/reorganizar las existentes + agregar las que YA existen de facto en el código pero no estaban escritas. YAGNI: si una categoría agentic queda vacía después de la migración, omitirla (additionalProperties:true permite omisión).",
+          "Editar ai_files/user_pref.json: project_type fullstack → agentic (si existe project_type; si no, agregar).",
+          "Editar ai_files/project_rules.json: type: fullstack → agentic. Reorganizar rules object según las categorías nuevas. Mantener IDs originales de las reglas conservadas (no renumerar).",
+          "Validar con ajv contra el schema modificado: ajv validate -s schemas/project_rules_schema.json -d ai_files/project_rules.json --spec=draft2020 — DEBE retornar valid.",
+          "Reportar al user: 'Waves itself migrado a type=agentic. Categories distribution: [N universales conservadas, M agentic-nativas explicitadas, K reglas total]. Eat-your-own-dogfood completo.'"
+        ],
+        "status": "not_started"
+      }
+    ]
+  },
+  "resolved_decisions": [
+    {
+      "uncertainty": "¿Decompose este logbook en single_focus o multi_focus primaries?",
+      "resolution": "multi_focus con 4 primaries — schema patch, commands realignment, release engineering, pilot unblock + waves dogfooding.",
+      "method": "SRP",
+      "reasoning": "Mismos 4 mindsets ortogonales que en phase 6: (P1) JSON Schema author — diseño estructural con conditional allOf if/then/else, validación semántica via ajv, cero comportamiento de comandos. (P2) prompt designer + conceptual mapper — realinear Flow C del comando con ejemplos del piloto, diff-por-type en rules-update, sincronizar 7 copias schema + 3 copias comandos. (P3) release engineer + regression auditor + doc-sync compliance + governance documentarian — bump 2.5.0, FRAMEWORK §16 con declaración de governing_principles como ancla organizational governance, CHANGELOG, commit/tag con doc-sync hook, homebrew, propagación. (P4) pilot operator + dogfood migrator — unblock del piloto exobase_med_corpus + waves itself migra a type=agentic (eat-your-own-dogfood). Colapsar a single_focus mezclaría JSON schema design + prompt engineering + ops/testing + verification cross-repo + dogfood migration en un objetivo — exactamente la dispersión de atención que multi-focus vino a evitar. P4 combinó pilot unblock + waves dogfooding porque ambos son 'aplicar el framework recién construido a un proyecto agentic real' — mismo mindset."
+    },
+    {
+      "uncertainty": "¿Las categorías agentic deben ser las 8 del piloto, las 7 del comando 2.3.0, o un refinamiento nuevo?",
+      "resolution": "Refinamiento nuevo aplicando SRP→KISS→YAGNI→OCP a la propuesta del piloto.",
+      "method": "SRP_KISS_YAGNI_OCP",
+      "reasoning": "Las 7 del comando 2.3.0 son conceptuales top-down sin claim sobre primitivas reales — no surgieron de un piloto. Las 8 del piloto son operacionales bottom-up pero (a) auditing_and_gates mezcla prospective+retrospective+policy (viola SRP), (b) pierde prompt_engineering como preocupación, (c) tool_usage rompe consistencia con tool_use del comando. Refinamiento aplica: SRP fusiona auditing+gates+observability en governance (siguiendo nombre del comando). KISS absorbe prompt_engineering en skills_management (prompts viven en frontmatter de skills + CLAUDE.md). YAGNI mantiene las 8 categorías porque cada una tiene 3-5 reglas reales del piloto (no especulativas). OCP abre additionalProperties:true cuando type=agentic (donde aún descubrimos) y cierra para los demás (maduros). Resultado: 8 categorías agentic + governing_principles universal = 9 nuevas, alineadas a primitivas Claude Code reales."
+    },
+    {
+      "uncertainty": "¿governing_principles solo para agentic, o universal top-level disponible para todos los project_types?",
+      "resolution": "Universal top-level disponible para todos los project_types.",
+      "method": "SRP",
+      "reasoning": "Las reglas que vivirían en governing_principles (REGLA-0 SRP→KISS→YAGNI→OCP→DRY, REGLA-RESILIENCE, REGLA-PLACEMENT) trascienden cualquier layer técnico — aplican a frontend, backend, fullstack, agentic, e incluso general. Promoverlas a top-level: (a) las hace explícitas como primera lectura del archivo (el agente las absorbe antes de las reglas técnicas), (b) previene que se diluyan dentro de architecture mezcladas con patrones estructurales, (c) son ecosystem rules canónicas — distintas a las locales. SRP las separa de architecture como categoría dedicada. El cambio es additive — proyectos software existentes no tienen que crear la sección si no la usan."
+    },
+    {
+      "uncertainty": "¿additionalProperties:true para todos los types o solo cuando type=agentic?",
+      "resolution": "Conditional via allOf+if/then/else: true cuando type=agentic, false cuando type ∈ {frontend, backend, fullstack}.",
+      "method": "OCP",
+      "reasoning": "Software/frontend/backend/fullstack son types maduros con taxonomía estable — abrir additionalProperties los degrada porque permitiría categorías inválidas en proyectos donde el patrón está consolidado. Agentic es nuevo (solo 3 casos: 1 piloto + 2 proyectados) — descubriremos patrones que aún no anticipamos. additionalProperties:true le da espacio al dominio para evolucionar sin requerir bumps de schema cada vez que aparece una categoría nueva. Cuando agentic madure (8-10 casos reales, patrones estables), podríamos cerrarlo retrospectivamente en una major release. OCP exacto: schema abierto a extensión cuando el dominio aún se descubre, cerrado a modificación cuando es estable."
+    },
+    {
+      "uncertainty": "¿Bumpear a 2.5.0 (minor) o 2.4.2 (patch)?",
+      "resolution": "2.5.0 minor.",
+      "method": "SemVer",
+      "reasoning": "Aunque el cambio core es un fix de bug (type enum cerrado bloqueaba agentic — bug pre-existente en el shipping de 2.3.0), el alcance va más allá: (a) 9 categorías nuevas son feature addition non-breaking, (b) governing_principles top-level universal afecta todos los types (additive), (c) conditional allOf cambia la estructura del schema (additive pero estructuralmente significativo), (d) Flow C del comando rules-create se reescribe completo. Esto excede un patch. SemVer minor: nueva funcionalidad backward-compatible. Patch (2.4.2) sería apropiado si solo fuera el type enum agregando 'agentic' — pero es mucho más. Major (3.0.0) lo reservamos para breaking changes (eliminar un type, cambiar shape de project_rules.json incompatiblemente, etc.)."
+    },
+    {
+      "uncertainty": "¿Mantener nombres tool_use y governance del comando 2.3.0, o renombrar a tool_usage y audit_and_governance como la propuesta del piloto sugiere?",
+      "resolution": "Mantener tool_use y governance (nombres del comando 2.3.0).",
+      "method": "Consistency",
+      "reasoning": "tool_use y governance ya están publicados en 2.3.0 — cualquier proyecto agentic que haya leído el comando esperaría esos nombres. Renombrar a tool_usage y audit_and_governance crearía churn sin beneficio semántico — son sinónimos. tool_use es más conciso y consistente con naming patterns del schema (data_layer, api_layer, infra son cortos). governance ya engloba auditing+gates+scope+observability policy (fusión KISS aplicada en este refinamiento). Consistencia con el publicado gana sobre 'fidelidad a la propuesta original'."
+    },
+    {
+      "uncertainty": "¿Cómo asegurar que doc-sync hook permita el tag v2.5.0?",
+      "resolution": "Modificar FRAMEWORK.md + CHANGELOG.md en el mismo commit que bumpea bin/waves antes de hacer git tag.",
+      "method": "Mechanism_compliance",
+      "reasoning": "waves-doc-sync.sh (introducido en 2.4.0) es PreToolUse hook que dispara en git tag vN.N.N y verifica que el commit tageado modifique tanto FRAMEWORK.md como CHANGELOG.md. Si no, exit 2 con mensaje. Para Phase 7: el secondary S8 explícitamente actualiza FRAMEWORK.md §16 + §20 y CHANGELOG.md [2.5.0]. Ambos están staged en S9 antes del tag. El hook pasa por construcción. NO usar bypass (.claude/waves-doc-sync-bypass) — el bypass es escape hatch, no shortcut. El mecanismo está diseñado precisamente para forzar este behavior."
+    },
+    {
+      "uncertainty": "¿Waves itself debe migrar a type=agentic en Phase 7 (eat-your-own-dogfood) o quedar como fullstack legacy?",
+      "resolution": "Sí migrar — agregado como S13 (secondary del P4 pilot unblock). Waves es markdown skills + bash hooks + JSON schemas — patrón agentic puro.",
+      "method": "Dogfooding",
+      "reasoning": "El background subagent detectó que waves tiene project_rules.json con type=fullstack pero su corpus son skills .md + bash hooks + JSON schemas — exactamente lo que el Flow C agentic describe. Mantener type=fullstack sería incoherente con lo que el framework predica. Aplicar dogfooding refuerza credibilidad y permite que waves itself sea caso de uso ratificador de la nueva taxonomía. Decisión nivel 4 (afecta cómo se describe waves en FRAMEWORK + CHANGELOG). KISS aplicado: NO crear nuevo primary P0 — agregado como S13 al P4 existente (mismo mindset: aplicar lo construido al meta-framework). YAGNI: NO inventar reglas nuevas — solo reorganizar las existentes en las categorías nuevas + explicitar las que ya existen de facto en el código (skills_management para SKILL.md, hooks_lifecycle para hooks). El user lo aprobó explícitamente."
+    },
+    {
+      "uncertainty": "¿governing_principles se declara explícitamente como ancla del organizational governance layer en FRAMEWORK.md, o se trata como una categoría más?",
+      "resolution": "Declarar explícitamente como ancla en FRAMEWORK.md §16 + CHANGELOG.md [2.5.0]. Linkear a decision id=6 del roadmap w2.",
+      "method": "Strategic_alignment",
+      "reasoning": "Decision #6 del roadmap w2 (descubrimiento nivel 5 ratificado por el founder en 2026-04-18) identificó que Waves está evolucionando hacia organizational AI governance layer con jerarquía company_blueprint → product_blueprint → ecosystem rules → local rules → logbooks. governing_principles con scope:ecosystem es exactamente el slot natural para reglas que viven en el nivel ecosystem de esa jerarquía. Tratarlo como 'una categoría más' desperdicia la oportunidad de anclar conceptualmente la evolución del producto. Declararlo explícitamente: (a) hace visible la conexión estratégica para próximos usuarios del framework, (b) abre el path al pricing organizational tier ($500-5000/mo, decision #6), (c) facilita el certification program de Waves Lead (governance architect). El user aprobó esta declaración como nivel 5 strategic positioning, no solo nivel 2 documentation."
+    }
+  ],
+  "recent_context": [
+    {
+      "id": 1,
+      "created_at": "2026-05-15T00:00:00Z",
+      "content": "Logbook Phase 7 creado. 4 primaries multi-focus aplicando SRP a los mindsets ortogonales del trabajo: (P1) Schema patch — project_rules_schema con type=agentic + 9 categorías nuevas (governing_principles universal + 8 agentic-nativas) + conditional allOf if/then/else. (P2) Commands realignment — Flow C de rules-create realineado a las 9 categorías refinadas con ejemplos del piloto + rules-update extendido. (P3) Release engineering — bump 2.5.0, FRAMEWORK.md §16+§20, CHANGELOG.md [2.5.0], commit/tag (cumpliendo doc-sync hook), Homebrew formula, propagación a 18 proyectos. (P4) Pilot unblock — verificación post-propagación que exobase_med_corpus puede generar project_rules.json, archivar otto_proposals/agentic_project_rules_extension.md como resuelto. 12 secondaries con steps detallados. 7 resolved_decisions documentadas: multi_focus, refinamiento SRP→KISS→YAGNI→OCP sobre propuesta del piloto, governing_principles universal, conditional additionalProperties, minor 2.5.0, mantener tool_use+governance del 2.3.0, doc-sync compliance via FRAMEWORK+CHANGELOG en mismo commit. scope.rules vacío en todos los primaries porque waves repo no tiene project_rules.json (es meta-framework). metacognition: delegated (background subagent analiza el cambio de Phase 7 al roadmap). Ready to start con S1 (diseñar schema patch)."
+    },
+    {
+      "id": 2,
+      "created_at": "2026-05-15T00:15:00Z",
+      "content": "Followups aplicados tras background metacognition analysis. Cambios al logbook: (a) P1.scope.files expandido de 2 a 7 copias del schema (canonical + ai_files + plugin + cowork_plugin + 3 examples) — el subagent reportó 5 pero find encontró 7 reales. S2 explicita la sincronía con diff -q. (b) P2.content + S5 agregan diff-por-type en rules-update: en agentic compara contra TODAS las categorías presentes (additionalProperties:true), en software/frontend/backend/fullstack contra enum cerrado. (c) S6 agrega fixture NEGATIVO crítico (type=frontend + categoría inválida → DEBE rechazar) + validador ajv-cli semántico real, no solo jq empty sintáctico. (d) S7 pre-flight extendido a validación semántica con ajv (capa 2). (e) S8 + P3.context agregan declaración explícita en FRAMEWORK.md §16 de governing_principles como ancla del organizational governance layer (link a decision #6 nivel 5 del roadmap w2). (f) P4 ahora cubre piloto unblock + waves dogfooding. S13 nuevo: Waves itself migra a type=agentic (eat-your-own-dogfood) — reorganizar project_rules.json existente sin inventar reglas (KISS+YAGNI). 9 resolved_decisions ahora (agregadas: B1 dogfooding aprobado nivel 4, O2 governance anchor aprobado nivel 5). O1+O3+O4 documentadas como open_questions del roadmap para no perderlas en fases futuras. Ready to start con S1 (diseñar schema patch)."
+    },
+    {
+      "id": 3,
+      "created_at": "2026-05-15T00:35:00Z",
+      "content": "S1 ACHIEVED. Schema canonical schemas/project_rules_schema.json patcheado: (a) type.enum extendido con 'agentic' (4 valores); (b) 16 categorías declaradas en $defs/rulesCommonProperties (8 universales: governing_principles + architecture + testing + naming_conventions + presentation_layer + data_layer + api_layer + infra; 8 agentic-nativas: role_design + skills_management + tool_use + hooks_lifecycle + state_contracts + pipeline_design + governance + budget_and_concurrency); (c) conditional allOf con if(type=='agentic')/then(unevaluatedProperties:ruleList)/else(unevaluatedProperties:false). DESCUBRIMIENTO NIVEL 2 durante implementación: el enfoque inicial usando additionalProperties:false dentro del subschema del allOf NO funciona — cada subschema en allOf se evalúa aislado y NO ve las properties del top-level. Solución JSON Schema 2020-12: refactor a $def compartido (rulesCommonProperties) + $ref + sibling keyword unevaluatedProperties en cada rama. Esto sí respeta las properties declaradas porque unevaluatedProperties considera las already-evaluated por subschemas hermanos en el mismo scope. Smoke tests: jq empty PASS; SMOKE 1 (llm_core backend real) IDÉNTICO antes/después del patch (1 error pre-existente description-too-long, NO regresión); SMOKE 2 (agentic + custom category) PASS; SMOKE 3 NEG (frontend + invalid category) PASS rechaza solo nonexistent_category. DESCUBRIMIENTO NIVEL 3 (out of scope, NO atacar en Phase 7): hay project_rules.json en el ecosystem con types custom no en enum ('monorepo' en exobase_business, 'package' en facts_core) + 60 errores pre-existentes en agency_core (scope missing, descriptions too long). Documentar para futura fase de saneamiento."
+    }
+  ],
+  "history_summary": [],
+  "future_reminders": [],
+  "audit": {
+    "is_already_audited": false
+  }
+}

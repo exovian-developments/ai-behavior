@@ -8,7 +8,6 @@
     "last_updated": "2026-04-15T00:00:00Z",
     "status": "in_progress"
   },
-
   "vision": {
     "problem": "Waves 1.x le dio estructura al caos: schemas, artefactos, jerarquía blueprint→roadmap→logbook, golden rule. Pero el agente sigue siendo un ejecutor que depende de instrucciones en CLAUDE.md que se degradan en sesiones largas. No percibe el estado del negocio proactivamente, no clasifica sus decisiones, no proyecta consecuencias, y no alerta cuando algo que el humano no puede ver está a punto de causar problemas.",
     "mission": "Con Waves 2.0, el agente percibe el estado completo del producto al iniciar cada sesión, enforcea la estructura del framework con código (no con instrucciones ignorables), clasifica cada decisión según su impacto, y proyecta consecuencias en los checkpoints naturales del framework — dándole al humano percepción extendida sobre todo el tablero mientras está enfocado en la pieza inmediata.",
@@ -25,7 +24,6 @@
       "La clasificación de decisiones funciona: 15+ escenarios de prueba con subagentes pasan correctamente"
     ]
   },
-
   "phases": [
     {
       "id": 1,
@@ -88,7 +86,9 @@
       "description": "Garantizar que las bitácoras se documentan correctamente (recent_context obligatorio al completar objetivos) y que la calidad del código se valida automáticamente (dart analyze post-edición). Estos hooks previenen la degradación de contexto entre sesiones.",
       "status": "completed",
       "completed_at": "2026-04-15T14:00:00Z",
-      "depends_on": [1],
+      "depends_on": [
+        1
+      ],
       "milestones": [
         {
           "id": "2.1",
@@ -124,7 +124,9 @@
       "description": "Implementar los 3 triggers de metacognición: reflexión al completar objetivo primario, proyección de impactos al modificar blueprint, y auditoría estratégica al completar fase de roadmap. El agente pasa de ejecutor a asesor con percepción extendida.",
       "status": "completed",
       "completed_at": "2026-04-15T14:30:00Z",
-      "depends_on": [2],
+      "depends_on": [
+        2
+      ],
       "milestones": [
         {
           "id": "3.1",
@@ -153,7 +155,11 @@
       "status": "completed",
       "started_at": "2026-04-15T21:00:00Z",
       "completed_at": "2026-04-15T23:30:00Z",
-      "depends_on": [1, 2, 3],
+      "depends_on": [
+        1,
+        2,
+        3
+      ],
       "milestones": [
         {
           "id": "4.1",
@@ -282,7 +288,9 @@
       "name": "Distribución Multi-plataforma y Release",
       "description": "Adaptar los hooks para Claude Desktop/Cowork, actualizar toda la documentación del framework a v2.0, sincronizar schemas y comandos, y publicar el release oficial.",
       "status": "not_started",
-      "depends_on": [4],
+      "depends_on": [
+        4
+      ],
       "milestones": [
         {
           "id": "5.1",
@@ -321,9 +329,114 @@
           "logbook_ref": null
         }
       ]
+    },
+    {
+      "id": 6,
+      "name": "Categoría Agentic — soporte para proyectos orquestados por agentes",
+      "description": "Formalizar 'agentic' como tercera categoría de proyecto en Waves (junto a 'software' y 'general'), validada empíricamente con 1 piloto real (exobase_med_corpus) + 2 casos proyectados (Customer Operations Hub, Compliance Operations Center). Alcance MÍNIMO: un nuevo schema agentic_manifest_schema.json con 15 secciones agnósticas + ajustes a comandos existentes vía prompts. NO se ramifican comandos paralelos, NO se inventan schemas nuevos para blueprint/rules/logbook/roadmap — esos son agnósticos al tipo de proyecto. Las cuatro capas de defensa (A inline rules + B banner + C post-impl audit + D logbook integrity audit) y el orthogonality reviewer aplican IDÉNTICOS a proyectos agentic. Release como Waves 2.3.0 con validación rigurosa de backward compatibility — Waves es maduro y NO podemos romper proyectos software/general existentes.",
+      "status": "completed",
+      "depends_on": [
+        5
+      ],
+      "milestones": [
+        {
+          "id": "6.1",
+          "content": "Crear schemas/agentic_manifest_schema.json con 15 secciones top-level (project, orchestration, roles, subagents, skills, tools, data_sources, state_contracts, handoff_contracts, pipelines, integration_contracts, triggers, governance, observability, source_access_modes). Roles como array libre con tools_authorized/forbidden, NO enum impuesto. Reusable $defs para minimizar duplicación. Validar con jq empty.",
+          "status": "not_started",
+          "logbook_ref": null
+        },
+        {
+          "id": "6.2",
+          "content": "Ajustar user_pref_schema.json: agregar 'agentic' al enum de project_context.project_type (actualmente 'software' | 'general'). Backward compatible.",
+          "status": "not_started",
+          "logbook_ref": null
+        },
+        {
+          "id": "6.3",
+          "content": "Extender /waves:manifest-create con flow agentic. Cuando project_type=agentic, en lugar de preguntar language+framework+architecture, prompts específicos para las 15 secciones del agentic_manifest_schema. Mantener flows existentes para software y general intactos (backward compat).",
+          "status": "not_started",
+          "logbook_ref": null
+        },
+        {
+          "id": "6.4",
+          "content": "Adaptar /waves:blueprint-create con ajustes de prompts (NO nuevo schema) para proyectos agentic. Mapear conceptualmente 'capabilities' → 'subagent_capabilities' y 'views/flows' → 'orchestration_patterns'. El schema product_blueprint_schema.json acepta estos como contenido sin cambio estructural — solo el comando ajusta el flow de generación. Software/general intactos.",
+          "status": "not_started",
+          "logbook_ref": null
+        },
+        {
+          "id": "6.5",
+          "content": "Adaptar /waves:rules-create para proyectos agentic. Categorías default propuestas: orchestration, prompt_engineering, tool_use, governance, data_handling, integration, observability. El proyecto puede definir sus propias categorías (free strings en project_rules_schema). No cambio de schema; cambio de prompts en el comando para sugerir categorías relevantes al dominio agentic.",
+          "status": "not_started",
+          "logbook_ref": null
+        },
+        {
+          "id": "6.6",
+          "content": "Validación rigurosa cross-cutting + release Waves 2.3.0. Confirmar que /waves:logbook-create, /waves:logbook-update, /waves:objectives-implement funcionan IDÉNTICOS para agentic (los objetivos son 'implementar subagente X' o 'configurar hook Y' — Layer A+B+C+D aplican igual). Verificar que orthogonality reviewer + integrity audit no requieren cambios. Probar mentalmente contra los 3 casos: exobase_med_corpus, Customer Operations Hub, Compliance Operations Center. Migrar manifest del piloto (vestido de general) al nuevo schema. Bump bin/waves a 2.3.0, CHANGELOG, commit, tag, push, formula homebrew, propagar a proyectos Exovian.",
+          "status": "not_started",
+          "logbook_ref": null
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Reglas Agentic — project_rules_schema extension",
+      "description": "Resolver el bloqueo descubierto en el piloto exobase_med_corpus al intentar generar project_rules.json: el schema actual tiene type enum cerrado ['frontend','backend','fullstack'] y rules.additionalProperties:false con 7 categorías de software. Además, el Flow C del comando rules-create (publicado en 2.3.0) sugiere 7 categorías conceptuales que el schema rechaza — doble desalineación. La propuesta del piloto (8 capas operacionales) fue refinada aplicando SRP→KISS→YAGNI→OCP: (a) governing_principles promovido a categoría universal top-level, (b) 8 categorías agentic-nativas alineadas a primitivas Claude Code (role_design, skills_management, tool_use, hooks_lifecycle, state_contracts, pipeline_design, governance, budget_and_concurrency), (c) JSON Schema condicional if/then/else — additionalProperties:true cuando type=agentic, additionalProperties:false para frontend/backend/fullstack. Release como Waves 2.5.0 minor (additive, non-breaking para software/general; desbloquea agentic). El piloto está bloqueado esperando este fix — sin él no puede generar project_rules.json y por tanto no puede entrar a Layer A/B/C/D de objectives-implement.",
+      "status": "not_started",
+      "depends_on": [
+        6
+      ],
+      "milestones": [
+        {
+          "id": "7.1",
+          "content": "Patch schemas/project_rules_schema.json: (a) agregar 'agentic' al type enum, (b) agregar governing_principles a properties como categoría universal disponible para todos los types, (c) agregar 8 properties agentic-nativas (role_design, skills_management, tool_use, hooks_lifecycle, state_contracts, pipeline_design, governance, budget_and_concurrency), (d) reemplazar el additionalProperties:false fijo por allOf con if/then/else condicional según type. Sincronizar a las 7 copias del repo (canonical + ai_files + plugin + cowork_plugin + 3 example_*). Validar sintáctica (jq empty) + semántica (ajv-cli) con fixtures pos/neg.",
+          "status": "not_started",
+          "logbook_ref": "phase_7.json"
+        },
+        {
+          "id": "7.2",
+          "content": "Realinear Flow C de .claude/commands/waves:rules-create.md (y copias en plugin/ + cowork_plugin/): las 7 categorías conceptuales del 2.3.0 (orchestration, prompt_engineering, tool_use, governance, data_handling, integration, observability) se reemplazan por las 8 alineadas a primitivas Claude Code más governing_principles universal. Ejemplos por categoría derivados del piloto exobase_med_corpus (REGLA-0/RESILIENCE/PLACEMENT para governing, AGT-ROLE/SKILL/TOOL/HOOK/STATE/PIPE para las 8 nuevas). Comunicar al usuario que additionalProperties:true permite agregar categorías custom.",
+          "status": "not_started",
+          "logbook_ref": "phase_7.json"
+        },
+        {
+          "id": "7.3",
+          "content": "Patch .claude/commands/waves:rules-update.md (y copias en plugin/ + cowork_plugin/) para detectar cambios en las 9 nuevas categorías (governing_principles + 8 agentic-nativas). El comando ya opera por enum de categorías al analizar diffs — extender el enum interno. Validar smoke test mental: cambio en role_design del piloto debe ser detectado y propuesto.",
+          "status": "not_started",
+          "logbook_ref": "phase_7.json"
+        },
+        {
+          "id": "7.4",
+          "content": "Pre-flight release: jq empty sobre los 15+ schemas (incluido el modificado); leer 2-3 project_rules.json reales de proyectos software/agentic (exobase_business + waves itself si tiene + agentic piloto cuando exista) y validar contra el nuevo schema. Backward compat verificada: ningún project_rules.json existente puede quedar inválido.",
+          "status": "not_started",
+          "logbook_ref": "phase_7.json"
+        },
+        {
+          "id": "7.5",
+          "content": "Bump bin/waves VERSION a 2.5.0 (minor — additive, non-breaking). Agregar migration al /waves:upgrade slash command si requiere acción concreta en proyectos existentes (probable: ninguna acción — solo el schema cambió, los project_rules.json existentes ya son compatibles). Actualizar FRAMEWORK.md (§16 Project Types referenciando las 9 categorías agentic; §20 Glossary con nuevos términos). Actualizar CHANGELOG.md con entrada [2.5.0] siguiendo formato establecido.",
+          "status": "not_started",
+          "logbook_ref": "phase_7.json"
+        },
+        {
+          "id": "7.6",
+          "content": "Commit + tag v2.5.0 + push. Calcular SHA256 del tarball, actualizar homebrew-waves Formula/waves.rb, brew upgrade. Propagar a 18 proyectos Exovian con waves upgrade --skip-brew. Verificar que el doc-sync hook (introducido en 2.4.0) NO bloquee el tag — el commit debe modificar FRAMEWORK.md + CHANGELOG.md.",
+          "status": "not_started",
+          "logbook_ref": "phase_7.json"
+        },
+        {
+          "id": "7.7",
+          "content": "Desbloquear piloto exobase_med_corpus: sincronizar a 2.5.0, ejecutar /waves:rules-create con flow agentic, generar project_rules.json con ~35 reglas distribuidas en las 13 categorías disponibles (5 universales + 8 agentic). El piloto reporta éxito (rules generadas + schema validation passed) y queda desbloqueado para /waves:logbook-create de su roadmap.",
+          "status": "not_started",
+          "logbook_ref": "phase_7.json"
+        },
+        {
+          "id": "7.8",
+          "content": "Waves self-migration to type=agentic (eat-your-own-dogfood). Reclasificar el meta-framework: ai_files/user_pref.json project_type fullstack/software → agentic, ai_files/project_rules.json type → agentic + categorías reorganizadas en la nueva taxonomía. NO inventar reglas nuevas (KISS+YAGNI) — solo mover/explicitar las existentes (skills_management para SKILL.md, hooks_lifecycle para los hooks, state_contracts para schemas, governance para gate hooks). Validar contra schema modificado con ajv. Reportar: 'Waves itself migrated — eat-your-own-dogfood complete'.",
+          "status": "not_started",
+          "logbook_ref": "phase_7.json"
+        }
+      ]
     }
   ],
-
   "decisions": [
     {
       "id": 1,
@@ -366,9 +479,23 @@
       "decision": "DESCUBRIMIENTO NIVEL 5 — El campo scope (ecosystem/local) en project_rules revela que Waves está evolucionando de 'framework per-developer' a 'organizational AI governance layer'. La jerarquía company_blueprint → product_blueprint → ecosystem rules → local rules → logbooks constituye una cadena de governance organizacional donde cada nivel hereda restricciones del superior y el agente no puede violarlas. Esto abre un mercado diferente: no per-developer ($10-50/mo) sino per-organization ($500-5000/mo). Ningún otro framework tiene esta cadena. Implicaciones para W3+: (1) comando /waves:rules-sync para propagar ecosystem rules, (2) PCC como dashboard de compliance organizacional, (3) reporte de divergencias cross-proyecto, (4) certificación Waves Lead como 'organizational AI governance architect'.",
       "context": "Detectado por metacognición background tras actualizar capability #3 del blueprint con governance scope. La observación de serendipity del subagente fue: 'By distinguishing ecosystem vs. local rules, Waves is implicitly becoming an organizational governance layer. The moment you have rules that belong to the organization and agents that must not modify them, you have a hierarchy: organization > project > session.' Validado por el fundador como insight estratégico.",
       "impact": "high"
+    },
+    {
+      "id": 7,
+      "created_at": "2026-05-14T20:03:17Z",
+      "decision": "[AUTO] Session ended for phase_6.json: Primary 1 (Schema foundation) completed in this session — agentic_manifest_schema.json created (15 sections + 8 $defs) and user_pref_schema.json extended with agentic enum value. 1/4 primaries, 4/19 secondaries achieved. Stop reason: end of atomic primary (P1) — P2 (manifest-create flow agentic) requires fresh context for prompt engineering quality. Next pending: secondary 5 (locate insertion point in waves:manifest-create.md)."
+    },
+    {
+      "id": 8,
+      "created_at": "2026-05-14T20:19:10Z",
+      "decision": "[AUTO] Phase 6 COMPLETED. Logbook phase_6.json: 4/4 primaries + 19/19 secondaries achieved. Waves 2.3.0 released (commit 22013de, tag v2.3.0, homebrew formula updated). Agentic category empirically ratified with 3 cases. 18 Exovian projects propagated. Memory updated with 2.3.0 agentic basis."
+    },
+    {
+      "id": 9,
+      "created_at": "2026-05-15T20:08:24Z",
+      "decision": "[AUTO] Logbook phase_7.json: primary objective completed — Patch schemas/project_rules_schema.json: extender type enum con 'agentic', agregar 9 categorías nuevas a properties (governing_principles universal + 8 agentic-nativas), reemplazar additionalProperties:false fijo por allOf con if/then/else condicional según type. Backward compat: project_rules.json existentes de proyectos software/frontend/backend/fullstack siguen validando idénticos.. State: main 1/4, secondary 2/13"
     }
   ],
-
   "open_questions": [
     {
       "id": 1,
@@ -390,9 +517,32 @@
       "question": "¿dart analyze debe bloquear (exit 2) cuando encuentra errores, o solo alertar con additionalContext y dejar que el agente corrija?",
       "status": "resolved",
       "resolution": "Solo alertar con additionalContext, no bloquear con exit 2. Bloquear causa fricción excesiva. Alertar da visibilidad sin detener el flujo. El agente corrige al ver el reporte."
+    },
+    {
+      "id": 4,
+      "created_at": "2026-05-15T00:00:00Z",
+      "question": "¿Waves debe introducir schema_version explícito + comando /waves:schema-migrate para gestión formal de evolución de schemas? El bloqueo del piloto (Phase 7) es síntoma: no hay mecanismo declarado cuando un schema cambia su contract. Hoy se resuelve ad-hoc en /waves:upgrade.",
+      "status": "open",
+      "resolution": null,
+      "origin": "Phase 7 background metacognition analysis (2026-05-15). Oportunidad nivel 5: schema versioning como capacidad de framework, no específica a un patch. Diferente y complementario al doc-sync hook (que vigila docs, no schemas)."
+    },
+    {
+      "id": 5,
+      "created_at": "2026-05-15T00:00:00Z",
+      "question": "¿Las 8 categorías agentic-nativas (Phase 7) se pueden mapear 1:1 a competencias del Waves Lead certification program? Si sí, son currículum concreto del cert, y el cert legitima el catálogo de reglas — cross-pollinate.",
+      "status": "open",
+      "resolution": null,
+      "origin": "Phase 7 background metacognition (2026-05-15). Conexión con memory/project_waves_certification.md. Oportunidad nivel 5: el currículum del Lead cert se vuelve operacional, y las reglas agentic ganan legitimidad institucional."
+    },
+    {
+      "id": 6,
+      "created_at": "2026-05-15T00:00:00Z",
+      "question": "¿Extraer las reglas universales agentic (governing_principles + las que aplican a cualquier proyecto Claude Code, no solo Exovian) a un default_agentic_rules.json reusable que cualquier proyecto pueda importar?",
+      "status": "open",
+      "resolution": null,
+      "origin": "Phase 7 background metacognition (2026-05-15). Oportunidad nivel 5: library de reglas agentic compartidas como recurso público — refuerza posicionamiento de Waves como organizational governance layer (decision #6). Diferente del scope:ecosystem que es per-org; esta sería per-Claude-Code-ecosystem."
     }
   ],
-
   "recent_context": [
     {
       "id": 1,
@@ -410,9 +560,7 @@
       "content": "FASES 1-3 IMPLEMENTACIÓN COMPLETADA. 7 hooks creados y configurados en .claude/settings.json: (1) waves-perceive.sh (SessionStart), (2) waves-gate.sh (PreToolUse), (3) waves-doc-enforce.sh (PostToolUse), (4) waves-metacognition.sh (PostToolUse), (5) waves-blueprint-impact.sh (PostToolUse), (6) waves-phase-audit.sh (PostToolUse), (7) waves-dart-analyze.sh (PostToolUse). Open questions #1 y #3 resueltas. Milestones de implementación marcados completed. Milestones de pruebas de fases 1-3 movidos a fase 4. HALLAZGO CRÍTICO para fase 4: tras /compact, el additionalContext de SessionStart no fue visible al agente. waves-perceive.sh genera output correcto cuando se ejecuta manualmente. Hipótesis: (a) /compact puede no disparar SessionStart de la misma forma que una sesión nueva, o (b) el additionalContext se inyectó pero no es observable por el agente en su propio contexto. Próximo paso: test en sesión nueva limpia (milestone 4.1)."
     }
   ],
-
   "history_summary": [],
-
   "future_reminders": [
     {
       "id": 3,
