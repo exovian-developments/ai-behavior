@@ -1,0 +1,255 @@
+{
+  "ticket": {
+    "title": "Phase 2 w3 — Hooks refactor plugin-native + verifier pattern inline",
+    "url": "",
+    "description": "Dos dimensiones ortogonales del refactor de hooks para Waves 3.0. (1) Migrar los 9 hooks bash al runtime del plugin de Claude Code: $CLAUDE_PLUGIN_ROOT para acceso a recursos del framework (schemas), $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID/ para markers session-scoped (session_id extraído del stdin JSON, no de env var inexistente), conversión de hooks.json de type:prompt (Cowork legacy) a type:command (Claude Code). Incluye marker state reset post-migración (evitar metacognition floods) y verificación de $CLAUDE_PROJECT_DIR consistency en multi-root sessions. (2) Implementar el verifier pattern A→B INLINE en los 4 procesos adversariales que viven en hooks (metacognition, rules audit, blueprint-impact, phase-audit): cada hook hace 2 spawns — A produce análisis, B verifica con doble lente (técnico grep/Read + valor/sobreingeniería), B clasifica (confirmed/smoke/unverifiable/gold) NO filtra, el hook pasa AMBOS análisis al main agent que decide con contexto completo. Sin materializar archivos de agents (decisión #14 del blueprint: reutilización=0, inline gana).",
+    "ui_requirements": {
+      "has_ui": false,
+      "visual_references": [],
+      "notes": "Framework infrastructure work — sin UI."
+    }
+  },
+  "objectives": {
+    "main": [
+      {
+        "id": 1,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Refactor 9 hooks a plugin-native: markers a $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID (session_id stdin), schemas via $CLAUDE_PLUGIN_ROOT, hooks.json type:command, marker reset.",
+        "context": "Mindset hook engineer migrando al runtime del plugin. Hoy: /tmp/waves-* global + schemas ai_files/. Refactor: markers a $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID (session_id stdin), schemas $CLAUDE_PLUGIN_ROOT, hooks.json type:command. Marker reset (2.4), multi-root (2.5). NO tocar adversarial (P2).",
+        "scope": {
+          "files": [
+            "plugin/hooks/waves-perceive.sh",
+            "plugin/hooks/waves-gate.sh",
+            "plugin/hooks/waves-doc-enforce.sh",
+            "plugin/hooks/waves-dart-analyze.sh",
+            "plugin/hooks/waves-metacognition.sh",
+            "plugin/hooks/waves-blueprint-impact.sh",
+            "plugin/hooks/waves-phase-audit.sh",
+            "plugin/hooks/waves-rules-audit.sh",
+            "plugin/hooks/waves-rules-audit-injector.sh",
+            "plugin/hooks/hooks.json"
+          ],
+          "rules": [
+            1,
+            2,
+            3
+          ]
+        },
+        "status": "achieved",
+        "completed_at": "2026-05-21T21:13:15Z"
+      },
+      {
+        "id": 2,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Verifier B inline en 4 procesos adversariales (metacognition, rules-audit, blueprint-impact, phase-audit): doble lente, B clasifica no filtra, hook pasa ambos al main agent.",
+        "context": "Mindset adversarial designer. Los 4 procesos hoy hacen 1 spawn (A). Refactor agrega spawn B (inline, no archivo): contexto mínimo, escéptico, doble lente (técnico grep/Read + valor sobreingeniería). B clasifica (confirmed/smoke/unverifiable/gold), no filtra. Hook pasa ambos al main agent.",
+        "scope": {
+          "files": [
+            "plugin/hooks/waves-metacognition.sh",
+            "plugin/hooks/waves-rules-audit.sh",
+            "plugin/hooks/waves-blueprint-impact.sh",
+            "plugin/hooks/waves-phase-audit.sh"
+          ],
+          "rules": [
+            1,
+            2,
+            3
+          ]
+        },
+        "status": "achieved",
+        "completed_at": "2026-05-21T21:49:26Z"
+      }
+    ],
+    "secondary": [
+      {
+        "id": 1,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Refactor de los 9 hooks bash: markers a $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID/, schemas via $CLAUDE_PLUGIN_ROOT/schemas/, session_id de stdin.",
+        "completion_guide": [
+          "Para cada hook, agregar al inicio: WAVES_PLUGIN_DATA=${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/waves} y SESSION_ID=$(echo \"$INPUT\" | jq -r '.session_id // \"default\"' | tr '/' '_').",
+          "Reemplazar paths de markers de /tmp/waves-* a $WAVES_PLUGIN_DATA/markers/$SESSION_ID/.",
+          "Reemplazar referencias a schemas (ai_files/schemas/) por $CLAUDE_PLUGIN_ROOT/schemas/ donde el hook lea schemas.",
+          "Mantener $CLAUDE_PROJECT_DIR para acceso a artefactos del proyecto (ai_files/blueprint.json, roadmap.json, logbooks) — eso NO cambia.",
+          "mkdir -p del marker dir antes de escribir. Manejar el caso de que $CLAUDE_PLUGIN_DATA no exista (fallback a $HOME/.claude/plugins/data/waves).",
+          "NO tocar la lógica adversarial (spawns de subagentes) todavía — eso es P2/S6-S9. Esta secondary solo cambia paths + session scoping."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-21T21:13:15Z"
+      },
+      {
+        "id": 2,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Convertir plugin/hooks/hooks.json de type:prompt (Cowork) a type:command (Claude Code) registrando los 9 hooks con sus matchers.",
+        "completion_guide": [
+          "Leer plugin/hooks/hooks.json actual (solo SessionStart con type:prompt).",
+          "Reescribir matchers: SessionStart→perceive; PreToolUse Edit|Write|Bash→gate; PostToolUse→doc-enforce/dart-analyze/metacognition/blueprint-impact/phase-audit/rules-audit/injector.",
+          "Cada entry usa type:command con command apuntando a $CLAUDE_PLUGIN_ROOT/hooks/<script>.sh.",
+          "Verificar con jq empty que hooks.json es válido.",
+          "Verificar que los matchers coinciden con los del settings.json original de .claude/ (referencia: /Users/avm/Repositories/exovian/waves/.claude/settings.json)."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-21T21:13:15Z"
+      },
+      {
+        "id": 3,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Test sandbox por hook: simular tool call, verificar exit codes (0 permit / 2 block), additionalContext payload, marker paths correctos.",
+        "completion_guide": [
+          "Para cada hook, construir un INPUT JSON de prueba (con session_id, tool_name, tool_input, cwd) y pipe-arlo al script: echo \"$INPUT\" | bash hooks/<script>.sh.",
+          "waves-gate.sh: verificar exit 2 cuando falta roadmap/logbook, exit 0 cuando todo presente.",
+          "waves-perceive.sh: verificar que produce el estado del producto como additionalContext.",
+          "Verificar que los markers se crean en $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID/ (no en /tmp).",
+          "Test multi-session: 2 INPUTs con session_id distintos → markers en directorios separados, sin colisión.",
+          "Documentar resultados por hook (PASS/FAIL + observaciones)."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-21T21:13:15Z"
+      },
+      {
+        "id": 4,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Marker state reset strategy: primera sesión post-migración seedea baseline, no dispara metacognition floods falsos.",
+        "completion_guide": [
+          "Problema: al migrar, markers de /tmp/waves-* se pierden. metacognition/phase-audit comparan estado actual vs marker previo. Sin marker, todo parece 'recién completado' → flood de triggers.",
+          "Solución: en waves-perceive.sh (SessionStart), si NO existe el marker dir (primera sesión), seedear baseline con snapshot del estado actual (completed counts).",
+          "Así la delta-detection arranca desde el estado real, no desde cero.",
+          "Test: proyecto con logbook que tiene 5/5 objectives completed. Primera sesión post-migración NO debe disparar metacognition (porque el baseline ya refleja 5 completed, delta=0).",
+          "Documentar el comportamiento de seed en comentario del hook."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-21T21:13:15Z"
+      },
+      {
+        "id": 5,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Verificar $CLAUDE_PROJECT_DIR consistency cross-hook. Multi-root: resolver al proyecto que disparó la tool call, no al plugin ni a otro working dir.",
+        "completion_guide": [
+          "grep en los 9 hooks por paths relativos (./ai_files, ../, etc.) que asuman cwd. Reemplazar por $CLAUDE_PROJECT_DIR/ai_files/.",
+          "Verificar que ningún hook usa $CLAUDE_PLUGIN_ROOT cuando debería usar $CLAUDE_PROJECT_DIR (recursos del framework = PLUGIN_ROOT; artefactos del proyecto = PROJECT_DIR).",
+          "Test multi-root: simular INPUT con cwd de un proyecto + additionalDirectories de otro. El hook debe operar sobre el proyecto del cwd/tool call, no sobre el otro root.",
+          "Documentar la convención: PLUGIN_ROOT=framework resources (schemas), PLUGIN_DATA=runtime state (markers), PROJECT_DIR=project artifacts (ai_files)."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-21T21:13:15Z"
+      },
+      {
+        "id": 6,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Verifier B inline en waves-metacognition.sh: tras A reflexionar, spawn B con doble lente. B clasifica, hook pasa ambos análisis al main agent.",
+        "completion_guide": [
+          "El hook hoy emite additionalContext instruyendo al main agent a spawn 1 subagent (A metacognición).",
+          "Refactor: instruir flujo de 2 spawns. A (metacognición, contexto rico). Al terminar, spawn B (verificador): output de A como input, frame escéptico, doble lente (técnico + valor).",
+          "B clasifica cada finding: confirmed (grep/evidence) / smoke (sobreingeniería o no aterriza) / unverifiable (B sin contexto para confirmar) / gold (confirmado + alto valor). B NO filtra/veta.",
+          "Output final al main agent contiene AMBOS: A crudo + clasificación B. Instrucción: smoke→re-evaluar; unverifiable→juicio del main agent; confirmed/gold→seguros.",
+          "Persistir A-findings + B-classification en $CLAUDE_PLUGIN_DATA/metacognition/$SESSION_ID/<timestamp>.json para durabilidad (si la sesión se interrumpe entre A y B).",
+          "Prompt de B (inline en el hook, no archivo): incluir literal el frame escéptico + las 2 lentes + el formato de clasificación."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-21T21:49:26Z"
+      },
+      {
+        "id": 7,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Verifier B inline en waves-rules-audit.sh (Layer C): tras A auditar código vs reglas, spawn B verifica violations con grep/Read + lente de valor.",
+        "completion_guide": [
+          "El hook hoy hace spawn A (rules auditor) que reporta violaciones de reglas en el código del objetivo completado.",
+          "Refactor: agregar spawn B. B recibe violaciones de A, verifica cada una con grep/Read (¿existe en esa línea?) + lente de valor (¿real o falso positivo pedante?).",
+          "B clasifica: confirmed (violación real verificada) / smoke (falso positivo o pedante) / unverifiable / gold (violación crítica confirmada).",
+          "Hook pasa ambos (A violaciones + B clasificación) al main agent. El auto-fix del agente (si existe) solo actúa sobre confirmed/gold, no sobre smoke.",
+          "Mantener la lógica de severity (critical/warning) que el rules-audit ya tiene. Combinar con la clasificación de B.",
+          "Prompt de B inline."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-21T21:49:26Z"
+      },
+      {
+        "id": 8,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Verifier B inline en waves-blueprint-impact.sh: tras A proyectar impactos en cascada, spawn B verifica cada impacto contra roadmaps/logbooks reales.",
+        "completion_guide": [
+          "El hook hoy hace spawn A (blueprint impact) que proyecta impactos en cascada sobre roadmaps y logbooks cuando el blueprint cambia.",
+          "Refactor: agregar spawn B. B recibe impactos de A, verifica cada uno con grep/Read contra roadmaps/logbooks reales (¿aplica?) + lente de valor (¿real o especulación?).",
+          "B clasifica: confirmed (impacto real verificado en archivo) / smoke (especulación que no aterriza) / unverifiable / gold (impacto crítico confirmado).",
+          "Hook pasa ambos al main agent. ESTE es el proceso que falló con ECC (A proyectó 'ECC parsea schemas' sin que B lo verificara) — el verifier B es exactamente lo que lo habría atrapado.",
+          "Prompt de B inline."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-21T21:49:26Z"
+      },
+      {
+        "id": 9,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Verifier B inline en waves-phase-audit.sh: tras A auditar readiness estratégica de la fase, spawn B verifica claims contra roadmap/logbooks reales.",
+        "completion_guide": [
+          "El hook hoy hace spawn A (phase audit) que produce auditoría estratégica de readiness cuando una fase del roadmap se completa.",
+          "Refactor: agregar spawn B. B recibe auditoría de A, verifica claims con grep/Read contra roadmap/logbooks (¿el readiness gap existe?) + lente de valor (¿real o sobreingeniería de proceso?).",
+          "B clasifica: confirmed / smoke / unverifiable / gold.",
+          "Hook pasa ambos al main agent.",
+          "Smoke test conjunto de los 4 verifiers (S6-S9): patrón consistente (mismo formato de clasificación, 2 spawns, persistencia). DRY: snippet compartido del prompt B solo si reduce duplicación real."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-21T21:49:26Z"
+      }
+    ]
+  },
+  "resolved_decisions": [
+    {
+      "uncertainty": "¿single_focus o multi_focus para Phase 2?",
+      "resolution": "multi_focus con 2 primaries: P1 hooks plugin-native runtime, P2 verifier pattern inline.",
+      "method": "orthogonality",
+      "reasoning": "Dos mindsets genuinamente ortogonales. P1 es hook engineer migrando al runtime del plugin (paths, session_id, type:command, marker scoping) — toca los 9 hooks en su plomería. P2 es adversarial subagent designer agregando el 2do spawn verificador a 4 procesos — toca la lógica cognitiva. Aunque ambos editan archivos de hooks/, las dimensiones son distintas: P1 es 'dónde viven los recursos y el estado', P2 es 'cómo se verifica el análisis adversarial'. Colapsar mezclaría plumbing con cognición. Los 4 hooks de P2 (metacognition, rules-audit, blueprint-impact, phase-audit) también reciben el refactor de plumbing en P1 — el orden importa: P1 primero (plumbing), luego P2 (cognición sobre el plumbing ya correcto)."
+    },
+    {
+      "uncertainty": "¿Materializar los verificadores como archivos en agents/ o inline?",
+      "resolution": "Inline (prompt embebido en cada hook). NO materializar archivos.",
+      "method": "YAGNI",
+      "reasoning": "Decision #14 del blueprint (ratificada por Andrius 2026-05-21). Reutilización=0: cada prompt adversarial vive en 1 solo hook. Materializar crearía 48 archivos sincronizados (12×4 copias), la duplicación que w3 elimina. El pattern A→B es independencia cognitiva (contexto fresco), no requiere archivos — un hook hace 2 spawns inline. No hay ecosistema de terceros (forkearían el repo)."
+    },
+    {
+      "uncertainty": "¿El verificador B filtra/veta o clasifica?",
+      "resolution": "B clasifica y anota (confirmed/smoke/unverifiable/gold), NO filtra. El hook pasa AMBOS análisis (A crudo + B clasificación) al main agent que decide con contexto completo.",
+      "method": "design_principle_7",
+      "reasoning": "Decision #14 blueprint. B opera con contexto mínimo por diseño (independencia) — si filtrara, descartaría joyas valiosas solo en el contexto completo del main agent. Clasificar preserva las joyas + mantiene la barrera anti-inferencia (smoke/unverifiable son señales claras). Simplifica B (solo evalúa, no decide criterio de inclusión). Coherente con human/main-agent in the loop: B asiste, el main agent decide."
+    },
+    {
+      "uncertainty": "¿Qué lentes aplica el verificador B?",
+      "resolution": "Doble lente: técnico (grep/Read confirma claims fácticos) + valor (sobreingeniería/KISS/YAGNI — humo vs oro).",
+      "method": "design_principle_7",
+      "reasoning": "La metacognición (A) es rica pero volada — propone cosas grandes nivel 5. El lente técnico atrapa claims falsos (ECC parsea schemas → grep dice no). El lente de valor atrapa sobreingeniería (materializar 12 archivos → reutilización=0). Ambos lentes fueron validados empíricamente en la sesión de planning de w3: el técnico habría atrapado ECC Phase 8, el de valor atrapó la materialización de archivos."
+    },
+    {
+      "uncertainty": "¿session_id de env var o de stdin?",
+      "resolution": "De stdin JSON (jq -r '.session_id'). NO existe env var $CLAUDE_SESSION_ID.",
+      "method": "verified",
+      "reasoning": "Verificado con docs oficiales de Claude Code (claude-code-guide research). Las env vars disponibles a hooks son CLAUDE_PROJECT_DIR, CLAUDE_PLUGIN_ROOT, CLAUDE_PLUGIN_DATA, CLAUDE_EFFORT — NO CLAUDE_SESSION_ID. El session_id viene en el JSON de stdin. Fallback a 'default' si no está presente."
+    },
+    {
+      "uncertainty": "¿Markers globales o session-scoped?",
+      "resolution": "Session-scoped en $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID/.",
+      "method": "YAGNI",
+      "reasoning": "Decision #2 del roadmap w3. YAGNI sobre project-scope (caso de coordinación cross-session es responsabilidad humana de no poner agentes a colisionar). Session-scoped resuelve el problema multi-agente real (sesión 1 pone marker que bloquea a todas) sin sobreingeniería. $CLAUDE_PLUGIN_DATA es writable y persiste entre updates del plugin."
+    }
+  ],
+  "recent_context": [
+    {
+      "id": 1,
+      "created_at": "2026-05-21T00:00:00Z",
+      "content": "Logbook Phase 2 w3 creado. multi_focus con 2 primaries ortogonales: P1 hooks plugin-native runtime (2.1-2.5: refactor 9 hooks a $CLAUDE_PLUGIN_ROOT/$CLAUDE_PLUGIN_DATA + session_id stdin + hooks.json type:command + marker reset + multi-root consistency), P2 verifier pattern inline (2.6-2.9: agregar spawn B verificador a metacognition/rules-audit/blueprint-impact/phase-audit con doble lente técnico+valor, B clasifica no filtra, hook pasa ambos análisis al main agent). 9 secondaries. 6 resolved_decisions: multi-focus por ortogonalidad, verifier inline no materialización (decision #14), B clasifica no filtra (design_principle #7), doble lente, session_id stdin, markers session-scoped. scope.rules [1,2,3] governing_principles. Orden de ejecución: P1 primero (plumbing correcto), luego P2 (cognición sobre plumbing ya migrado). Ready to start con S1 (refactor de los 9 hooks)."
+    },
+    {
+      "id": 2,
+      "created_at": "2026-05-21T21:14:09Z",
+      "content": "P1 COMPLETED (S1-S5). Los 9 hooks plugin-native creados en plugin/hooks/ (fuente: .claude/hooks/, intactos hasta Phase 6.4). Decisiones técnicas: (1) HALLAZGO — los 9 hooks operativos vivían en .claude/hooks/, no en plugin/hooks/ (que solo tenía hooks.json+doc-sync); P1 los materializa plugin-native. (2) Convención de markers: $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID/<namespace>/<md5(ruta absoluta)>; session_id de stdin (tr para sanitizar). (3) Hashing estandarizado a printf %s | md5 en los 4 hooks de conteo para que el seeding de perceive coincida (evita drift silencioso). (4) schemas-via-PLUGIN_ROOT de S1 es NO-OP: los hooks no leen schemas, solo artefactos del proyecto (PROJECT_DIR) — el cambio a PLUGIN_ROOT/schemas aplica a commands (Phase 3). (5) S4 seeding: perceive seedea baseline solo si el dir de sesión no existe (primera SessionStart), evitando flood en cada sesión nueva por markers session-scoped. (6) hooks.json type:command excluye doc-sync (decision #8: deprecado en consumidores). (7) waves-doc-sync.sh queda sin tocar (fuera de scope, Phase 7.6). Tests sandbox: perceive+seeding OK (metacog=1/rules=1/doc-enforce=2,1/phase=1), S4 anti-flood OK (delta=0 no dispara), trigger real OK (1->2 dispara + pending + nota mecánica roadmap), gate OK (block pending exit2 / whitelist ai_files limpia pending / read-only bash / classification reminder / block sin roadmap / allow shaping), multi-sesion aislada OK, dart-analyze quick-exit OK. Sintaxis bash -n 9/9 OK, hooks.json jq-valid (1+1+7)."
+    },
+    {
+      "id": 3,
+      "created_at": "2026-05-21T21:49:26Z",
+      "content": "P2 COMPLETED (S6-S9). Verifier B inline en los 4 procesos adversariales (metacognition, blueprint-impact, phase-audit, rules-audit). Patrón A→B consistente: hook instruye 2 spawns — A produce análisis, B verifica con doble lente (TECHNICAL grep/Read + VALUE sobreingeniería/KISS), B clasifica cada finding (confirmed/smoke/unverifiable/gold) SIN filtrar, el hook pasa AMBOS al main agent que decide. Prompts B embebidos inline (decision #14, no materialización). Persistencia: A-output a $CLAUDE_PLUGIN_DATA/<proceso>/$SESSION_ID/ antes de B (durabilidad ante interrupción). Diferencias por proceso: metacognition/blueprint-impact/phase-audit son blocking (gate via pending marker) y usan MSG string con A→B en additionalContext; rules-audit es non-blocking/async/file-based — A escribe violations con status completed_pending_verification, B verifica cada una + añade campo classification + flipea a completed_pending_injection, recién entonces el injector surface. Toques cross-scope justificados en S7: injector digest ahora muestra [Level N | verifier: class] + guía (smoke=no auto-fix, confirmed/gold=trust contract por nivel, unverifiable=juicio); perceive scan incluye completed_pending_verification para no perder auditorías sin verificar. GOTCHA bash 3.2 macOS: marcadores de lista 1)/2) dentro de $(cat <<EOF) rompen el parser de command-substitution por el ) sin par (cuenta paréntesis) — usar 1./2. con puntos. Tests: sintaxis 9/9 OK, los 4 hooks emiten JSON válido con A prompt + B prompt + taxonomía + doble lente (validado via archivo; OJO el echo de zsh interpreta los \\n y mutila el JSON en tests — usar redirección a archivo)."
+    }
+  ],
+  "history_summary": [],
+  "future_reminders": [],
+  "audit": {
+    "is_already_audited": false
+  }
+}

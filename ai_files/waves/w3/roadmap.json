@@ -1,0 +1,562 @@
+{
+  "product": {
+    "name": "Waves",
+    "codename": "waves",
+    "description": "Product Consciousness Framework para agentes IA. Waves 3.0 transforma la distribución: comandos, hooks, agents, skills y schemas viven dentro del plugin oficial de Claude Code (vía marketplace GitHub); cada proyecto solo contiene artefactos commitables en ai_files/. Una sola forma de instalación, cero duplicación cross-proyecto, settings.json del usuario nunca tocado, upgrades simultáneos.",
+    "owner": "Andrius Verde Musset",
+    "created_at": "2026-05-19T00:00:00Z",
+    "last_updated": "2026-05-21T00:00:00Z",
+    "status": "planning"
+  },
+  "vision": {
+    "problem": "Waves 2.x duplica framework files (.claude/commands/, .claude/hooks/, ai_files/schemas/) en cada proyecto. 16 releases v2.0-v2.5 requirieron propagación manual a 18+ proyectos con riesgo de drift. git status post-upgrade ensucia el working tree con framework files.",
+    "mission": "Distribuir Waves como plugin oficial de Claude Code. Framework en $CLAUDE_PLUGIN_ROOT; artefactos en cada repo. 2 slash commands de instalación. Upgrade único con /plugin update.",
+    "target_users": [
+      "Andrius — upgrades sin propagación manual, repos limpios sin framework files",
+      "POs y stakeholders — blueprint/roadmap/logbook en repo del proyecto, sin framework noise",
+      "Developers Exovian — instalar Waves una vez y olvidar",
+      "AI agents (Claude Code) — comandos/hooks/schemas en ruta predecible del plugin"
+    ],
+    "success_criteria": [
+      "Instalación con 2 slash commands (/plugin marketplace add + /plugin install), cero pasos en terminal",
+      "Proyecto migrado tiene 0 archivos de framework — solo ai_files/",
+      "/plugin update actualiza Waves para todos los proyectos del usuario simultáneamente",
+      "~/.claude/settings.json del usuario nunca modificado por Waves",
+      "Markers session-scoped en $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID/ — multi-session sin colisiones",
+      "19 proyectos (18 Exovian + waves) migrados con git tree limpio post-migración",
+      "Homebrew formula publicada con caveat de deprecación explícito",
+      "doc-sync hook removido de consumidores; permanece solo en plugin repo"
+    ]
+  },
+  "phases": [
+    {
+      "id": 1,
+      "name": "Foundation — sync plugin al estado actual",
+      "description": "Sincronizar agresivamente el repo waves-cowork-plugin (v1.3.1) con el state real de Waves 2.5.0: comandos, hooks, agents, skills, schemas. Base limpia para los refactors de w3. NO release público todavía — versión interna 2.5.x del plugin.",
+      "status": "completed",
+      "depends_on": [],
+      "milestones": [
+        {
+          "id": "1.1",
+          "content": "Sincronizar plugin/commands/, hooks/, agents/, skills/, references/ desde repo waves al repo waves-cowork-plugin (16 versiones de delta).",
+          "status": "completed",
+          "logbook_ref": "phase_1.json"
+        },
+        {
+          "id": "1.2",
+          "content": "Bump waves-cowork-plugin/.claude-plugin/plugin.json a 2.5.x (versión interna de trabajo). Actualizar marketplace.json con capabilities actuales.",
+          "status": "completed",
+          "logbook_ref": "phase_1.json"
+        },
+        {
+          "id": "1.3",
+          "content": "Test sandbox: /plugin marketplace add <local-path> + /plugin install. Verificar comandos, hooks, agents, skills registrados sin tocar settings.json.",
+          "status": "completed",
+          "logbook_ref": "phase_1.json"
+        },
+        {
+          "id": "1.4",
+          "content": "Baseline de plugin como punto de partida para refactors. Commit + tag intermedio en waves-cowork-plugin (sin marketplace publish).",
+          "status": "completed",
+          "logbook_ref": "phase_1.json"
+        }
+      ],
+      "started_at": "2026-05-19T00:00:00Z",
+      "completed_at": "2026-05-20T00:15:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Hooks refactor — plugin-native",
+      "description": "Reescribir 9 hooks bash con primitives del plugin. Convertir hooks.json a type:command. Extender ciclo metacognitivo con verificador adversarial. Aplicar patrón A→B a Layer C rules audit.",
+      "status": "completed",
+      "depends_on": [
+        1
+      ],
+      "milestones": [
+        {
+          "id": "2.1",
+          "content": "Refactor 9 hooks bash: perceive, gate, doc-enforce, dart-analyze, metacognition, blueprint-impact, phase-audit, rules-audit, injector. session_id stdin + markers.",
+          "status": "completed",
+          "logbook_ref": "phase_2.json"
+        },
+        {
+          "id": "2.2",
+          "content": "Convertir plugin/hooks/hooks.json de type:prompt a type:command. Entries apuntan a $CLAUDE_PLUGIN_ROOT/hooks/<script>.sh con matchers existentes.",
+          "status": "completed",
+          "logbook_ref": "phase_2.json"
+        },
+        {
+          "id": "2.3",
+          "content": "Test sandbox por hook: tool call disparando hook, verificar exit codes (0/2), additionalContext payload, marker paths correctos.",
+          "status": "completed",
+          "logbook_ref": "phase_2.json"
+        },
+        {
+          "id": "2.4",
+          "content": "Marker state reset strategy: primera sesión post-migración NO debe disparar metacognition floods. Seedear markers baseline desde snapshot del estado actual del proyecto.",
+          "status": "completed",
+          "logbook_ref": "phase_2.json"
+        },
+        {
+          "id": "2.5",
+          "content": "Verificar $CLAUDE_PROJECT_DIR consistency cross-hook. Multi-root sessions: resolver al root del proyecto que disparó la tool call, no al plugin ni a otro working directory.",
+          "status": "completed",
+          "logbook_ref": "phase_2.json"
+        },
+        {
+          "id": "2.6",
+          "content": "Verificador adversarial post-metacognición: A reflexiona, B verifica con grep/Read (contexto mínimo + frame escéptico). Findings persistidos. Main agent recibe solo confirmados.",
+          "status": "completed",
+          "logbook_ref": "phase_2.json"
+        },
+        {
+          "id": "2.7",
+          "content": "Layer C rules audit + verifier B: tras waves-rules-audit.sh (A) producir findings, spawn B escéptico verifica violations con grep/Read antes de aterrizar.",
+          "status": "completed",
+          "logbook_ref": "phase_2.json"
+        },
+        {
+          "id": "2.8",
+          "content": "Blueprint-impact verifier B (inline): tras waves-blueprint-impact.sh (A) proyectar impactos, spawn B escéptico verifica cada uno contra roadmaps/logbooks reales antes de aterrizar.",
+          "status": "completed",
+          "logbook_ref": "phase_2.json"
+        },
+        {
+          "id": "2.9",
+          "content": "Phase-audit verifier B (inline): tras waves-phase-audit.sh (A) auditar readiness, spawn B verifica claims contra roadmap/logbooks reales antes de aterrizar al main agent.",
+          "status": "completed",
+          "logbook_ref": "phase_2.json"
+        }
+      ],
+      "started_at": "2026-05-21T21:49:46Z",
+      "completed_at": "2026-05-21T21:49:46Z"
+    },
+    {
+      "id": 3,
+      "name": "Commands refactor — schemas via plugin path + /waves:upgrade scope reducido",
+      "description": "Modificar slash commands para referenciar $CLAUDE_PLUGIN_ROOT/schemas/. /waves:upgrade reducido a migraciones de artefactos. Aplicar patrón verifier A→B a orthogonality reviewer y Layer D integrity audit del logbook-create.",
+      "status": "not_started",
+      "depends_on": [
+        2
+      ],
+      "milestones": [
+        {
+          "id": "3.1",
+          "content": "Identificar slash commands que referencian schemas locales (grep 'ai_files/schemas' en plugin/commands/). Actualizar referencias a $CLAUDE_PLUGIN_ROOT/schemas/.",
+          "status": "not_started"
+        },
+        {
+          "id": "3.2",
+          "content": "Refactor /waves:upgrade: eliminar copia de framework. Mantener solo migraciones de artefactos (lee versión actual del proyecto vs plugin, aplica migrations incrementales).",
+          "status": "not_started"
+        },
+        {
+          "id": "3.3",
+          "content": "Formato migrations declarativas: plugin/migrations/v<from>-to-<to>.md con frontmatter + steps. ai_files/.waves-version marca versión aplicada al proyecto.",
+          "status": "not_started"
+        },
+        {
+          "id": "3.4",
+          "content": "Test /waves:upgrade flow: proyecto en 2.5.0 + plugin 3.0.0 → lee delta, aplica v2.5-to-v3.0.md, actualiza marker. Sin delta = no-op.",
+          "status": "not_started"
+        },
+        {
+          "id": "3.5",
+          "content": "Orthogonality reviewer + verifier B: tras A decidir single_focus vs multi_focus, B valida dimensiones ortogonales con evidencia del logbook/blueprint.",
+          "status": "not_started"
+        },
+        {
+          "id": "3.6",
+          "content": "Layer D integrity audit + verifier B: tras A producir findings de integrity (phantom refs, decomposition), B fresco verifica cada finding contra logbook real.",
+          "status": "not_started"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "/waves:migrate-from-v2-to-v3 — comando temporal de migración",
+      "description": "Crear slash command de uso único que limpia framework legacy (.claude/commands/, .claude/hooks/, ai_files/schemas/) manteniendo artefactos. Marcado deprecated_in: 3.2.0. Incluye sequencing checklist crítico.",
+      "status": "not_started",
+      "depends_on": [
+        3
+      ],
+      "milestones": [
+        {
+          "id": "4.1",
+          "content": "Crear plugin/commands/waves:migrate-from-v2-to-v3.md con frontmatter deprecated_in: 3.2.0 + banner '⚠️ DEPRECATED — REMOVE IN v3.2.0' visible al agente.",
+          "status": "not_started"
+        },
+        {
+          "id": "4.2",
+          "content": "Lógica: pre-flight (plugin + git clean), report files + confirm, remove .claude/commands/waves:*.md + .claude/hooks/waves-*.sh + ai_files/schemas/, crear .waves-version.",
+          "status": "not_started"
+        },
+        {
+          "id": "4.3",
+          "content": "Sequencing checklist crítico: 1) /plugin install y confirmar functional, 2) git tree clean, 3) THEN remove framework files. NUNCA invertir el orden — riesgo: comandos sin schemas.",
+          "status": "not_started"
+        },
+        {
+          "id": "4.4",
+          "content": "Test sandbox: copia de profiler_engine_ba, ejecutar migrate, verificar 0 framework files restantes + artefactos intactos + /waves:project-init operacional post-migración.",
+          "status": "not_started"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Plugin release 3.0.0 + Homebrew deprecation con evidencia",
+      "description": "Tag v3.0.0 del plugin con refactors de phases 2-4. Publicar al marketplace de GitHub. Último commit del repo homebrew-waves con caveat de deprecación pinned a 2.5.0.",
+      "status": "not_started",
+      "depends_on": [
+        4
+      ],
+      "milestones": [
+        {
+          "id": "5.1",
+          "content": "Bump waves-cowork-plugin a 3.0.0 (plugin.json + marketplace.json). README.md refleja capabilities 3.0 incluyendo /waves:migrate-from-v2-to-v3 temporal.",
+          "status": "not_started"
+        },
+        {
+          "id": "5.2",
+          "content": "CHANGELOG.md de waves: entrada [3.0.0] con narrativa de distribution change, sección Why breaking (major bump), sección Migration path, sección Deprecated (Homebrew CLI).",
+          "status": "not_started"
+        },
+        {
+          "id": "5.3",
+          "content": "Último commit homebrew-waves Formula/waves.rb con caveat: '⚠️ DEPRECATED — Waves 3.0+ vía Claude Code plugin marketplace. Este formula instala 2.5.0 (último brew-compatible).'",
+          "status": "not_started"
+        },
+        {
+          "id": "5.4",
+          "content": "Commit + tag v3.0.0 en waves-cowork-plugin + push GitHub. Verificar /plugin marketplace add + install end-to-end desde Claude Code limpio.",
+          "status": "not_started"
+        },
+        {
+          "id": "5.5",
+          "content": "Commit en repo waves: bin/waves deprecated header, CHANGELOG [3.0.0], FRAMEWORK.md actualizado (Phase 7). Tag v3.0.0 — repo waves sigue como source de schemas y docs.",
+          "status": "not_started"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Migration del ecosystem Exovian + waves itself (rollout gradual)",
+      "description": "Migrar 18 proyectos Exovian + waves itself a arquitectura plugin-first. Rollout en 3 sub-etapas: Pilot (2) → Wave (5-7) → Tail (resto + waves). NO atomic 18-at-once.",
+      "status": "not_started",
+      "depends_on": [
+        5
+      ],
+      "milestones": [
+        {
+          "id": "6.1",
+          "content": "PILOT (2 proyectos diversos): profiler_engine_ba (backend Dart) + exobase_med_corpus (agentic piloto). Ejecutar /waves:migrate-from-v2-to-v3. Si ambos pasan limpios, proceed.",
+          "status": "not_started"
+        },
+        {
+          "id": "6.2",
+          "content": "WAVE (5-7 proyectos): exobase_business, exobase_med, facts_core, llm_core, conversational_engine_ba, agency_core. Migrar. Documentar edge cases.",
+          "status": "not_started"
+        },
+        {
+          "id": "6.3",
+          "content": "TAIL (~10 proyectos restantes): conversational_engine_fe, profiler_engine_fe, document_processor_ba, backend_base, app_base, exovian_*_core + theme + PCC + platform + web_v1.",
+          "status": "not_started"
+        },
+        {
+          "id": "6.4",
+          "content": "WAVES ITSELF (eat-your-own-dogfood final): migrar el repo waves a plugin-first. Meta-framework usa el plugin como cualquier otro proyecto. Bootstrapping cuidadoso.",
+          "status": "not_started"
+        },
+        {
+          "id": "6.5",
+          "content": "Reporte final: 19 proyectos migrados, 0 archivos de framework remanentes, git tree limpio cross-proyecto, /plugin update funciona simultáneo. Documentar fricciones en FRAMEWORK.md.",
+          "status": "not_started"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Documentation + lifecycle cleanup",
+      "description": "Sincronizar FRAMEWORK.md (§13, §18, nueva §21), actualizar Agent Operating Protocol en CLAUDE.md, deprecar doc-sync + VERSIONING_PROCESS.md en consumidores, handoff al agente Exovian para company_blueprint.channels.",
+      "status": "not_started",
+      "depends_on": [
+        6
+      ],
+      "milestones": [
+        {
+          "id": "7.1",
+          "content": "FRAMEWORK.md §13 reescrita: hooks en $CLAUDE_PLUGIN_ROOT, markers en $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID/, session_id via stdin, sin /tmp ni .claude/hooks/ per-proyecto.",
+          "status": "not_started"
+        },
+        {
+          "id": "7.2",
+          "content": "FRAMEWORK.md §18 (Upgrade Discipline) reescrita: /plugin update reemplaza waves upgrade CLI. /waves:upgrade aplica migrations a artefactos. Migration files en plugin/migrations/.",
+          "status": "not_started"
+        },
+        {
+          "id": "7.3",
+          "content": "FRAMEWORK.md nueva §21 'Distribution & Installation': modelo plugin-first, 2 slash commands de instalación, separación framework/artefactos, contrato con Claude Code marketplace.",
+          "status": "not_started"
+        },
+        {
+          "id": "7.4",
+          "content": "Update Agent Operating Protocol en CLAUDE.md inyectado por /waves:project-init: eliminar referencias a .claude/settings.json, agregar plugin como source-of-truth del framework.",
+          "status": "not_started"
+        },
+        {
+          "id": "7.5",
+          "content": "Update WAVES_SITE_UPDATE_PROMPT.md (2.4.1 → 3.0). changelog.html del sitio documenta shift al plugin marketplace.",
+          "status": "not_started"
+        },
+        {
+          "id": "7.6",
+          "content": "Deprecar waves-doc-sync.sh + VERSIONING_PROCESS.md en consumidores. Ambos artefactos se mueven al plugin repo donde son relevantes para releases del plugin.",
+          "status": "not_started"
+        },
+        {
+          "id": "7.7",
+          "content": "Memory file con learnings de w3: plugin-first distribution, session_id-via-stdin pattern, marker state migration, rollout gradual. MEMORY.md index actualizado.",
+          "status": "not_started"
+        },
+        {
+          "id": "7.8",
+          "content": "Handoff al agente Exovian: prompt para actualizar company_blueprint.channels — Homebrew dejó de ser canal activo, plugin marketplace lo reemplaza. Otto prepara handoff, no edita.",
+          "status": "not_started"
+        },
+        {
+          "id": "7.9",
+          "content": "Cleanup agents/: eliminar code-implementer + objective-generator + code-auditor (muertos). Fix naming general-scanner → general-project-scanner. Quedan 15 helpers.",
+          "status": "not_started"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": 1,
+      "created_at": "2026-05-19T00:00:00Z",
+      "decision": "Distribución plugin-first vía marketplace de Claude Code, eliminando Homebrew como canal de instalación primario.",
+      "context": "5/5 capacidades del plugin system verificadas (bash hooks, install desde GitHub, $CLAUDE_PLUGIN_DATA writable, session_id via stdin, settings.json untouched). Alineado con company design_principle 'Inmutabilidad vía distribución, no convención'.",
+      "impact": "high"
+    },
+    {
+      "id": 2,
+      "created_at": "2026-05-19T00:00:00Z",
+      "decision": "Markers de hooks session-scoped en $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID/. session_id extraído del stdin JSON.",
+      "context": "YAGNI aplicado: caso project-scope es responsabilidad humana, no del framework. session_id via stdin es el approach documentado (no existe env var $CLAUDE_SESSION_ID).",
+      "impact": "medium"
+    },
+    {
+      "id": 3,
+      "created_at": "2026-05-19T00:00:00Z",
+      "decision": "/waves:migrate-from-v2-to-v3 marcado deprecated_in: 3.2.0. Cleanup en release posterior dedicado.",
+      "context": "Comando de uso único para transición v2→v3. Mantener indefinidamente sería deuda. 3.2.0 como target da espacio operacional generoso.",
+      "impact": "medium"
+    },
+    {
+      "id": 4,
+      "created_at": "2026-05-19T00:00:00Z",
+      "decision": "/waves:upgrade convertido a comando de migración inteligente de artefactos. Lee ai_files/.waves-version, aplica migrations declarativas incrementales.",
+      "context": "En v3 desaparece copia de framework (eso es del plugin). Migración de artefactos sigue siendo necesaria (schema changes en logbook, etc.). Patrón tipo Rails/Django migrations.",
+      "impact": "medium"
+    },
+    {
+      "id": 5,
+      "created_at": "2026-05-19T00:00:00Z",
+      "decision": "Migración del ecosystem en rollout gradual: Pilot (2) → Wave (5-7) → Tail (resto) → Waves itself final. NO atomic 18-at-once.",
+      "context": "Background metacognition flagged: atomic 18-at-once es el failure mode que generó este refactor. Rollout gradual detecta fricciones antes de aplicar al resto. Waves itself al final por bootstrapping.",
+      "impact": "high"
+    },
+    {
+      "id": 6,
+      "created_at": "2026-05-19T00:00:00Z",
+      "decision": "Sin backup automático en /waves:migrate-from-v2-to-v3. Git es el mecanismo de recuperación.",
+      "context": "YAGNI: backup en plugin data es sobreingeniería. Cada proyecto está en git — si algo se rompe, git checkout/stash. Confiar en SCM como safety net.",
+      "impact": "low"
+    },
+    {
+      "id": 7,
+      "created_at": "2026-05-19T00:00:00Z",
+      "decision": "Homebrew formula no se elimina. Última versión pinned en 2.5.0 con caveat de deprecación. Mantiene evidencia histórica + path graceful para legacy.",
+      "context": "Eliminar el formula pierde evidencia del lineage. Caveat clear es honesto: usuarios viejos pueden instalar 2.5.0, ven el mensaje, migran cuando puedan. Aligned con 'Memoria como superpoder'.",
+      "impact": "low"
+    },
+    {
+      "id": 8,
+      "created_at": "2026-05-19T00:00:00Z",
+      "decision": "doc-sync hook y VERSIONING_PROCESS.md se DEPRECAN en proyectos consumidores. Se mueven al repo waves-cowork-plugin donde son relevantes para releases del plugin.",
+      "context": "Framework files viven en plugin repo. Proyectos consumidores no editan FRAMEWORK.md ni CHANGELOG.md — vigilancia doc-sync es del plugin, no de proyectos. Coherente con la separación.",
+      "impact": "medium"
+    },
+    {
+      "id": 9,
+      "created_at": "2026-05-19T00:00:00Z",
+      "decision": "Marker state reset post-migración: primera sesión seedea markers iniciales con snapshot del estado actual (NO como recién completados). Evita flood de metacognition triggers falsos.",
+      "context": "Background metacognition flagged: hooks pierden historial /tmp/waves-*, delta-detection interpreta estado como 'todos los objectives recién completados'. Solución: seed inicial baseline.",
+      "impact": "medium"
+    },
+    {
+      "id": 10,
+      "created_at": "2026-05-19T00:00:00Z",
+      "decision": "[RESCINDED 2026-05-20] ECC coordination en phase dedicada — verificación mostró que ECC NO parsea schemas. Phase 8 eliminada.",
+      "context": "Background metacognition flagged sin verificar. ECC es Firebase Hosting estático, única ref a ai_files/schemas/ es string en main.js:96. Update ya cubierto en Phase 7.5. Lección lleva a milestone 2.6 nuevo.",
+      "impact": "medium"
+    },
+    {
+      "id": 11,
+      "created_at": "2026-05-20T00:00:00Z",
+      "decision": "Ciclo metacognitivo requiere verificador adversarial. A reflexiona (rico), B verifica con grep/Read (mínimo + escéptico). Main agent procesa solo findings confirmados.",
+      "context": "Lección Phase 7 w3 planning: agente principal infló Phase 8 ECC por incorporar inferred finding sin verificar. Una pasada es consideración, no metacognición. Patrón análogo a Layer C audit, orthogonality reviewer, Layer D integrity audit del framework. DRY arquitectónico.",
+      "impact": "high"
+    },
+    {
+      "id": 12,
+      "created_at": "2026-05-20T00:00:00Z",
+      "decision": "Verifier adversarial pattern aplica universalmente a TODOS los adversarial subagents del framework, no solo metacognición. A produce análisis, B fresco escéptico verifica, main agent recibe depurado.",
+      "context": "OQ #8 confirmada por Andrius. 4 adversarial subagents existentes: orthogonality reviewer, Layer C rules audit, Layer D integrity audit, metacognición. Todos requieren verifier B. Patrón consistente DRY arquitectónico.",
+      "impact": "high"
+    },
+    {
+      "id": 13,
+      "created_at": "2026-05-20T00:15:00Z",
+      "decision": "[AUTO] Phase 1 w3 COMPLETED. Logbook phase_1.json: 1/1 primary + 5/5 secondaries achieved. Plugin sincronizado a 2.5.0 baseline. Commit ab6eee8 + tag v2.5.0-baseline en waves-cowork-plugin.",
+      "context": "Sync agresivo desde waves/plugin/ a waves-cowork-plugin (16 versiones de delta). Bug fix pre-existente: logbook_software_schema.json roto en 3 copias internas. README + plugin.json + marketplace.json actualizados. Ready for Phase 2 (Hooks refactor plugin-native + verifier pattern A→B).",
+      "impact": "medium"
+    },
+    {
+      "id": 14,
+      "created_at": "2026-05-21T00:00:00Z",
+      "decision": "Verifier pattern A→B se implementa INLINE (2 spawns con prompts embebidos), NO materializando agentes como archivos. El pattern es independencia cognitiva, no dónde vive el prompt.",
+      "context": "Andrius cuestionó si materializar 12 archivos era sobreingeniería. Confirmado: reutilización=0 (cada prompt en 1 sitio, DRY no aplica), materializar crearía 48 archivos duplicados (lo que w3 elimina), A→B solo requiere 2 spawns inline. No hay terceros (forkearían).",
+      "impact": "high"
+    },
+    {
+      "id": 15,
+      "created_at": "2026-05-21T21:49:46Z",
+      "decision": "[AUTO] Phase 2 w3 COMPLETED. Logbook phase_2.json: 2/2 primaries + 9/9 secondaries achieved. P1: 9 hooks plugin-native creados en plugin/hooks/ (markers session-scoped $CLAUDE_PLUGIN_DATA/$SESSION_ID, session_id stdin, hooks.json type:command, seeding anti-flood en perceive). P2: verifier B inline en los 4 procesos adversariales (doble lente técnico+valor, B clasifica no filtra confirmed/smoke/unverifiable/gold, hook pasa ambos al main agent). Hallazgo: los 9 hooks vivían en .claude/hooks/ (no en plugin/hooks/); .claude/hooks queda intacto hasta Phase 6.4. Gotcha bash 3.2: 1)/2) en heredocs $(...) rompen el parser. Tests sandbox: perceive+seeding, S4 anti-flood, gate (block/whitelist/read-only/classification/missing-roadmap/shaping), multi-sesión aislada, los 4 verifiers A→B emiten JSON válido. Next: Phase 3 (commands refactor schemas via PLUGIN_ROOT + /waves:upgrade scope reducido + orthogonality/integrity verifiers)."
+    }
+  ],
+  "open_questions": [
+    {
+      "id": 1,
+      "created_at": "2026-05-19T00:00:00Z",
+      "question": "¿/waves:migrate-from-v2-to-v3 debe forzar git tree limpio (exit 2 si hay cambios sin commitear) o solo warning? Recomendación: forzar — git ES el backup, user respalda con git antes de migrar.",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "id": 2,
+      "created_at": "2026-05-19T00:00:00Z",
+      "question": "Formato exacto de plugin/migrations/v<from>-to-<to>.md: markdown declarativo (agente lee y ejecuta como completion_guide) vs JSON con metadata+commands. Recomendación: markdown.",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "id": 3,
+      "created_at": "2026-05-19T00:00:00Z",
+      "question": "Cuándo eliminar /waves:migrate-from-v2-to-v3 (deprecated_in: 3.2.0)? Trigger: 0 proyectos con .claude/commands/waves:*.md o ai_files/schemas/ legacy. Cuando contador = 0, release 3.2.0 removes.",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "id": 4,
+      "created_at": "2026-05-19T00:00:00Z",
+      "question": "Strategic L5: Marketplace listing = certification surface. ¿Descripción debe nombrar org AI governance layer? ¿Es el momento para activar pricing tier story (per memory/project_waves_certification.md)?",
+      "status": "open",
+      "resolution": null,
+      "origin": "w3 pre-roadmap metacognition (2026-05-19)"
+    },
+    {
+      "id": 5,
+      "created_at": "2026-05-19T00:00:00Z",
+      "question": "Strategic L5: Plugin marketplace soporta multiple plugins (free 'waves' + paid 'waves-enterprise' con compliance dashboard, scope:ecosystem sync, company_blueprint discovery)? Per-org pricing $500-5000/mo se vuelve deliverable.",
+      "status": "open",
+      "resolution": null,
+      "origin": "w3 pre-roadmap metacognition (2026-05-19)"
+    },
+    {
+      "id": 6,
+      "created_at": "2026-05-19T00:00:00Z",
+      "question": "Strategic L5: company_blueprint.json discovery convention. ¿Env var WAVES_ECOSYSTEM_ROOT o $HOME/.waves/company_blueprint.json para que plugin discover y complete governance chain? Resuelve w2 OQ #11 estructuralmente.",
+      "status": "open",
+      "resolution": null,
+      "origin": "w3 pre-roadmap metacognition (2026-05-19)"
+    },
+    {
+      "id": 7,
+      "created_at": "2026-05-19T00:00:00Z",
+      "question": "Coexistencia 2.5.0 + 3.0.0 en mismo Claude Code install? Tentativamente NO (hooks bound to plugin singleton). Documentar 'migration is one-way, no coexistence' en header del migrate command.",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "id": 8,
+      "created_at": "2026-05-20T00:00:00Z",
+      "question": "Extender patrón A→B (verificador adversarial fresh con grep/Read) a otros adversarial subagents del framework (Layer C rules audit, Layer D integrity audit, orthogonality reviewer), o solo aplica a metacognición donde riesgo de inferencia sin evidencia es mayor?",
+      "status": "resolved",
+      "resolution": "Sí rotundo (Andrius, 2026-05-20). Todo análisis adversarial requiere verifier downstream para depurar findings antes del main agent. Aplica a Layer C (Phase 2.7), Layer D (Phase 3.6), orthogonality (Phase 3.5), metacognición (Phase 2.6).",
+      "origin": "Phase 7 w3 planning verification failure (2026-05-20)"
+    },
+    {
+      "id": 9,
+      "created_at": "2026-05-20T00:00:00Z",
+      "question": "Convención: ¿TODO adversarial subagent futuro que se introduzca al framework debe llegar con su verifier B por design? ¿Documentar como product_rule en el blueprint + parte del checklist de framework extension?",
+      "status": "resolved",
+      "resolution": "Sí (Andrius, 2026-05-20). Documentado en blueprint: design_principle #7 (verifier pattern es principio del producto) + product_rule #9 (todo adversarial subagent debe shipear con su verifier B en el mismo release). Product_decision #13 documenta el universalización.",
+      "origin": "Decision #12 universalization (2026-05-20)"
+    },
+    {
+      "id": 10,
+      "created_at": "2026-05-20T13:00:00Z",
+      "question": "Los 17 agents actuales en plugin/agents/ son helpers del framework 1.x (era ai-behavior). ¿Siguen siendo usados en 2.x+ o son código muerto? Auditar referencias desde commands/hooks. Candidatos a remoción en w3 Phase 7.",
+      "status": "resolved",
+      "resolution": "Auditados los 17: 13 USED. 2 muertos (code-implementer, objective-generator) + code-auditor huérfano (lógica inline en hook) → eliminar en 7.9. general-scanner NO orphaned: bug naming (comando lo invoca general-project-scanner) → fix rename.",
+      "origin": "Phase 1 w3 test install — usuario notó que agents/ no tiene cambios, drift estructural pre-existente"
+    }
+  ],
+  "recent_context": [
+    {
+      "id": 7,
+      "created_at": "2026-05-21T00:00:00Z",
+      "content": "DECISIÓN ARQUITECTÓNICA: verifier pattern A→B se implementa INLINE (no materializar agentes como archivos). Fundamento: reutilización=0 (cada prompt vive en 1 sitio), materializar crearía 48 archivos de duplicación (lo que w3 elimina), el pattern A→B solo requiere 2 spawns inline. No hay ecosistema de terceros (forkearían). Milestones 2.6/2.7/3.5/3.6 ya eran inline-compatible. Agregados 2.8 (blueprint-impact verifier) + 2.9 (phase-audit verifier) inline para cobertura completa de los 6 procesos adversariales. Milestone 7.9: cleanup agents/ — eliminar code-implementer + objective-generator + code-auditor (muertos), fix naming general-scanner → general-project-scanner (bug real, comando lo invocaba con nombre distinto). Decision #14 documenta inline > materialización. OQ #10 resuelta."
+    },
+    {
+      "id": 6,
+      "created_at": "2026-05-20T13:00:00Z",
+      "content": "HALLAZGO Phase 1 test install: directorio plugin/agents/ tiene 17 agents del framework 1.x (era ai-behavior pre-2.0). Los adversarial subagents introducidos en 2.0+ (orthogonality reviewer, integrity audit, rules audit, metacognition, blueprint impact, phase audit) viven INLINE como prompts dentro de commands/hooks, NO como archivos en agents/. Drift estructural pre-existente. Esto AMPLIFICA el valor de w3 Phase 2/3: además de extender el verifier pattern, va a MATERIALIZAR los 4 adversarial subagents A + 4 verifier subagents B como first-class files en agents/. Resultado: 17 helpers existentes + 8 nuevos files = inventario completo y discoverable. OQ #10 nueva: auditar si los 17 helpers 1.x siguen en uso o son código muerto candidato a remoción."
+    },
+    {
+      "id": 5,
+      "created_at": "2026-05-20T00:15:00Z",
+      "content": "Phase 1 COMPLETED. Plugin baseline 2.5.0 listo en waves-cowork-plugin (commit ab6eee8, tag v2.5.0-baseline). 18 archivos commiteados, .claude/ excluido via gitignore. Bug fix: logbook_software_schema.json roto en 3 copias internas, reemplazado con canonical. Test real /plugin install pendiente de acción humana en nueva sesión Claude Code. Phase 2 ready: refactor hooks plugin-native con session_id stdin + $CLAUDE_PLUGIN_DATA + verifier adversarial post-metacognición."
+    },
+    {
+      "id": 4,
+      "created_at": "2026-05-20T00:00:00Z",
+      "content": "OQ #9 resuelta SÍ (Andrius). Verifier pattern elevado a design_principle + product_rule del blueprint, decisión universalizada. Convención futura: todo adversarial subagent del framework llega con su B por design. Ready to start Phase 1 con /waves:objectives-implement."
+    },
+    {
+      "id": 3,
+      "created_at": "2026-05-20T00:00:00Z",
+      "content": "OQ #8 resuelta SÍ (Andrius rotundo). Patrón verifier A→B se universaliza a TODOS los adversarial subagents del framework. 3 milestones nuevos distribuidos: 2.7 (Layer C rules audit verifier en Phase 2 — hook), 3.5 (orthogonality reviewer verifier en Phase 3 — logbook-create slash), 3.6 (Layer D integrity audit verifier en Phase 3 — logbook-create slash). Decision #12 documenta la universalización. OQ #9 nueva: ¿el verifier B debe ser convención obligatoria para subagentes adversariales futuros, documentada en blueprint como product_rule? Stats: 7 phases, 39 milestones (+3), 12 decisions, 9 OQ."
+    },
+    {
+      "id": 2,
+      "created_at": "2026-05-20T00:00:00Z",
+      "content": "Roadmap ajustado post-verificación: Phase 8 ECC ELIMINADA (overengineering inflado por finding no verificado del background subagent). Decision #10 marcada [RESCINDED]. Nuevo milestone 2.6 en Phase 2: verificador adversarial post-metacognición (spawn-A reflexiona, spawn-B verifica con contexto mínimo + frame escéptico, archivos persistidos en $CLAUDE_PLUGIN_DATA/metacognition/<session>/). Decision #11 documenta el patrón análogo a Layer C/D/orthogonality. OQ #8 abre pregunta de extender el patrón a otros adversarial subagents. Stats: 7 phases, 36 milestones, 11 decisions, 8 OQ."
+    },
+    {
+      "id": 1,
+      "created_at": "2026-05-19T00:00:00Z",
+      "content": "Roadmap W3 creado: 8 phases, 38 milestones. Vision: plugin-first distribution + separación framework/artefactos. Trigger empírico: 16 releases v2.0-v2.5 requirieron propagación a 18+ proyectos con drift risk. Decisiones clave: plugin oficial de Claude Code (5/5 capabilities verificadas), markers session-scoped en $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID/, session_id via stdin, /waves:migrate-from-v2-to-v3 temporal deprecated_in 3.2.0, /waves:upgrade scope reducido a migraciones de artefactos, rollout Pilot→Wave→Tail→waves itself, sin backup (git), Homebrew pinned 2.5.0 con caveat, doc-sync deprecado en consumidores. Pre-roadmap metacognition identificó: marker state reset crítico (Phase 2.4), sequencing checklist (Phase 4.3), Phase 6 split en sub-etapas, ECC coordination como Phase 8 dedicada, 3 L5 opportunities como OQ (marketplace certification surface, paid tiers, company_blueprint discovery). Blueprint actualizado: capability #7 distribution + decision #12 plugin-first + product_roadmaps[0]=w3."
+    },
+    {
+      "id": 8,
+      "created_at": "2026-05-21T21:49:46Z",
+      "content": "Phase 2 COMPLETED. Hooks plugin-native (P1) + verifier pattern A→B inline en 4 procesos adversariales (P2). Ver logbook phase_2.json para detalle técnico y gotchas. Phase 3 lista para arrancar (just-in-time: crear phase_3.json tras este punto)."
+    }
+  ],
+  "history_summary": [],
+  "future_reminders": []
+}

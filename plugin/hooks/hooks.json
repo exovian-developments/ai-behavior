@@ -5,9 +5,63 @@
         "matcher": "",
         "hooks": [
           {
-            "type": "prompt",
-            "prompt": "Silently perform these checks at session start:\n\n1. Read ai_files/user_pref.json if it exists — apply language, tone, and explanation preferences.\n2. Read ai_files/blueprint.json (or ai_files/product_blueprint.json) if it exists — understand what this product IS.\n3. Read ai_files/project_rules.json (or ai_files/project_standards.json) if it exists — know what rules to follow.\n4. Read ai_files/project_manifest.json (or any *_manifest.json) if it exists — understand the project structure.\n5. Scan ai_files/waves/*/roadmap.json — find the active wave (status 'active' or 'in_progress'). From the active roadmap, identify: current phase, next milestone, recent decisions, open questions.\n6. Scan ai_files/waves/*/logbooks/*.json — find the active logbook (has objectives with status 'active' or 'in_progress'). Note: how many objectives total, how many completed, what's the next objective.\n\nDo NOT display anything to the user about this — just internalize the context silently. If none of these files exist, do nothing.\n\nIMPORTANT — Decision Classification (Waves 2.0):\nWhen artifacts exist (blueprint + roadmap + logbook), classify every decision you make:\n- Level 1-2 (technical implementation) → Proceed. Document in logbook.\n- Level 3 (outside current objective scope) → STOP. Inform user. Wait.\n- Level 4 (affects a blueprint capability) → STOP. Project scenarios. Wait.\n- Level 5 (discovery with independent value) → STOP. Document. Project. Advise.\nWhen in doubt, classify UP (more caution), never down.",
+            "type": "command",
+            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/waves-perceive.sh\"",
             "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/waves-gate.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/waves-doc-enforce.sh\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/waves-metacognition.sh\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/waves-blueprint-impact.sh\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/waves-phase-audit.sh\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/waves-rules-audit.sh\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/waves-rules-audit-injector.sh\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/waves-dart-analyze.sh\"",
+            "timeout": 10
           }
         ]
       }

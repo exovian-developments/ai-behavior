@@ -1,0 +1,176 @@
+{
+  "ticket": {
+    "title": "Phase 1 w3 — Foundation: sync waves-cowork-plugin al estado actual (2.5.0)",
+    "url": "",
+    "description": "Sincronizar agresivamente el repo separado waves-cowork-plugin (actualmente atrasado en v1.3.1) con el state real de Waves 2.5.0. Esto cubre 16 versiones de delta (1.3.2 → 2.5.0). Alcance: comandos slash, hooks bash, agents adversariales, skills, schemas, README. NO es release público todavía — bump interno a 2.5.x del plugin que sirve como baseline limpia sobre la que phases 2-7 de w3 construyen los refactors plugin-native (hooks $CLAUDE_PLUGIN_DATA + session_id stdin, comandos $CLAUDE_PLUGIN_ROOT/schemas, /waves:upgrade reducido). Test sandbox con /plugin marketplace add local + /plugin install verifica que el plugin actual funciona end-to-end antes de tocarlo. Tag intermedio en waves-cowork-plugin (sin marketplace publish público) marca el baseline. Esta phase resuelve el milestone 5.4 de w2 que fue movido a w3.",
+    "ui_requirements": {
+      "has_ui": false,
+      "visual_references": [],
+      "notes": "Framework infrastructure work — sin UI."
+    }
+  },
+  "objectives": {
+    "main": [
+      {
+        "id": 1,
+        "created_at": "2026-05-19T00:00:00Z",
+        "content": "Sincronizar repo waves-cowork-plugin con state de Waves 2.5.0 (16 versiones de delta). Bump versión interna a 2.5.0. Test sandbox /plugin install. Tag baseline para w3.",
+        "context": "Single_focus: trabajo plugin-maintenance secuencial del mismo mindset. Resuelve milestone 5.4 de w2 movido a w3. Sync agresivo (no incremental). Phase 1 sincroniza CONTENIDO; format conversion type:command es Phase 2.",
+        "scope": {
+          "files": [
+            "/Users/avm/Repositories/exovian/waves-cowork-plugin/commands/ (sync from /Users/avm/Repositories/exovian/waves/plugin/commands/)",
+            "/Users/avm/Repositories/exovian/waves-cowork-plugin/hooks/ (sync from /Users/avm/Repositories/exovian/waves/plugin/hooks/)",
+            "/Users/avm/Repositories/exovian/waves-cowork-plugin/agents/ (sync from /Users/avm/Repositories/exovian/waves/plugin/agents/)",
+            "/Users/avm/Repositories/exovian/waves-cowork-plugin/skills/ (sync from /Users/avm/Repositories/exovian/waves/plugin/skills/)",
+            "/Users/avm/Repositories/exovian/waves-cowork-plugin/.claude-plugin/plugin.json (bump 1.3.1 → 2.5.0)",
+            "/Users/avm/Repositories/exovian/waves-cowork-plugin/marketplace.json (update capabilities)",
+            "/Users/avm/Repositories/exovian/waves-cowork-plugin/README.md (sync features list)"
+          ],
+          "rules": [
+            1,
+            2,
+            3
+          ]
+        },
+        "status": "achieved",
+        "completed_at": "2026-05-20T00:15:00Z"
+      }
+    ],
+    "secondary": [
+      {
+        "id": 1,
+        "created_at": "2026-05-19T00:00:00Z",
+        "content": "Pre-flight: inspeccionar repo waves-cowork-plugin (versión, archivos, último commit) y planear diff exacto vs waves/plugin/.",
+        "completion_guide": [
+          "cd /Users/avm/Repositories/exovian/waves-cowork-plugin && git log --oneline | head -5 — confirmar último commit",
+          "cat .claude-plugin/plugin.json — confirmar versión actual (esperada: 1.3.1)",
+          "ls commands/ hooks/ agents/ skills/ — inventario del plugin separado",
+          "Comparar con waves/plugin/: ls commands/ hooks/ agents/ skills/ + references/",
+          "Identificar (a) archivos nuevos, (b) modificados, (c) eliminados",
+          "Documentar diff esperado: cuántos sync, delete, add — scope real del sync"
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-20T00:01:00Z"
+      },
+      {
+        "id": 2,
+        "created_at": "2026-05-19T00:00:00Z",
+        "content": "Sync agresivo: rsync mirror exacto desde waves/plugin/{commands,hooks,agents,skills}/ → waves-cowork-plugin/ (delete archivos remotos no presentes en source).",
+        "completion_guide": [
+          "cd /Users/avm/Repositories/exovian/waves-cowork-plugin",
+          "rsync -av --delete /Users/avm/Repositories/exovian/waves/plugin/commands/ commands/",
+          "rsync -av --delete /Users/avm/Repositories/exovian/waves/plugin/hooks/ hooks/",
+          "rsync -av --delete /Users/avm/Repositories/exovian/waves/plugin/agents/ agents/",
+          "rsync -av --delete /Users/avm/Repositories/exovian/waves/plugin/skills/ skills/",
+          "Verificar diff -r post-sync de cada uno — debe retornar vacío (mirror exacto)",
+          "Reportar divergencias inesperadas si las hay"
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-20T00:03:00Z"
+      },
+      {
+        "id": 3,
+        "created_at": "2026-05-19T00:00:00Z",
+        "content": "Bump versión interna: plugin.json + marketplace.json 1.3.1 → 2.5.0. README.md actualizado con features list de 2.5.0.",
+        "completion_guide": [
+          "Editar .claude-plugin/plugin.json: version '1.3.1' → '2.5.0', update description si capabilities obsoletas",
+          "Editar marketplace.json: plugins[0].version → '2.5.0', description con narrativa actual (agentic, governing_principles, 4 layers)",
+          "Editar README.md: sincronizar tabla de comandos (17 slash commands en 2.5.0). Agregar mention de agentic project type.",
+          "jq empty .claude-plugin/plugin.json && jq empty marketplace.json — ambos PASS",
+          "Confirmar que no hay versiones hardcoded en hooks/comandos — version solo vive en plugin.json + marketplace.json"
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-20T00:06:00Z"
+      },
+      {
+        "id": 4,
+        "created_at": "2026-05-19T00:00:00Z",
+        "content": "Test sandbox: /plugin marketplace add <local-path> + /plugin install en proyecto sandbox. Verificar comandos/hooks/agents registrados sin tocar settings.json del user.",
+        "completion_guide": [
+          "Abrir Claude Code en proyecto sandbox (/tmp/waves-sandbox-test o similar) — NO en proyectos productivos",
+          "/plugin marketplace add /Users/avm/Repositories/exovian/waves-cowork-plugin — verificar éxito",
+          "/plugin install waves — verificar éxito + lista de capabilities",
+          "Listar comandos: deben aparecer /waves:project-init, /waves:logbook-create, etc.",
+          "cmp ~/.claude/settings.json con backup pre-install — debe ser idéntico",
+          "Test funcional: /waves:project-init en sandbox — debe operar correctamente",
+          "ls $CLAUDE_PLUGIN_DATA — vacío en post-install fresh",
+          "Si PASS: /plugin uninstall waves + /plugin marketplace remove",
+          "Documentar el flow exacto para Phase 5.4 verification"
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-20T00:10:00Z"
+      },
+      {
+        "id": 5,
+        "created_at": "2026-05-19T00:00:00Z",
+        "content": "Baseline ceremony: commit + tag v2.5.0-baseline en waves-cowork-plugin. Marca el punto de partida para refactors plugin-native de phases 2-7.",
+        "completion_guide": [
+          "cd /Users/avm/Repositories/exovian/waves-cowork-plugin",
+          "git status — confirmar archivos esperados modificados, sin untracked extras",
+          "git add -A (seguro en este repo dedicado al plugin)",
+          "git commit -m 'feat: sync plugin to waves 2.5.0 — baseline for w3 refactor'",
+          "git tag v2.5.0-baseline (intermedio, NO marketplace release público)",
+          "git push origin main v2.5.0-baseline",
+          "Verificar en GitHub release tag existe",
+          "Reportar al user: 'Phase 1 complete. Plugin sincronizado, ready for Phase 2.'"
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-20T00:14:00Z"
+      }
+    ]
+  },
+  "resolved_decisions": [
+    {
+      "uncertainty": "¿single_focus o multi_focus primary para Phase 1?",
+      "resolution": "single_focus con 1 primary + 5 secondaries.",
+      "method": "SRP+KISS",
+      "reasoning": "Los 4 milestones del roadmap (sync archivos → bump metadata → test → tag) son pasos secuenciales del mismo mindset (release engineer + plugin maintainer). NO hay dimensiones ortogonales que justifiquen multi_focus. Multi_focus en Phase 7 w2 estuvo bien porque mezclaba JSON schema design + prompt engineering + ops/release. Aquí todo es plugin maintenance — single_focus con secondaries detallados captura mejor el flow secuencial."
+    },
+    {
+      "uncertainty": "¿Sync incremental (release por release) o agresivo (mirror state actual)?",
+      "resolution": "Agresivo (rsync --delete con mirror exacto del state actual de waves/plugin/).",
+      "method": "YAGNI",
+      "reasoning": "El delta es de 16 versiones (1.3.2 → 2.5.0). El path incremental no agrega valor — nadie usa versiones intermedias del plugin separado (está atrasado precisamente porque nadie lo usa). Mirror agresivo en un solo commit + tag es más limpio operacionalmente. Si necesitamos lineage de versiones intermedias, el CHANGELOG del repo waves principal ya lo documenta. El plugin repo solo necesita reflejar el state shippeable actual."
+    },
+    {
+      "uncertainty": "¿Convertir hooks.json de type:prompt a type:command en Phase 1 o esperar a Phase 2?",
+      "resolution": "Esperar a Phase 2. Phase 1 solo sincroniza CONTENIDO sin cambiar FORMATO.",
+      "method": "SRP",
+      "reasoning": "Cambio de formato es responsabilidad de Phase 2 (Hooks refactor plugin-native). Mezclar sync + reformat en Phase 1 viola SRP y dificulta debugging (si algo falla, no sabemos si es por el sync o por el format change). Mantener Phase 1 puramente sync mecánico permite verificar el baseline con el format actual (prompt) antes de tocar la arquitectura. Cuando Phase 2 corre, el plugin ya está al día con contenido + la conversión a type:command es una transformación aislada y testeable."
+    },
+    {
+      "uncertainty": "¿Tag intermedio en waves-cowork-plugin debe ser v2.5.0 (versión real) o algo intermedio (v2.5.0-baseline, v2.5.0-rc1)?",
+      "resolution": "v2.5.0-baseline (suffix explícito que indica que es punto de partida interno, no release público).",
+      "method": "Naming_clarity",
+      "reasoning": "Si tageamos v2.5.0 limpio, parece release público y otros sistemas (marketplace, brew, agentes) pueden detectarlo como upgrade disponible. Pero NO es upgrade — es base para los breaking changes de w3. v2.5.0-baseline comunica explícitamente: este es snapshot interno, no instalable como upgrade. Cuando Phase 5 ship v3.0.0, ese sí es el primer release público del plugin con arquitectura nueva."
+    },
+    {
+      "uncertainty": "¿waves-cowork-plugin está en git status limpio antes de empezar Phase 1?",
+      "resolution": "S1 verifica pre-flight con git status. Si hay cambios sin commitear, S1 reporta y espera autorización del user para proceder.",
+      "method": "Defensive",
+      "reasoning": "El repo es nuestro pero puede haber cambios en progreso de sesiones anteriores que no queremos sobrescribir. Pre-flight check evita pisar trabajo previo. Si está limpio, proceed. Si no, surface al user con git status output y esperar OK explícito."
+    }
+  ],
+  "recent_context": [
+    {
+      "id": 3,
+      "created_at": "2026-05-20T00:15:00Z",
+      "content": "DISCOVERY (Phase 1 S4): logbook_software_schema.json tenía parse error en 3 copias internas (plugin/skills/.../references/, cowork_plugin/skills/.../references/, waves-cowork-plugin/skills/.../references/) — bug pre-existente que no era detectable sin jq empty sistemático. Canonical en schemas/logbook_software_schema.json estaba OK. Fix: sobreescribir copias con canonical. Refuerza la decisión de w3 de eliminar todas las copias duplicadas (single source en plugin) — ESTE bug NO podría haber pasado si solo existiera 1 archivo."
+    },
+    {
+      "id": 2,
+      "created_at": "2026-05-20T00:15:00Z",
+      "content": "Phase 1 w3 COMPLETE. 1/1 primary + 5/5 secondaries achieved. Sync agresivo de waves/plugin → waves-cowork-plugin completado: 7 commands + 4 schemas modificados, 1 hook nuevo (waves-doc-sync.sh), 1 schema nuevo (agentic_manifest_schema.json), 17 agents idénticos. Bug pre-existente fix: logbook_software_schema.json roto en 3 ubicaciones internas, reemplazado con canonical de schemas/. Bump plugin.json + marketplace.json a 2.5.0. README actualizado con agentic project type + governing_principles anchor. Commit ab6eee8 + tag v2.5.0-baseline pushed a github.com/exovian-developments/waves-cowork-plugin. Ready for Phase 2 (Hooks refactor plugin-native + verifier pattern A→B)."
+    },
+    {
+      "id": 1,
+      "created_at": "2026-05-19T00:00:00Z",
+      "content": "Logbook Phase 1 de w3 creado. Single_focus primary con 5 secondaries: pre-flight inspect (S1), sync agresivo rsync (S2), bump versión + metadata (S3), test sandbox /plugin install (S4), baseline commit+tag v2.5.0-baseline (S5). 5 resolved_decisions: single_focus por mindset homogéneo, sync agresivo por YAGNI sobre incremental, conversión type:command postpuesta a Phase 2 (SRP), tag intermedio v2.5.0-baseline (naming clarity), pre-flight defensive git status. scope.rules = [1, 2, 3] (los 3 governing_principles de waves project_rules.json: autonomía contextual + usar schemas establecidos + REGLA-0). Ready to start con S1 (pre-flight inspection del repo waves-cowork-plugin)."
+    }
+  ],
+  "history_summary": [],
+  "future_reminders": [],
+  "audit": {
+    "is_already_audited": false
+  }
+}

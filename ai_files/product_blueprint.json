@@ -4,7 +4,7 @@
     "product_codename": "waves protocol",
     "owner": "Andrius V",
     "created_at": "2026-03-04T12:00:00Z",
-    "last_updated": "2026-04-14T00:00:00Z",
+    "last_updated": "2026-05-21T00:00:00Z",
     "blueprint_type": "standard"
   },
   "philosophy": {
@@ -102,6 +102,16 @@
         "If implementation detail appears in a roadmap, move it to the logbook",
         "If a logbook needs strategic context, reference the roadmap — do not copy it"
       ]
+    },
+    {
+      "id": 7,
+      "principle": "Every adversarial analyst (A) is followed by an independent verifier (B): fresh context, two lenses — technical (grep/Read) + value (overengineering/KISS). B classifies (confirmed/smoke/unverifiable/gold), never vetoes. Hook passes BOTH raw A and B's classification to the main agent.",
+      "rules_preview": [
+        "Every adversarial analyst (A) hands its raw output to a fresh skeptical verifier (B)",
+        "B applies two lenses: technical (grep/Read) and value (overengineering check)",
+        "B classifies (not filters): confirmed / smoke / unverifiable / gold — and passes BOTH A's raw analysis and B's classification to the main agent",
+        "Main agent decides with full context, respecting B's classifications (smoke → re-evaluate, unverifiable → own judgment, confirmed/gold → safe)"
+      ]
     }
   ],
   "essential_capabilities": [
@@ -143,6 +153,10 @@
       "depends_on": [
         4
       ]
+    },
+    {
+      "id": 7,
+      "capability": "The user can install Waves once via Claude Code plugin marketplace (two slash commands: /plugin marketplace add + /plugin install) and use it across all their projects without per-project framework copies. Framework artifacts (slash commands, hooks, agents, skills, schemas) live in the plugin's directory managed by Claude Code; project-specific artifacts (blueprint.json, project_manifest.json, project_rules.json, roadmaps, logbooks) remain in each project's repository as git-commitable files. Upgrading the framework happens once for all projects via /plugin update."
     }
   ],
   "non_essential_capabilities": {
@@ -385,6 +399,14 @@
         4
       ],
       "applies_to": "All interactive commands"
+    },
+    {
+      "id": 9,
+      "rule": "Pair every adversarial analyst (A) with a verifier (B): fresh context, two lenses (technical grep/Read + value/overengineering). B classifies (confirmed/smoke/unverifiable/gold), never vetoes. Hook passes BOTH raw A + B classification to main agent. Inline, no materialized files.",
+      "principle_refs": [
+        7
+      ],
+      "applies_to": "All adversarial subagents: orthogonality reviewer, Layer C rules audit, Layer D integrity audit, metacognition subagent, plus any future adversarial subagent introduced to the framework"
     }
   ],
   "success_metrics": [
@@ -491,6 +513,27 @@
       "decision": "Formalize the human-in-the-loop principle as a foundational design constraint, not a temporary limitation. The agent's role is advisor + counselor + projector + simulator — not autonomous executor. Autonomy is granted by decision level, not by blanket delegation.",
       "context": "Andrius articulated a philosophy grounded in years of observing human-AI interaction since 2022: human perception is infinitely greater than AI's, but AI provides enhanced memory and projection capacity. The combination produces results neither achieves alone. The 'law of least effort' drives humans to over-delegate to AI, which leads to the failures seen in enterprises shipping AI-generated code to production without adequate supervision. The solution is not less AI — it's structured AI with the human maintaining strategic oversight. This principle directly shaped Waves 2.0: (1) Level 1-2 decisions get full autonomy because they don't require human perception, (2) Level 3-4 pause for human input because scope and business decisions need human judgment, (3) Level 5 activates 'advisor mode' because discoveries need human strategic vision to evaluate. The metacognition system was designed to give the AI 'artificial intuition' — projecting more branches of future than human intuition alone, but always presenting findings for human decision, never acting unilaterally on strategic matters. Andrius described this as 'giving the AI intuition' — not replacing human intuition but extending its reach. Discarded: (1) full autonomy as the goal (violates the principle), (2) human approval for everything (kills velocity on mechanical tasks), (3) treating human-in-the-loop as a temporary state to evolve past (the principle is permanent — perception requires consciousness that AI lacks).",
       "impact_on": "Philosophy section (must add human-in-the-loop as foundational principle), all metacognition triggers (must present findings to human, never act autonomously on Level 3+ decisions), classification system (Level 5 'discovery' mode exists specifically to channel AI perception to human judgment), out_of_scope (full autonomous operation without human checkpoints is explicitly out of scope)"
+    },
+    {
+      "id": 12,
+      "created_at": "2026-05-19T00:00:00Z",
+      "decision": "Adopt plugin-first distribution: Waves ships as official Claude Code plugin via marketplace, eliminating Homebrew CLI distribution. Per-project framework files (.claude/commands/, .claude/hooks/, ai_files/schemas/) are removed; only project artifacts remain in repos.",
+      "context": "The 2.x architecture duplicated framework files in every consumer project — 7 schema copies in waves repo + N copies across consumer projects = drift risk and propagation burden (verified empirically: 16 releases v2.0.0-v2.5.0 required syncing 18+ Exovian projects each time, with manual reconciliation). Researched Claude Code plugin system capabilities: bash hooks with type:command supported, install from GitHub via /plugin marketplace add, $CLAUDE_PLUGIN_DATA writable for runtime state, session_id available via stdin JSON. All 5 critical capabilities verified against docs. Discarded alternatives: (a) keep brew + edit ~/.claude/settings.json with merge — too fragile to Anthropic schema changes; (b) hybrid brew-plus-plugin — two installation paths multiply failure modes. Decision aligns with company_blueprint design_principle 'Barreras físicas sobre disciplina' — plugin system is mechanical separation, not discipline-based hope.",
+      "impact_on": "Distribution model, ~/.claude/settings.json untouched, $CLAUDE_PLUGIN_DATA/markers/$SESSION_ID for hooks, w3 wave dedicated to this refactor, Homebrew formula archived with deprecation caveat at v2.5.0, /waves:migrate-from-v2-to-v3 temporal slash command"
+    },
+    {
+      "id": 13,
+      "created_at": "2026-05-20T00:00:00Z",
+      "decision": "Universalize verifier subagent pattern (A→B) across all adversarial subagents of the framework. Promoted to design_principle and product_rule of the product. Implemented in w3 phases 2.6, 2.7, 3.5, 3.6.",
+      "context": "Triggered by verification failure during w3 planning: main agent (Otto) inflated Phase 8 ECC by incorporating unverified inferred finding from background metacognition subagent. Andrius identified the pattern: every adversarial analysis needs an independent verifier. Pattern applies to all 4 existing adversarial subagents and must apply to any future one. Aligned with company design_principle Inmutabilidad vía distribución, no convención — verifier is mechanical separation, not discipline.",
+      "impact_on": "All adversarial subagents in the framework + framework extension policy (any future adversarial subagent must ship with verifier B by design)"
+    },
+    {
+      "id": 14,
+      "created_at": "2026-05-21T00:00:00Z",
+      "decision": "Refine verifier pattern: B classifies (not filters), and hook passes BOTH raw analysis A + classification B to the main agent. B applies two lenses: technical (grep/Read) and value (overengineering/KISS/YAGNI check). Implemented inline, no materialized files.",
+      "context": "Andrius: metacognition (A) is rich but overreaching; verifier (B) lands it into what's valuable. But B filtering with minimum context could discard gems valuable only in the main agent's full context. Solution: B classifies/annotates (not vetoes); main agent gets both raw A + B's classification, decides with full context. Simplifies B; value lens caught ECC Phase 8 + agent-file overengineering.",
+      "impact_on": "All 6 adversarial subagents (metacognition, rules audit, blueprint impact, phase audit, orthogonality, integrity), hook output format, main agent decision discipline"
     }
   ],
   "open_questions": [
@@ -518,6 +561,10 @@
   ],
   "product_roadmaps": [
     {
+      "wave": "w3",
+      "path": "waves/w3/roadmap.json"
+    },
+    {
       "wave": "w2",
       "path": "waves/w2/roadmap.json"
     },
@@ -527,6 +574,21 @@
     }
   ],
   "recent_context": [
+    {
+      "id": 8,
+      "created_at": "2026-05-21T00:00:00Z",
+      "content": "VERIFIER PATTERN REFINED (decision #14): B classifies (not filters/vetoes) with two lenses — technical (grep/Read) + value (overengineering/KISS check). Hook passes BOTH raw analysis A + classification B to main agent, who decides with full context. Rationale: B's minimum context could discard gems valuable only in full context; classifying instead of filtering preserves them while keeping the anti-inference barrier. Simplifies B (only evaluates). Value lens institutionalizes the overengineering check (caught ECC Phase 8 + agent-file materialization). design_principle #7 + product_rule #9 updated. Implemented inline (2 spawns), no materialized agent files."
+    },
+    {
+      "id": 7,
+      "created_at": "2026-05-20T00:00:00Z",
+      "content": "VERIFIER PATTERN PROMOTED to design_principle #7 + product_rule #9 + product_decision #13. All adversarial subagents (orthogonality reviewer, Layer C rules audit, Layer D integrity audit, metacognition, plus future ones) must ship with paired verifier subagent B that runs fresh + skeptical + grep-based, filtering findings before they reach main agent. Triggered by verification failure during w3 planning (Phase 8 ECC inflation). Implementation in w3 phases 2.6/2.7/3.5/3.6 + framework extension policy: any future adversarial subagent must ship paired with its verifier by design."
+    },
+    {
+      "id": 6,
+      "created_at": "2026-05-19T00:00:00Z",
+      "content": "DISTRIBUTION REFACTOR — w3 launched. Decision 4 added: plugin-first distribution. New essential_capability 7: install Waves once via Claude Code plugin marketplace, framework lives outside the project repo, only artifacts remain in ai_files/. Eliminates per-project copies of commands/hooks/schemas — verified empirically that 16 releases (v2.0-v2.5) created propagation burden of 18+ projects per release. Plugin system verified via docs: bash hooks supported, GitHub marketplace install, $CLAUDE_PLUGIN_DATA writable, session_id via stdin. w2 closed completed. w3 will deliver: hooks refactor (plugin-native + session_id namespacing), commands refactor (schemas via $CLAUDE_PLUGIN_ROOT), /waves:upgrade scope reduced to artifact migrations only, /waves:migrate-from-v2-to-v3 temporal command (deprecated_in 3.2.0), plugin release 3.0.0, Homebrew formula archived with caveat at v2.5.0, ecosystem migration of 18 projects + waves itself."
+    },
     {
       "id": 5,
       "created_at": "2026-04-18T00:00:00Z",
