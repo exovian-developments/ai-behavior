@@ -1,0 +1,144 @@
+{
+  "ticket": {
+    "title": "Phase 4 w3 — /waves:migrate-from-v2-to-v3: comando temporal de migración de framework legacy",
+    "url": "",
+    "description": "Crear un slash command de uso ÚNICO que migra un proyecto de Waves 2.x a 3.0 plugin-first: REMUEVE el framework legacy (.claude/commands/waves:*.md, .claude/hooks/waves-*.sh, ai_files/schemas/) manteniendo intactos los artefactos del proyecto (blueprint, project_rules, roadmaps, logbooks, user_pref, manifest). El comando se marca deprecated_in: 3.2.0 (frontmatter) + banner visible al agente '⚠️ DEPRECATED — REMOVE IN v3.2.0', porque es transicional: una vez que todos los proyectos migraron, se elimina (roadmap decision #3, OQ #3). La correctitud del comando ES su orden seguro: (1) confirmar que el plugin está instalado y funcional, (2) git tree limpio, (3) SOLO ENTONCES remover framework files — invertir el orden deja comandos sin schemas (estado roto). Sin backup automático: git es el safety net (roadmap decision #6); por eso se fuerza git-clean (OQ #1: exit si hay cambios sin commitear). Migración one-way, sin coexistencia 2.5/3.0 (OQ #7). Decomposición single_focus (orthogonality reviewer confirmó: un artefacto, un mindset de autoría destructiva cuidadosa, sin 2º subset de rules para anclar un split). Nota: el archivo es plugin/commands/migrate-from-v2-to-v3.md (SIN prefijo waves: — lo añade el namespace del plugin, como el resto de comandos).",
+    "ui_requirements": {
+      "has_ui": false,
+      "visual_references": [],
+      "notes": "Framework infrastructure work (markdown command) — sin UI."
+    }
+  },
+  "objectives": {
+    "main": [
+      {
+        "id": 1,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "Crear el comando temporal /waves:migrate-from-v2-to-v3 (deprecated_in 3.2.0 + banner): pre-flight, remoción ordenada de framework legacy, .waves-version, verificar en sandbox.",
+        "context": "Mindset: autoría cuidadosa de operación destructiva one-time. Limpia framework legacy 2.x (.claude/commands/, .claude/hooks/, ai_files/schemas/) sin tocar artefactos. Su correctitud ES su orden seguro: install→verify→git-clean→remove. Sin backup (git). single_focus. Archivo sin prefijo waves:.",
+        "scope": {
+          "files": [
+            "plugin/commands/migrate-from-v2-to-v3.md"
+          ],
+          "rules": [
+            2,
+            3
+          ]
+        },
+        "status": "achieved",
+        "completed_at": "2026-05-22T15:55:36Z"
+      }
+    ],
+    "secondary": [
+      {
+        "id": 1,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "Crear plugin/commands/migrate-from-v2-to-v3.md con frontmatter deprecated_in: 3.2.0 + banner visible '⚠️ DEPRECATED — REMOVE IN v3.2.0'.",
+        "completion_guide": [
+          "Crear plugin/commands/migrate-from-v2-to-v3.md (SIN prefijo waves: — el namespace lo añade el plugin, como el resto de comandos).",
+          "Frontmatter: description, allowed-tools (Read, Bash, Edit, Write), deprecated_in: 3.2.0.",
+          "Primera línea del cuerpo: banner visible al agente '⚠️ DEPRECATED — REMOVE IN v3.2.0 — comando de uso único v2→v3'.",
+          "Documentar que la migración es one-way, sin coexistencia 2.5/3.0 (roadmap OQ #7).",
+          "Apply rule #2: usar el formato establecido de comandos slash (frontmatter + estructura por steps), incluida la convención de nombres sin prefijo waves:.",
+          "Apply rule #3: REGLA-0 KISS — solo frontmatter + banner necesarios, sin metadata especulativa."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-22T15:55:36Z"
+      },
+      {
+        "id": 2,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "Lógica de remoción: pre-flight (plugin instalado + git tree limpio), reportar archivos + confirmar, remover framework legacy, crear ai_files/.waves-version.",
+        "completion_guide": [
+          "Pre-flight: verificar que el plugin está instalado/funcional (comandos disponibles) y git tree limpio (git status --porcelain vacío).",
+          "Si git tree sucio → exit con instrucción de commitear/stashear primero (git ES el backup; OQ #1 fuerza clean).",
+          "Enumerar y REPORTAR al usuario los archivos a remover (.claude/commands/waves:*.md, .claude/hooks/waves-*.sh, ai_files/schemas/) y pedir confirmación explícita.",
+          "Tras confirmar: remover esos archivos. NO tocar artefactos de ai_files/ (blueprint, project_rules, roadmaps, logbooks, user_pref, manifest).",
+          "Crear ai_files/.waves-version con la versión del plugin (3.0.0).",
+          "Apply rule #3: REGLA-0 YAGNI — sin backup automático (git es el safety net, roadmap decision #6); solo remover, no reorganizar.",
+          "Apply rule #2: usar ai_files/.waves-version con el formato semver establecido en Phase 3 (/waves:upgrade)."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-22T15:55:36Z"
+      },
+      {
+        "id": 3,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "Embeber el sequencing checklist crítico en el comando: (1) /plugin install funcional, (2) git tree limpio, (3) THEN remover. Nunca invertir.",
+        "completion_guide": [
+          "Documentar el orden como checklist explícito y visible al inicio de la lógica del comando.",
+          "Razón del orden: remover el framework antes de confirmar el plugin deja comandos sin schemas (estado roto, irrecuperable sin git).",
+          "El paso de remoción (S2) DEBE estar gated por los pasos 1-2; el comando aborta si cualquiera falla.",
+          "Apply rule #3: REGLA-0 — el orden seguro es la lógica esencial; sin pasos extra.",
+          "Apply rule #2: checklist consistente con el estilo narrativo por steps de los demás comandos waves."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-22T15:55:36Z"
+      },
+      {
+        "id": 4,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "Test en sandbox (copia de un proyecto 2.x): ejecutar migrate, verificar 0 framework files restantes + artefactos intactos + /waves:project-init operacional.",
+        "completion_guide": [
+          "Crear copia sandbox de un proyecto con framework 2.x (.claude/commands/waves:*.md + .claude/hooks/waves-*.sh + ai_files/schemas/ + artefactos en ai_files/).",
+          "Ejecutar la lógica del comando contra el sandbox (git tree limpio).",
+          "Verificar: 0 archivos de framework legacy restantes; artefactos de ai_files/ intactos (blueprint, rules, roadmaps, logbooks); ai_files/.waves-version creado.",
+          "Verificar caso git-sucio: el comando aborta sin remover nada.",
+          "Apply rule #2: confirmar que el comando respeta la convención de preservar artefactos (ai_files/ jamás se toca).",
+          "Apply rule #3: REGLA-0 — test del golden path + el caso git-sucio (abort), sin sobre-testear."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-22T15:55:36Z"
+      }
+    ]
+  },
+  "resolved_decisions": [
+    {
+      "uncertainty": "¿single_focus o multi_focus para Phase 4?",
+      "resolution": "single_focus, 1 primary. Los milestones 4.1-4.4 son facetas de un mismo artefacto (crear el comando + testearlo), no dimensiones ortogonales.",
+      "method": "orthogonality_review",
+      "reasoning": "Subagente adversarial confirmó single_focus: 4.1 (frontmatter+banner), 4.2 (lógica de remoción) y 4.3 (sequencing) son secciones del mismo migrate-from-v2-to-v3.md con un solo mindset, y 4.3 es literalmente el ORDEN de las operaciones de 4.2 — inseparable por definición. 4.4 es verificación del mismo artefacto (dependencia de orden de ejecución, no de definición). A diferencia de Phases 2/3 (plomería vs cognición = 2 mindsets con 2 subsets de rules), Phase 4 no tiene un 2º subset de rules para anclar un split (no existe categoría destructive-ops/safety); un eje 'safety' sería inventado sin rules backing."
+    },
+    {
+      "uncertainty": "¿Nombre del archivo del comando?",
+      "resolution": "plugin/commands/migrate-from-v2-to-v3.md (SIN prefijo waves:). El roadmap lo nombraba waves:migrate-from-v2-to-v3.md por error.",
+      "method": "KISS",
+      "reasoning": "En plugin/commands/ ningún archivo lleva prefijo waves: (blueprint-create.md, logbook-create.md, etc.) — el namespace lo añade el plugin. Mismo hallazgo de Phase 3 con upgrade.md. Consistencia con la convención real del plugin."
+    },
+    {
+      "uncertainty": "¿Backup antes de remover framework?",
+      "resolution": "Sin backup automático. git es el mecanismo de recuperación; se fuerza git-clean antes de proceder.",
+      "method": "YAGNI",
+      "reasoning": "Roadmap decision #6 + OQ #1: backup en plugin data es sobreingeniería. Cada proyecto está en git; forzar git-clean (exit si sucio) garantiza que el usuario puede git checkout/stash si algo sale mal. Confiar en SCM como safety net."
+    },
+    {
+      "uncertainty": "¿deprecated_in y eliminación del comando?",
+      "resolution": "Frontmatter deprecated_in: 3.2.0 + banner visible. Se elimina en release 3.2.0 cuando 0 proyectos tengan framework legacy.",
+      "method": "user_clarification",
+      "reasoning": "Roadmap decision #3 + OQ #3: comando de uso único; mantenerlo indefinidamente sería deuda. 3.2.0 da espacio operacional generoso; el trigger de eliminación es contador de proyectos con .claude/commands/waves:*.md = 0."
+    }
+  ],
+  "recent_context": [
+    {
+      "id": 1,
+      "created_at": "2026-05-22T00:00:00Z",
+      "content": "Logbook Phase 4 w3 creado. single_focus (orthogonality reviewer confirmó) con 1 primary y 4 secondaries que mapean 4.1-4.4: S1 crear el comando con frontmatter deprecated_in 3.2.0 + banner; S2 lógica de remoción (pre-flight plugin+git-clean, report+confirm, remover .claude/commands/waves:*.md + .claude/hooks/waves-*.sh + ai_files/schemas/, crear .waves-version); S3 sequencing checklist crítico (install→verify→git-clean→remove, nunca invertir); S4 test sandbox (0 framework files + artefactos intactos + project-init operacional + caso git-sucio aborta). scope.rules [2,3] (#6 naming es sobre nombres de paquete del ecosistema, no aplica). 4 resolved_decisions. Referencia: 17 comandos + 10 hooks legacy + ai_files/schemas/ a remover. Archivo: plugin/commands/migrate-from-v2-to-v3.md (sin prefijo waves:). Es el corazón del rollout: Phase 6 lo ejecuta en los 19 proyectos."
+    },
+    {
+      "id": 2,
+      "created_at": "2026-05-22T14:42:49Z",
+      "content": "Integrity audit: PASÓ LIMPIO (0 critical, 0 warning). Verificado: scope.rules [2,3] correcto (1/4/5 son rules de proceso/autonomía no de contenido; 6 naming es package-governance N/A), las 4 secondaries tienen Apply rule #2 y #3, ids existen, single_focus=1 primary coincide, scope.files no vacío, migrate-from-v2-to-v3.md confirmado NEW intencional. Audit report: ai_files/waves/w3/audits/logbook-phase_4.json."
+    },
+    {
+      "id": 3,
+      "created_at": "2026-05-22T15:55:36Z",
+      "content": "Phase 4 COMPLETED (S1-S4, single primary). Creado plugin/commands/migrate-from-v2-to-v3.md (frontmatter deprecated_in 3.2.0 + banner DEPRECATED REMOVE IN v3.2.0). Estructura: sequencing checklist crítico al inicio (install→git-clean→remove, nunca invertir) + Step 0 lang + Step 1 pre-flight plugin (PLUGIN_ROOT con commands/hooks/skills-references) + Step 2 pre-flight git-clean (porcelain vacío, abort si sucio, abort si no-git) + Step 3 report+confirm explícito + Step 4 remoción + Step 5 verify. DESCUBRIMIENTO (Level 2, no anticipado en roadmap 4.2): al remover .claude/hooks/waves-*.sh, las entradas de .claude/settings.json que los referencian quedan huérfanas → errores en cada tool call. Agregado Step 4.4: cleanup QUIRÚRGICO de settings.json (remover solo entries cuyo command referencia waves-*.sh, dropear arrays de evento vacíos, dropear hooks key si queda vacío, PRESERVAR permissions + hooks no-waves). El plugin provee los hooks vía su hooks.json. Removidos: .claude/commands/waves:*.md, .claude/hooks/waves-*.sh, ai_files/schemas/, entries waves de settings.json. NO se tocan artefactos de ai_files/. Crea ai_files/.waves-version. Test sandbox (proyecto 2.x falso): golden path → commands=0/hooks=0/schemas removido/settings.json sin refs waves pero con my-custom-hook+permissions preservados/artefactos intactos/.waves-version escrito; git-dirty → abort 0 removidos. Lógica jq del settings cleanup validada. RECORDATORIO: en Phase 6, waves itself se migra de ÚLTIMO (6.4); el test fue en sandbox, NUNCA sobre este repo."
+    }
+  ],
+  "history_summary": [],
+  "future_reminders": [],
+  "audit": {
+    "is_already_audited": true,
+    "audit_file": "ai_files/waves/w3/audits/logbook-phase_4.json"
+  }
+}

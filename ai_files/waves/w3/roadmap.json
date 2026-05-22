@@ -178,7 +178,7 @@
       "id": 4,
       "name": "/waves:migrate-from-v2-to-v3 — comando temporal de migración",
       "description": "Crear slash command de uso único que limpia framework legacy (.claude/commands/, .claude/hooks/, ai_files/schemas/) manteniendo artefactos. Marcado deprecated_in: 3.2.0. Incluye sequencing checklist crítico.",
-      "status": "not_started",
+      "status": "completed",
       "depends_on": [
         3
       ],
@@ -186,24 +186,26 @@
         {
           "id": "4.1",
           "content": "Crear plugin/commands/waves:migrate-from-v2-to-v3.md con frontmatter deprecated_in: 3.2.0 + banner '⚠️ DEPRECATED — REMOVE IN v3.2.0' visible al agente.",
-          "status": "not_started"
+          "status": "completed"
         },
         {
           "id": "4.2",
           "content": "Lógica: pre-flight (plugin + git clean), report files + confirm, remove .claude/commands/waves:*.md + .claude/hooks/waves-*.sh + ai_files/schemas/, crear .waves-version.",
-          "status": "not_started"
+          "status": "completed"
         },
         {
           "id": "4.3",
           "content": "Sequencing checklist crítico: 1) /plugin install y confirmar functional, 2) git tree clean, 3) THEN remove framework files. NUNCA invertir el orden — riesgo: comandos sin schemas.",
-          "status": "not_started"
+          "status": "completed"
         },
         {
           "id": "4.4",
           "content": "Test sandbox: copia de profiler_engine_ba, ejecutar migrate, verificar 0 framework files restantes + artefactos intactos + /waves:project-init operacional post-migración.",
-          "status": "not_started"
+          "status": "completed"
         }
-      ]
+      ],
+      "started_at": "2026-05-22T15:55:52Z",
+      "completed_at": "2026-05-22T15:55:52Z"
     },
     {
       "id": 5,
@@ -442,6 +444,11 @@
       "id": 16,
       "created_at": "2026-05-22T03:19:23Z",
       "decision": "[AUTO] Phase 3 w3 COMPLETED. Logbook phase_3.json: 3/3 primaries + 6/6 secondaries achieved. P1 (S1): 12 refs de schema en 6 comandos repuntadas a ${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/ (re-grep ai_files/schemas=0). P2 (S2-S4): /waves:upgrade rediseñado plugin-native como plugin/commands/upgrade.md (lee ai_files/.waves-version vs plugin version, aplica migraciones declarativas desde plugin/migrations/, sin copia de framework) + formato plugin/migrations/ (README + ejemplo v2.5-to-v3.0.md) + test de lógica semver. P3 (S5-S6): verifier B inline en orthogonality reviewer (A2.5) e integrity audit (A6) de logbook-create.md — doble lente, B clasifica no vetea, comando pasa A+B al main agent. Correcciones: archivo correcto es upgrade.md (no waves:upgrade.md, sin prefijo en plugin/commands/); marker .claude/waves-version→ai_files/.waves-version. Cobertura A→B completa: 6 procesos adversariales (4 hooks + 2 slash-command subagents). Next: Phase 4 (/waves:migrate-from-v2-to-v3 comando temporal de migración)."
+    },
+    {
+      "id": 17,
+      "created_at": "2026-05-22T15:55:52Z",
+      "decision": "[AUTO] Phase 4 w3 COMPLETED. Logbook phase_4.json: 1/1 primary + 4/4 secondaries achieved. Creado plugin/commands/migrate-from-v2-to-v3.md (deprecated_in 3.2.0 + banner): comando one-time que remueve framework legacy (.claude/commands/waves:*.md, .claude/hooks/waves-*.sh, ai_files/schemas/) manteniendo artefactos. Sequencing crítico install→git-clean→remove. Pre-flight: plugin completo + git tree limpio (abort si sucio; git es el único safety net, sin backup). Confirm explícito antes de remover. Crea ai_files/.waves-version. DESCUBRIMIENTO no en roadmap: cleanup quirúrgico de .claude/settings.json (entries waves huérfanas tras remover hooks) preservando permissions + hooks no-waves. Test sandbox: golden path + git-dirty abort + settings cleanup validados (artefactos intactos). single_focus (orthogonality reviewer). integrity audit del logbook pasó limpio. Archivo sin prefijo waves: (convención plugin/commands/). Next: Phase 5 (plugin release 3.0.0 + Homebrew deprecation)."
     }
   ],
   "open_questions": [
@@ -567,6 +574,11 @@
       "id": 9,
       "created_at": "2026-05-22T03:19:23Z",
       "content": "Phase 3 COMPLETED. Commands schema-path refactor (P1) + /waves:upgrade plugin-native + migrations format (P2) + verifier B en los 2 subagentes adversariales de logbook-create (P3). Cobertura A→B completa en los 6 procesos adversariales del framework. Ver logbook phase_3.json. Phase 4 lista (just-in-time)."
+    },
+    {
+      "id": 10,
+      "created_at": "2026-05-22T15:55:52Z",
+      "content": "Phase 4 COMPLETED. /waves:migrate-from-v2-to-v3 (comando temporal deprecated_in 3.2.0) creado + testeado en sandbox. Descubrimiento: cleanup de settings.json huérfano. Ver logbook phase_4.json. Phase 5 lista (just-in-time)."
     }
   ],
   "history_summary": [],
