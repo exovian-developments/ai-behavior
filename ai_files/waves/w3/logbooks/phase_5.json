@@ -1,0 +1,182 @@
+{
+  "ticket": {
+    "title": "Phase 5 w3 — Plugin release 3.0.0 + Homebrew deprecation con evidencia",
+    "url": "",
+    "description": "Release de Waves 3.0 plugin-first. Dos dimensiones ortogonales que abarcan 3 repos. (P1) Packaging & publish (release engineer): re-sincronizar waves/plugin/ → waves-cowork-plugin/ trayendo los deltas de Phases 2-4 (9 hooks plugin-native + hooks.json type:command, 6 comandos con schema-path, upgrade.md, plugin/migrations/, logbook-create con verifier B, migrate-from-v2-to-v3.md), bump de versiones a 3.0.0 (plugin.json + marketplace.json + README + bin/waves header), y la PUBLICACIÓN irreversible: commit + tag v3.0.0 en waves-cowork-plugin + push a GitHub + verificación end-to-end de /plugin marketplace add + install desde un Claude Code limpio, más tag v3.0.0 en el repo waves. (P2) Comunicación del cambio breaking & deprecación del path legacy (technical writer): CHANGELOG.md [3.0.0] en waves con narrativa del distribution change (Why breaking / Migration path / Deprecated Homebrew CLI) + el caveat de deprecación final en homebrew-waves Formula/waves.rb (pinned 2.5.0). HALLAZGOS: el repo externo está en 2.5.0-baseline (sin Phases 2-4) — la re-sync es prerequisito. plugin.json de waves/plugin está en 1.3.1 (stale) vs externo 2.5.0 — reconciliar a 3.0.0. ATENCIÓN: P1 incluye acciones PUBLISH (push marketplace, push homebrew) visibles/irreversibles — requieren confirmación explícita del usuario en la ejecución. Orden de ejecución: P1.S1 sync → (P1.S2 bump + P2.S4 changelog + P2.S5 homebrew) → P1.S3 commit/tag/push/verify de último (el tag debe incluir el CHANGELOG). single? No: 2 primaries (orthogonality reviewer).",
+    "ui_requirements": {
+      "has_ui": false,
+      "visual_references": [],
+      "notes": "Release engineering across 3 repos — sin UI."
+    }
+  },
+  "objectives": {
+    "main": [
+      {
+        "id": 1,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "Packaging & publish del plugin 3.0.0: sincronizar deltas de Phases 2-4 a waves-cowork-plugin, bump versiones, commit+tag+push a GitHub, verificar install end-to-end.",
+        "context": "Mindset: release engineer. waves-cowork-plugin está en 2.5.0-baseline (sin Phases 2-4). Re-sincronizar waves/plugin/ → externo, bump a 3.0.0 (reconciliar waves/plugin 1.3.1). PUBLISH irreversible (tag/push marketplace) requiere confirmación del usuario; ejecutar DESPUÉS del CHANGELOG de P2.",
+        "scope": {
+          "files": [
+            "waves-cowork-plugin/.claude-plugin/plugin.json",
+            "waves-cowork-plugin/.claude-plugin/marketplace.json",
+            "waves-cowork-plugin/README.md",
+            "waves-cowork-plugin/commands/",
+            "waves-cowork-plugin/hooks/",
+            "waves-cowork-plugin/migrations/",
+            "waves-cowork-plugin/skills/",
+            "plugin/.claude-plugin/plugin.json",
+            "bin/waves"
+          ],
+          "rules": [
+            2,
+            3
+          ]
+        },
+        "status": "not_started"
+      },
+      {
+        "id": 2,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "Comunicación del breaking + deprecación: CHANGELOG [3.0.0] en waves (Why breaking, Migration path, Deprecated Homebrew) + caveat de deprecación en homebrew-waves Formula.",
+        "context": "Mindset: technical writer del cambio breaking. Comunicar por qué 3.0 rompe (plugin-first), cómo migrar (/waves:migrate-from-v2-to-v3 + /plugin install) y señalizar Homebrew muerto (pinned 2.5.0, no se elimina). Éxito: lector entiende sin contexto previo. CHANGELOG antes del tag de P1.",
+        "scope": {
+          "files": [
+            "CHANGELOG.md",
+            "homebrew-waves/Formula/waves.rb"
+          ],
+          "rules": [
+            2,
+            3
+          ]
+        },
+        "status": "not_started"
+      }
+    ],
+    "secondary": [
+      {
+        "id": 1,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "Sincronizar los deltas de Phases 2-4 desde waves/plugin/ a waves-cowork-plugin/ (commands, hooks, migrations, skills/references).",
+        "completion_guide": [
+          "Copiar waves/plugin/hooks/ (9 hooks plugin-native + hooks.json type:command) → waves-cowork-plugin/hooks/.",
+          "Copiar waves/plugin/commands/ (6 schema-path + upgrade.md + migrate-from-v2-to-v3.md + logbook-create.md con verifier B) → waves-cowork-plugin/commands/.",
+          "Copiar waves/plugin/migrations/ (README + v2.5-to-v3.0.md) → waves-cowork-plugin/migrations/.",
+          "Verificar que skills/waves-protocol/references/ (schemas) esté sincronizado entre ambos.",
+          "Diff para confirmar que el delta cubre Phases 2-4; NO arrastrar archivos legacy (cowork type:prompt obsoleto).",
+          "Apply rule #2: respetar la estructura establecida del plugin (commands/, hooks/, migrations/, skills/).",
+          "Apply rule #3: REGLA-0 — sincronizar solo lo necesario, sin reorganizar estructura."
+        ],
+        "status": "not_started"
+      },
+      {
+        "id": 2,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "Bump a 3.0.0: plugin.json (externo + waves/plugin) + marketplace.json + README capabilities 3.0 + bin/waves deprecated header.",
+        "completion_guide": [
+          "Bump waves-cowork-plugin/.claude-plugin/plugin.json .version a 3.0.0.",
+          "Reconciliar waves/plugin/.claude-plugin/plugin.json (está en 1.3.1 stale) a 3.0.0; actualizar marketplace.json si lleva versión.",
+          "README.md del plugin: reflejar capabilities 3.0 (distribution plugin-first, /waves:migrate-from-v2-to-v3 temporal, /waves:upgrade de artefactos).",
+          "bin/waves: header deprecado (CLI legacy reemplazado por el plugin) + nota de versión.",
+          "Apply rule #2: usar el formato semver establecido + la estructura de plugin.json/marketplace.json.",
+          "Apply rule #3: REGLA-0 KISS — solo bumps + nota de deprecación, sin reescrituras."
+        ],
+        "status": "not_started"
+      },
+      {
+        "id": 3,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "Commit + tag v3.0.0 en waves-cowork-plugin + push GitHub (confirmar antes); verificar /plugin marketplace add + install end-to-end; tag v3.0.0 en waves.",
+        "completion_guide": [
+          "PUBLISH: pedir confirmación explícita del usuario antes de cualquier push/tag (acción irreversible visible en el marketplace).",
+          "Ejecutar SOLO después de que P2 (CHANGELOG) esté commiteado, para que el tag incluya la narrativa del release.",
+          "Commit en waves-cowork-plugin con deltas + bumps; tag v3.0.0; push origin + push del tag.",
+          "Verificar end-to-end: /plugin marketplace add + /plugin install desde Claude Code limpio; comandos/hooks cargados sin tocar settings.json.",
+          "Tag v3.0.0 en el repo waves (sigue siendo source de schemas/docs).",
+          "Apply rule #2: tag semver v3.0.0 consistente con la convención de tags del proyecto.",
+          "Apply rule #3: REGLA-0 — release mínimo, sin ceremonia extra."
+        ],
+        "status": "not_started"
+      },
+      {
+        "id": 4,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "CHANGELOG.md [3.0.0] en waves: narrativa del distribution change + Why breaking + Migration path + Deprecated (Homebrew CLI).",
+        "completion_guide": [
+          "Agregar entrada ## [3.0.0] - <fecha> al inicio del CHANGELOG (sobre 2.5.0).",
+          "Narrativa: distribution plugin-first reemplaza copias de framework per-proyecto y Homebrew.",
+          "Why breaking (major bump): el framework ya no vive en el proyecto; hay que instalar el plugin.",
+          "Migration path: /plugin marketplace add + install, luego /waves:migrate-from-v2-to-v3 una vez.",
+          "Deprecated: Homebrew CLI (pinned 2.5.0) + 'waves upgrade' CLI (reemplazado por /plugin update + /waves:upgrade de artefactos).",
+          "Apply rule #2: seguir el formato establecido del CHANGELOG (## [version] - fecha, secciones).",
+          "Apply rule #3: REGLA-0 — narrativa clara y concisa, sin relleno."
+        ],
+        "status": "not_started"
+      },
+      {
+        "id": 5,
+        "created_at": "2026-05-22T00:00:00Z",
+        "content": "Caveat de deprecación en homebrew-waves Formula/waves.rb: pinned 2.5.0 + mensaje '⚠️ DEPRECATED — Waves 3.0+ vía plugin marketplace'.",
+        "completion_guide": [
+          "Editar homebrew-waves/Formula/waves.rb: en def caveats, agregar el mensaje de deprecación visible.",
+          "Mantener url/version pinned en 2.5.0 (último brew-compatible); NO eliminar el formula (evidencia histórica, roadmap decision #7).",
+          "Mensaje: '⚠️ DEPRECATED — Waves 3.0+ se instala vía Claude Code plugin marketplace. Este formula instala 2.5.0 (último brew-compatible).'",
+          "Commit en homebrew-waves; confirmar con el usuario antes de push si aplica.",
+          "Apply rule #2: respetar la estructura del Formula de Homebrew (def caveats).",
+          "Apply rule #3: REGLA-0 — solo el caveat, sin tocar la lógica de instalación."
+        ],
+        "status": "not_started"
+      }
+    ]
+  },
+  "resolved_decisions": [
+    {
+      "uncertainty": "¿single_focus o multi_focus para Phase 5?",
+      "resolution": "multi_focus, 2 primaries: P1 packaging & publish (5.1, 5.4, 5.5-tag), P2 comunicación breaking & deprecación (5.2, 5.3, 5.5-CHANGELOG).",
+      "method": "orthogonality_review",
+      "reasoning": "Subagente adversarial: dos mindsets separables. P1 = release engineer (ensamblar el artefacto + ejecutar el publish irreversible; éxito = install limpio funciona). P2 = technical writer (narrar por qué rompe + cómo migrar + señalizar Homebrew muerto; éxito = comprensión del lector, no un install). Homebrew (5.3) NO es dim propia (caveat de una línea, sin rules distintas) → plegado en P2. 'Publish' no es dim separable de 'package' (no se define el tag/push sin el artefacto). El rule set agentic (governing_principles, role_design, naming) diferencia débilmente a nivel de rules; los mindsets+success criteria cargan la ortogonalidad."
+    },
+    {
+      "uncertainty": "¿El repo externo tiene los cambios de Phases 2-4?",
+      "resolution": "No. Está en 2.5.0-baseline (Phase 1, antes de 2-4). Re-sincronizar waves/plugin/ → waves-cowork-plugin/ es prerequisito de P1 (S1 antes de bump/tag).",
+      "method": "KISS",
+      "reasoning": "Phase 1 sincronizó el externo al baseline 2.5.0 ANTES de que existieran los refactors de Phases 2-4. El flujo establecido es waves/plugin/ (source) → waves-cowork-plugin/ (distribución). Sin re-sync, el tag 3.0.0 publicaría el plugin sin el trabajo de 2-4."
+    },
+    {
+      "uncertainty": "¿plugin.json de waves/plugin (1.3.1) o el externo (2.5.0) es canónico?",
+      "resolution": "El externo waves-cowork-plugin es el plugin distribuible canónico. Bump ambos a 3.0.0; reconciliar el de waves/plugin (stale en 1.3.1).",
+      "method": "DRY",
+      "reasoning": "El plugin que se instala es el repo externo. waves/plugin/ es el source de sync. La discrepancia 1.3.1 vs 2.5.0 es drift de Phase 1 (bump directo en externo). Reconciliar evita dos fuentes de verdad de versión."
+    },
+    {
+      "uncertainty": "¿Homebrew formula se elimina o se deprecca?",
+      "resolution": "No se elimina. Pinned en 2.5.0 con caveat de deprecación visible (evidencia histórica + path graceful para legacy).",
+      "method": "user_clarification",
+      "reasoning": "Roadmap decision #7: eliminar el formula pierde evidencia del lineage. Caveat claro es honesto — usuarios viejos instalan 2.5.0, ven el mensaje, migran. Alineado con 'memoria como superpoder'."
+    },
+    {
+      "uncertainty": "¿Las acciones de publish (push marketplace, push homebrew) se ejecutan autónomas?",
+      "resolution": "No. Requieren confirmación explícita del usuario antes de cada push/tag (acciones irreversibles visibles a terceros).",
+      "method": "user_clarification",
+      "reasoning": "Aunque /waves:objectives-implement es autónomo para implementación, publicar al marketplace y al repo homebrew son acciones de blast-radius alto y visibles públicamente. La autonomía cubre escribir/empaquetar; el publish se confirma (regla operativa de acciones visibles/compartidas)."
+    }
+  ],
+  "recent_context": [
+    {
+      "id": 1,
+      "created_at": "2026-05-22T00:00:00Z",
+      "content": "Logbook Phase 5 w3 creado. multi_focus (orthogonality reviewer) con 2 primaries: P1 packaging & publish (S1 sync deltas Phase 2-4 → externo, S2 bump 3.0.0 + README + bin/waves, S3 commit/tag/push/verify con confirmación), P2 comunicación breaking (S4 CHANGELOG [3.0.0], S5 caveat homebrew). 5 secondaries. scope.rules [2,3] en ambos (#6 es package-names del ecosistema, N/A). 5 resolved_decisions. HALLAZGOS: externo en 2.5.0-baseline sin Phases 2-4 (re-sync prerequisito); plugin.json waves/plugin stale en 1.3.1 vs externo 2.5.0 (reconciliar a 3.0.0). Orden: S1 → (S2+S4+S5) → S3 último (tag incluye CHANGELOG). PUBLISH (S3 push marketplace, S5 push homebrew) requiere confirmación explícita del usuario — es el corazón irreversible del rollout (memoria: 4→5→6 corazón irrompible). Abarca 3 repos: waves (source), waves-cowork-plugin (distribución), homebrew-waves (deprecación)."
+    },
+    {
+      "id": 2,
+      "created_at": "2026-05-22T16:37:28Z",
+      "content": "Integrity audit: PASÓ LIMPIO (0 critical, 0 warning). Verificado: decomposición multi_focus=2 primaries coincide, ids [2,3] existen, 5 secondaries con Apply rule #2 y #3 (S1-S3→P1, S4-S5→P2), sin scope vacíos, paths de sibling-repos (waves-cowork-plugin/, homebrew-waves/) y NEW (migrations/) correctamente no flagueados. Audit: ai_files/waves/w3/audits/logbook-phase_5.json."
+    }
+  ],
+  "history_summary": [],
+  "future_reminders": [],
+  "audit": {
+    "is_already_audited": true,
+    "audit_file": "ai_files/waves/w3/audits/logbook-phase_5.json"
+  }
+}
