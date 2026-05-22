@@ -135,7 +135,7 @@
       "id": 3,
       "name": "Commands refactor — schemas via plugin path + /waves:upgrade scope reducido",
       "description": "Modificar slash commands para referenciar $CLAUDE_PLUGIN_ROOT/schemas/. /waves:upgrade reducido a migraciones de artefactos. Aplicar patrón verifier A→B a orthogonality reviewer y Layer D integrity audit del logbook-create.",
-      "status": "not_started",
+      "status": "completed",
       "depends_on": [
         2
       ],
@@ -143,34 +143,36 @@
         {
           "id": "3.1",
           "content": "Identificar slash commands que referencian schemas locales (grep 'ai_files/schemas' en plugin/commands/). Actualizar referencias a $CLAUDE_PLUGIN_ROOT/schemas/.",
-          "status": "not_started"
+          "status": "completed"
         },
         {
           "id": "3.2",
           "content": "Refactor /waves:upgrade: eliminar copia de framework. Mantener solo migraciones de artefactos (lee versión actual del proyecto vs plugin, aplica migrations incrementales).",
-          "status": "not_started"
+          "status": "completed"
         },
         {
           "id": "3.3",
           "content": "Formato migrations declarativas: plugin/migrations/v<from>-to-<to>.md con frontmatter + steps. ai_files/.waves-version marca versión aplicada al proyecto.",
-          "status": "not_started"
+          "status": "completed"
         },
         {
           "id": "3.4",
           "content": "Test /waves:upgrade flow: proyecto en 2.5.0 + plugin 3.0.0 → lee delta, aplica v2.5-to-v3.0.md, actualiza marker. Sin delta = no-op.",
-          "status": "not_started"
+          "status": "completed"
         },
         {
           "id": "3.5",
           "content": "Orthogonality reviewer + verifier B: tras A decidir single_focus vs multi_focus, B valida dimensiones ortogonales con evidencia del logbook/blueprint.",
-          "status": "not_started"
+          "status": "completed"
         },
         {
           "id": "3.6",
           "content": "Layer D integrity audit + verifier B: tras A producir findings de integrity (phantom refs, decomposition), B fresco verifica cada finding contra logbook real.",
-          "status": "not_started"
+          "status": "completed"
         }
-      ]
+      ],
+      "started_at": "2026-05-22T03:19:23Z",
+      "completed_at": "2026-05-22T03:19:23Z"
     },
     {
       "id": 4,
@@ -435,6 +437,11 @@
       "id": 15,
       "created_at": "2026-05-21T21:49:46Z",
       "decision": "[AUTO] Phase 2 w3 COMPLETED. Logbook phase_2.json: 2/2 primaries + 9/9 secondaries achieved. P1: 9 hooks plugin-native creados en plugin/hooks/ (markers session-scoped $CLAUDE_PLUGIN_DATA/$SESSION_ID, session_id stdin, hooks.json type:command, seeding anti-flood en perceive). P2: verifier B inline en los 4 procesos adversariales (doble lente técnico+valor, B clasifica no filtra confirmed/smoke/unverifiable/gold, hook pasa ambos al main agent). Hallazgo: los 9 hooks vivían en .claude/hooks/ (no en plugin/hooks/); .claude/hooks queda intacto hasta Phase 6.4. Gotcha bash 3.2: 1)/2) en heredocs $(...) rompen el parser. Tests sandbox: perceive+seeding, S4 anti-flood, gate (block/whitelist/read-only/classification/missing-roadmap/shaping), multi-sesión aislada, los 4 verifiers A→B emiten JSON válido. Next: Phase 3 (commands refactor schemas via PLUGIN_ROOT + /waves:upgrade scope reducido + orthogonality/integrity verifiers)."
+    },
+    {
+      "id": 16,
+      "created_at": "2026-05-22T03:19:23Z",
+      "decision": "[AUTO] Phase 3 w3 COMPLETED. Logbook phase_3.json: 3/3 primaries + 6/6 secondaries achieved. P1 (S1): 12 refs de schema en 6 comandos repuntadas a ${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/ (re-grep ai_files/schemas=0). P2 (S2-S4): /waves:upgrade rediseñado plugin-native como plugin/commands/upgrade.md (lee ai_files/.waves-version vs plugin version, aplica migraciones declarativas desde plugin/migrations/, sin copia de framework) + formato plugin/migrations/ (README + ejemplo v2.5-to-v3.0.md) + test de lógica semver. P3 (S5-S6): verifier B inline en orthogonality reviewer (A2.5) e integrity audit (A6) de logbook-create.md — doble lente, B clasifica no vetea, comando pasa A+B al main agent. Correcciones: archivo correcto es upgrade.md (no waves:upgrade.md, sin prefijo en plugin/commands/); marker .claude/waves-version→ai_files/.waves-version. Cobertura A→B completa: 6 procesos adversariales (4 hooks + 2 slash-command subagents). Next: Phase 4 (/waves:migrate-from-v2-to-v3 comando temporal de migración)."
     }
   ],
   "open_questions": [
@@ -555,6 +562,11 @@
       "id": 8,
       "created_at": "2026-05-21T21:49:46Z",
       "content": "Phase 2 COMPLETED. Hooks plugin-native (P1) + verifier pattern A→B inline en 4 procesos adversariales (P2). Ver logbook phase_2.json para detalle técnico y gotchas. Phase 3 lista para arrancar (just-in-time: crear phase_3.json tras este punto)."
+    },
+    {
+      "id": 9,
+      "created_at": "2026-05-22T03:19:23Z",
+      "content": "Phase 3 COMPLETED. Commands schema-path refactor (P1) + /waves:upgrade plugin-native + migrations format (P2) + verifier B en los 2 subagentes adversariales de logbook-create (P3). Cobertura A→B completa en los 6 procesos adversariales del framework. Ver logbook phase_3.json. Phase 4 lista (just-in-time)."
     }
   ],
   "history_summary": [],

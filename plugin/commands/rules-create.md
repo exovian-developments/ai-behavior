@@ -153,7 +153,7 @@ Options:
 
 ### Step A5: Generate Rules File
 
-Read `ai_files/schemas/project_rules_schema.json` for structure reference.
+Read `${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/project_rules_schema.json` for structure reference.
 
 Generate `ai_files/project_rules.json` with:
 - Project info from manifest

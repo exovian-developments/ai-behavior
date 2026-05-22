@@ -1,0 +1,247 @@
+{
+  "ticket": {
+    "title": "Phase 3 w3 — Commands refactor (schemas via plugin path) + /waves:upgrade scope reducido + verifier B en subagentes adversariales de logbook-create",
+    "url": "",
+    "description": "Tres dimensiones ortogonales del refactor de comandos para Waves 3.0. (1) Repuntar las referencias de schema en 6 comandos del plugin de la ruta local del proyecto (ai_files/schemas/) a la ruta del plugin ($CLAUDE_PLUGIN_ROOT/skills/waves-protocol/references/, donde ya viven los schemas y donde project-init ya los lee) — find-replace mecánico, criterio de éxito = exhaustividad y cero refs stale. (2) Rediseñar /waves:upgrade: traerlo a plugin/commands/ (hoy vive en .claude/commands/), eliminar toda copia de framework (eso lo da el plugin) y reducirlo a migraciones de artefactos vía un motor de delta de versión (lee ai_files/.waves-version vs versión del plugin) + un formato declarativo nuevo plugin/migrations/v<from>-to-<to>.md (frontmatter + steps) — diseño de subsistema gobernado por KISS/YAGNI. (3) Aplicar el patrón verifier A→B inline a los 2 subagentes adversariales que viven dentro de plugin/commands/logbook-create.md: el orthogonality reviewer (Step A2.5) y el Layer D integrity audit (Step A6). Mismo patrón que Phase 2: A produce análisis, B verifica con doble lente (técnico grep/Read + valor sobreingeniería), B clasifica (confirmed/smoke/unverifiable/gold) sin filtrar, el comando pasa ambos análisis al main agent. Prompts embebidos inline (decision #14: no materializar archivos). Nota: logbook-create.md es tocado por P1 (ref de schema) y P3 (verifier B) — dimensiones ortogonales sobre el mismo archivo, orden P1 antes que P3.",
+    "ui_requirements": {
+      "has_ui": false,
+      "visual_references": [],
+      "notes": "Framework infrastructure work (markdown commands + migrations format) — sin UI."
+    }
+  },
+  "objectives": {
+    "main": [
+      {
+        "id": 1,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Repuntar refs de schema en 6 comandos del plugin de ai_files/schemas a $CLAUDE_PLUGIN_ROOT/skills/waves-protocol/references; cero refs stale.",
+        "context": "Mindset: refactor mecánico exhaustivo. Los 6 comandos referencian ai_files/schemas/. En plugin-first los schemas viven en $CLAUDE_PLUGIN_ROOT/skills/waves-protocol/references/ (project-init ya la usa). NO crear plugin/schemas/ (DRY). Éxito: grep ai_files/schemas en plugin/commands da 0.",
+        "scope": {
+          "files": [
+            "plugin/commands/feasibility-analyze.md",
+            "plugin/commands/blueprint-create.md",
+            "plugin/commands/foundation-create.md",
+            "plugin/commands/logbook-create.md",
+            "plugin/commands/manifest-create.md",
+            "plugin/commands/rules-create.md"
+          ],
+          "rules": [
+            2,
+            3,
+            6
+          ]
+        },
+        "status": "achieved",
+        "completed_at": "2026-05-22T03:13:53Z"
+      },
+      {
+        "id": 2,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Rediseñar /waves:upgrade en el plugin: quitar copia de framework, agregar motor de delta (.waves-version vs plugin) + formato plugin/migrations/, validar flujo.",
+        "context": "Mindset: diseño de subsistema. /waves:upgrade vive en .claude/commands/ y copia framework. En v3 el framework lo da el plugin; upgrade migra solo ARTEFACTOS: lee ai_files/.waves-version y aplica migrations declarativas incrementales (tipo Rails). Roadmap decisions #3/#4, OQ #2.",
+        "scope": {
+          "files": [
+            "plugin/commands/waves:upgrade.md",
+            ".claude/commands/waves:upgrade.md",
+            "plugin/migrations/",
+            "ai_files/.waves-version"
+          ],
+          "rules": [
+            2,
+            3
+          ]
+        },
+        "status": "achieved",
+        "completed_at": "2026-05-22T03:16:32Z"
+      },
+      {
+        "id": 3,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Verifier B inline en los 2 subagentes adversariales de logbook-create: orthogonality reviewer (A2.5) + integrity audit (A6). B clasifica no filtra, pasa ambos al main agent.",
+        "context": "Mindset: diseño de prompts adversariales. Los 2 subagentes de logbook-create (orthogonality A2.5, integrity A6) hacen 1 spawn (A). Aplicar patrón A→B de Phase 2: 2º spawn B fresco, doble lente (técnico+valor), clasifica no filtra, pasa ambos al main agent. Inline (decision #14).",
+        "scope": {
+          "files": [
+            "plugin/commands/logbook-create.md"
+          ],
+          "rules": [
+            1,
+            2,
+            3
+          ]
+        },
+        "status": "achieved",
+        "completed_at": "2026-05-22T03:19:05Z"
+      }
+    ],
+    "secondary": [
+      {
+        "id": 1,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Repuntar refs de schema en los 6 comandos a $CLAUDE_PLUGIN_ROOT/skills/waves-protocol/references/ y verificar 0 refs a ai_files/schemas.",
+        "completion_guide": [
+          "grep -rn 'ai_files/schemas' plugin/commands/ para enumerar cada ocurrencia exacta en los 6 comandos.",
+          "Reemplazar cada ai_files/schemas/<x>.json por $CLAUDE_PLUGIN_ROOT/skills/waves-protocol/references/<x>.json (ubicación real de los schemas en el plugin).",
+          "Verificar con ls que cada schema referenciado existe en plugin/skills/waves-protocol/references/ (ej. logbook_roadmap_schema.json, product_blueprint_schema.json).",
+          "Re-grep 'ai_files/schemas' en plugin/commands/ — debe dar 0 resultados.",
+          "NO crear plugin/schemas/: los schemas ya viven en references/ y project-init ya usa esa ruta.",
+          "Apply rule #2: usar la ubicación/convención de schemas establecida del plugin; no inventar ruta custom.",
+          "Apply rule #6: rutas de schema consistentes con la convención real del plugin (references/).",
+          "Apply rule #3: REGLA-0 KISS/DRY — solo el find-replace necesario, sin abstracciones nuevas."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-22T03:13:53Z"
+      },
+      {
+        "id": 2,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Traer /waves:upgrade a plugin/commands/ eliminando la copia de framework; agregar motor de delta de versión (lee ai_files/.waves-version vs versión del plugin).",
+        "completion_guide": [
+          "Leer .claude/commands/waves:upgrade.md para identificar la lógica de copia de framework que se elimina.",
+          "Crear plugin/commands/waves:upgrade.md sin ninguna copia de archivos de framework (eso ya lo provee el plugin).",
+          "Implementar: leer ai_files/.waves-version (versión aplicada al proyecto) y compararla con la versión del plugin.",
+          "Si igual → no-op; si hay delta → aplicar las migrations incrementales en orden de versión.",
+          "Apply rule #3: REGLA-0 KISS/YAGNI — scope reducido a migración de artefactos; no re-introducir copia de framework.",
+          "Apply rule #2: seguir el formato establecido de comandos slash (frontmatter description + allowed-tools)."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-22T03:16:32Z"
+      },
+      {
+        "id": 3,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Definir el formato declarativo plugin/migrations/v<from>-to-<to>.md (frontmatter + steps) y el marcador ai_files/.waves-version.",
+        "completion_guide": [
+          "Diseñar frontmatter de migration: from_version, to_version, description. Cuerpo = steps que el agente lee y ejecuta como completion_guide.",
+          "Crear plugin/migrations/ con un ejemplo v2.5-to-v3.0.md (migración de artefactos: limpiar ai_files/schemas/ legacy, setear .waves-version).",
+          "Definir ai_files/.waves-version como archivo de una línea con la versión semver aplicada al proyecto.",
+          "Apply rule #2: markdown declarativo alineado a cómo waves ya define commands; NO inventar formato custom (roadmap OQ #2 recomienda markdown).",
+          "Apply rule #3: REGLA-0 YAGNI — formato mínimo (frontmatter + steps), sin metadata especulativa."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-22T03:16:32Z"
+      },
+      {
+        "id": 4,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Probar el flujo /waves:upgrade: proyecto 2.5.0 + plugin 3.0.0 aplica v2.5-to-v3.0 y actualiza el marker; sin delta = no-op.",
+        "completion_guide": [
+          "Sandbox: proyecto con ai_files/.waves-version=2.5.0; simular plugin 3.0.0; ejecutar la lógica del comando.",
+          "Verificar: lee el delta, aplica plugin/migrations/v2.5-to-v3.0.md, .waves-version queda en 3.0.0.",
+          "Verificar caso no-op: .waves-version == versión del plugin → no aplica nada.",
+          "Apply rule #2: el test verifica que el comando usa el formato de migrations establecido (frontmatter + steps), no uno ad-hoc.",
+          "Apply rule #3: REGLA-0 — test mínimo del golden path + no-op, sin sobre-testear."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-22T03:16:32Z"
+      },
+      {
+        "id": 5,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Verifier B inline en orthogonality reviewer (A2.5): tras A decidir single/multi focus, B valida las dimensiones contra evidencia, clasifica, pasa ambos al main agent.",
+        "completion_guide": [
+          "Localizar Step A2.5 en plugin/commands/logbook-create.md (el prompt del decomposition critic A, ~línea 434).",
+          "Tras el spawn de A, agregar 2º spawn B: fresco, escéptico, doble lente — técnico (¿cada dimensión tiene rules backing en project_rules?) + valor (¿over/under-decomposición?).",
+          "B clasifica cada dimensión propuesta (confirmed/smoke/unverifiable/gold), NO filtra; el comando pasa AMBOS (decisión A + clasificación B) al main agent que decide.",
+          "Embeber el prompt de B inline (decision #14: no materializar archivos).",
+          "Apply rule #1: en implementación autónoma B asiste y el main agent decide (human/main-agent in the loop).",
+          "Apply rule #2: seguir el formato del patrón A→B ya establecido en los hooks (design_principle #7 / product_rule #9).",
+          "Apply rule #3: REGLA-0 KISS — B solo evalúa+clasifica, no re-hace la decomposición."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-22T03:19:05Z"
+      },
+      {
+        "id": 6,
+        "created_at": "2026-05-21T00:00:00Z",
+        "content": "Verifier B inline en Layer D integrity audit (A6): tras A producir findings de integridad, B fresco verifica cada uno contra el logbook en disco, clasifica.",
+        "completion_guide": [
+          "Localizar Step A6 en plugin/commands/logbook-create.md (el prompt del integrity reviewer A, ~línea 779).",
+          "Tras A escribir el audit file, agregar 2º spawn B: lee el logbook real + audit de A, verifica cada finding (¿primary_id/rule_id citado existe? ¿missing_rule real?) + lente de valor.",
+          "B añade classification a cada finding (confirmed/smoke/unverifiable/gold) sin borrar ninguno; el comando pasa ambos al main agent que decide qué corregir.",
+          "Embeber el prompt de B inline; mantener consistencia de formato con S5 y con los 4 verifiers de hooks (Phase 2).",
+          "Apply rule #1: en implementación autónoma B asiste y el main agent decide qué corregir (human/main-agent in the loop).",
+          "Apply rule #2: formato A→B consistente con el resto del framework (design_principle #7).",
+          "Apply rule #3: REGLA-0 KISS — B verifica+clasifica, no re-audita desde cero."
+        ],
+        "status": "achieved",
+        "completed_at": "2026-05-22T03:19:05Z"
+      }
+    ]
+  },
+  "resolved_decisions": [
+    {
+      "uncertainty": "¿single_focus o multi_focus para Phase 3, y con cuántas dimensiones?",
+      "resolution": "multi_focus con 3 primaries: P1 schema-path refactor (mecánico), P2 /waves:upgrade redesign + migrations format (diseño de subsistema), P3 verifier B en subagentes adversariales de logbook-create.",
+      "method": "orthogonality_review",
+      "reasoning": "Subagente adversarial (general-purpose, blocking) confirmó 3 mindsets distintos. Split mi propuesta inicial de 2 primaries: separó el find-replace mecánico de schemas (3.1, criterio=exhaustividad, rules naming/governing) del rediseño de /waves:upgrade (3.2-3.4, criterio=comportamiento delta-driven correcto, diseño de formato nuevo, rules governing/KISS). P3 (3.5-3.6, role_design/meta-cognición) es ortogonal a toda la plomería, espejo de Phase 2 P2. logbook-create.md tocado por P1 y P3 es overlap de ejecución, no dependencia definicional.",
+      "dimensions_evaluated": [
+        {
+          "name": "schema-path refactor",
+          "mindset": "find-replace mecánico exhaustivo",
+          "success": "0 refs ai_files/schemas en plugin/commands/"
+        },
+        {
+          "name": "/waves:upgrade redesign + migrations",
+          "mindset": "diseño de subsistema (delta engine + formato nuevo)",
+          "success": "upgrade delta-driven correcto + no-op"
+        },
+        {
+          "name": "verifier B en subagentes de logbook-create",
+          "mindset": "diseño de prompts adversariales A→B",
+          "success": "A2.5 y A6 con verifier B doble-lente que clasifica no filtra"
+        }
+      ]
+    },
+    {
+      "uncertainty": "¿A qué ruta repuntar los schemas: $CLAUDE_PLUGIN_ROOT/schemas/ (como dice el milestone 3.1) o la ubicación real?",
+      "resolution": "$CLAUDE_PLUGIN_ROOT/skills/waves-protocol/references/ — donde los schemas YA viven en el plugin y donde project-init.md ya los lee. NO crear plugin/schemas/.",
+      "method": "DRY",
+      "reasoning": "El milestone 3.1 decía '$CLAUDE_PLUGIN_ROOT/schemas/' de forma laxa, pero crear esa carpeta duplicaría la ubicación. Los schemas ya están en plugin/skills/waves-protocol/references/ y project-init ya usa esa ruta. Alinear a la realidad evita una segunda fuente de verdad."
+    },
+    {
+      "uncertainty": "¿De dónde sale /waves:upgrade para el plugin si no está en plugin/commands/?",
+      "resolution": "Fuente = .claude/commands/waves:upgrade.md; se trae a plugin/commands/ refactorizado a solo-migraciones. Mismo patrón que los 9 hooks en Phase 2.",
+      "method": "KISS",
+      "reasoning": "Igual que los hooks, el comando operativo vive en .claude/ y aún no está en el plugin. Phase 3 lo materializa plugin-native. .claude/commands/ queda intacto hasta Phase 6.4 (waves se migra a sí mismo de último)."
+    },
+    {
+      "uncertainty": "¿logbook-create.md en P1 y P3 viola ortogonalidad?",
+      "resolution": "No. P1 toca solo la línea de referencia de schema; P3 toca los prompts de subagentes A2.5/A6. Dimensiones ortogonales sobre el mismo archivo. Orden: P1 antes que P3.",
+      "method": "orthogonality_review",
+      "reasoning": "Mismo patrón que Phase 2, donde los 4 hooks adversariales recibieron plomería en P1 y verifier B en P2. El solapamiento es de ejecución (qué archivo), no de dimensión (qué concern)."
+    }
+  ],
+  "recent_context": [
+    {
+      "id": 1,
+      "created_at": "2026-05-21T00:00:00Z",
+      "content": "Logbook Phase 3 w3 creado. multi_focus con 3 primaries ortogonales (orthogonality reviewer adversarial confirmó el split): P1 schema-path refactor en 6 comandos a $CLAUDE_PLUGIN_ROOT/skills/waves-protocol/references/ (S1), P2 rediseño de /waves:upgrade + formato plugin/migrations/ + .waves-version + test (S2-S4), P3 verifier B inline en orthogonality reviewer (A2.5) e integrity audit (A6) de logbook-create.md (S5-S6). 6 secondaries. 4 resolved_decisions. Orden de ejecución: P1 (schema refs) → P2 (upgrade) → P3 (verifier B). Hallazgos del trazado: schemas del plugin viven en skills/waves-protocol/references/ (no plugin/schemas/); /waves:upgrade vive en .claude/commands/ (traer al plugin, igual que los hooks de Phase 2)."
+    },
+    {
+      "id": 2,
+      "created_at": "2026-05-21T23:26:56Z",
+      "content": "Integrity audit aplicado: 2 critical findings addressed (S4: agregado Apply rule #2; S6: agregado Apply rule #1 — completion_guide_missing_apply_rule_lines en ambos), 0 warnings. Resto limpio: ids de rules (1,2,3,6) existen, multi_focus=3 dimensiones coincide con 3 primaries, sin scope.files vacíos, paths NEW (waves:upgrade.md, plugin/migrations/, .waves-version) confirmados intencionales. Audit report: ai_files/waves/w3/audits/logbook-phase_3.json. Nota: el integrity reviewer corrió como single-A (sin verifier B) — irónicamente, B es justo lo que P3/S6 de esta misma fase va a agregar a este proceso."
+    },
+    {
+      "id": 3,
+      "created_at": "2026-05-22T03:13:53Z",
+      "content": "P1/S1 COMPLETED. Schema-path refactor: 12 refs a ai_files/schemas/ en 6 comandos (feasibility-analyze, blueprint-create, foundation-create, logbook-create, manifest-create, rules-create) repuntadas a ${CLAUDE_PLUGIN_ROOT}/skills/waves-protocol/references/ vía sed (find-replace literal de path, sin colisión de variables). Verificado: re-grep ai_files/schemas en plugin/commands/ = 0 (criterio de éxito). Limpiadas 2 redundancias post-replace (feasibility-analyze L33 y foundation-create L221 apuntaban dos veces al mismo path — KISS rule #3). Confirmado: los 13 schemas referenciados existen en references/. NO se creó plugin/schemas/ (DRY). Total 17 refs al path del plugin en plugin/commands/ (12 nuevas + 5 que ya lo usaban: project-init, roadmap-create, user-pref-*)."
+    },
+    {
+      "id": 4,
+      "created_at": "2026-05-22T03:16:32Z",
+      "content": "P2 COMPLETED (S2-S4). /waves:upgrade rediseñado plugin-native. CORRECCIÓN DE SCOPE: el archivo correcto es plugin/commands/upgrade.md (NO waves:upgrade.md) — en plugin/commands/ los archivos no llevan prefijo waves: (el namespace lo añade el plugin); el scope.files del logbook tenía el nombre con prefijo por error. S2: upgrade.md lee ai_files/.waves-version vs versión del plugin (${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json .version), aplica migraciones declarativas, SIN copia de framework (eso lo da el plugin; el cleanup one-time de framework legacy es /waves:migrate-from-v2-to-v3 de Phase 4). S3: plugin/migrations/ con README (spec del formato: frontmatter from/to/description + ## Narrative + ## Steps idempotentes) + ejemplo real v2.5-to-v3.0.md (reubica el marker .claude/waves-version → ai_files/.waves-version; sin cambios de schema 2.5→3.0). Reemplaza las migraciones hard-codeadas inline del comando 2.x por archivos declarativos. S4: test de la lógica (markdown agent-interpreted, no script): frontmatter parsea, selección semver golden-path (local 2.5.0 + plugin 3.0.0 → aplica v2.5-to-v3.0), no-op (local==plugin → exit). Marker location: .claude/waves-version (2.x) → ai_files/.waves-version (3.0, git-committable). DESCUBRIMIENTO: plugin.json de este repo está en 1.3.1 (Phase 1 sincronizó el repo EXTERNO waves-cowork-plugin a 2.5.0, no este plugin/); Phase 5 lo bumpea a 3.0.0."
+    },
+    {
+      "id": 5,
+      "created_at": "2026-05-22T03:19:05Z",
+      "content": "P3 COMPLETED (S5-S6). Verifier B inline en los 2 subagentes adversariales de logbook-create.md. S5 (A2.5 orthogonality, L496-526): reestructurado \"When the subagent returns\" — paso 1 spawn B (contexto mínimo, doble lente: técnico=¿cada dimensión tiene rules backing real en project_rules+manifest? / valor=¿over/under-decomposición KISS?), B clasifica overall+cada dimensión (confirmed/smoke/unverifiable/gold) NO vetea, paso 2 persiste A+B (campo verifier_classification), paso 3 decide respetando B (smoke→re-evaluar/colapsar, unverifiable→juicio, confirmed/gold→safe; smoke acordado→Level 3 escalation). S6 (A6 integrity, L883): nuevo paso 2 spawn B tras A escribir el audit file — B verifica cada finding contra el logbook REAL (¿primary_id/secondary_id/rule_id citado existe? ¿missing_rule real?) + lente valor (pedante?), añade classification a cada finding y reescribe el audit file; paso 4 procesa respetando classification ANTES de severity (smoke=no aplicar, confirmed/gold=trust contract por severity). Markdown verificado: 64 fences balanceadas, 2 prompts A intactos, 0 refs ai_files/schemas (P1 intacto). Formato consistente con los 4 verifiers de hooks (Phase 2) y con design_principle #7/product_rule #9. Inline, sin materializar archivos (decision #14). Cobertura completa del patrón A→B: 6 procesos adversariales del framework (4 hooks Phase 2 + 2 slash-command subagents Phase 3)."
+    }
+  ],
+  "history_summary": [],
+  "future_reminders": [],
+  "audit": {
+    "is_already_audited": true,
+    "audit_file": "ai_files/waves/w3/audits/logbook-phase_3.json"
+  }
+}

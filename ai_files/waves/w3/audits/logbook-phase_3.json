@@ -1,0 +1,24 @@
+{
+  "logbook_path": "/Users/avm/Repositories/exovian/waves/ai_files/waves/w3/logbooks/phase_3.json",
+  "audited_at": "2026-05-21T23:14:20Z",
+  "model": "claude (general-purpose)",
+  "summary": { "critical": 2, "warning": 0 },
+  "findings": [
+    {
+      "id": 1,
+      "severity": "critical",
+      "category": "completion_guide_missing_apply_rule_lines",
+      "location": { "primary_id": 2, "secondary_id": 4 },
+      "message": "Secondary 4 maps to primary 2 (per the S2/S3/S4 -> P2 mapping). Primary 2 declares scope.rules=[2,3], but secondary 4's completion_guide only contains 'Apply rule #3: REGLA-0 ...' and has no 'Apply rule #2: ...' line. Sibling secondaries S2 and S3 (same parent, same rules) both include explicit Apply rule #2 lines, so the omission in S4 is an inconsistency that leaves the implementer of the upgrade-flow test without the rule #2 (use established schemas/formats/conventions, no custom formats) reminder when validating the golden-path and no-op flow.",
+      "suggested_action": "Add an 'Apply rule #2: ...' line to secondary 4's completion_guide so all rules declared in its parent primary's scope.rules ([2,3]) are represented, tying rule #2 to the upgrade-flow validation (e.g. asserting the test exercises the established command/migration format rather than an ad-hoc one)."
+    },
+    {
+      "id": 2,
+      "severity": "critical",
+      "category": "completion_guide_missing_apply_rule_lines",
+      "location": { "primary_id": 3, "secondary_id": 6 },
+      "message": "Secondary 6 maps to primary 3 (per the S5/S6 -> P3 mapping). Primary 3 declares scope.rules=[1,2,3], but secondary 6's completion_guide only contains 'Apply rule #2: ...' and 'Apply rule #3: REGLA-0 ...' lines — it omits any 'Apply rule #1: ...' line. Sibling secondary S5 (same parent P3, same rules [1,2,3]) does include an 'Apply rule #1' line ('en implementacion autonoma B asiste y el main agent decide'). Since S6 designs the verifier B inline in the Layer D integrity audit (A6), the rule #1 autonomy/human-in-the-loop concern (B classifies, main agent decides) is materially relevant and is dropped from the guide.",
+      "suggested_action": "Add an 'Apply rule #1: ...' line to secondary 6's completion_guide mirroring S5, making explicit that verifier B in the integrity audit only classifies/annotates (confirmed/smoke/unverifiable/gold) and the main agent retains the decision — keeping coverage of all three rules its parent primary declares."
+    }
+  ]
+}
