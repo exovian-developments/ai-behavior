@@ -23,6 +23,32 @@ Most recent versions appear first.
 
 # Waves Era (2026-03-13 → present)
 
+## [3.0.0] - 2026-05-22
+
+### Changed — Plugin-first distribution (BREAKING)
+
+Wave 3 (w3). Waves is now distributed as an official **Claude Code plugin** via GitHub marketplace, replacing the per-project framework copies of the 2.x line. The framework (commands, hooks, agents, skills, schemas) lives in the plugin under `$CLAUDE_PLUGIN_ROOT`; each project keeps only its git-committable artifacts in `ai_files/`. One install serves all projects; one `/plugin update` upgrades them all; the user's `~/.claude/settings.json` is never touched.
+
+**Why breaking (major bump):** the framework no longer ships inside the project. A 2.x project carries `.claude/commands/waves:*.md`, `.claude/hooks/waves-*.sh`, and `ai_files/schemas/`; a 3.0 project does not. Sessions now resolve commands/hooks/schemas from the plugin, not from the repo. This changes where the framework lives and how it is upgraded — hence 3.0.0.
+
+**Migration path:**
+1. `/plugin marketplace add exovian-developments/waves-cowork-plugin`
+2. `/plugin install waves@waves-cowork-plugin`
+3. `/waves:migrate-from-v2-to-v3` once per project — removes legacy framework files (and orphaned waves hook entries in `.claude/settings.json`) while keeping all `ai_files/` artifacts. git is the safety net; the command requires a clean tree.
+
+### Added
+
+- **Plugin-native hooks** — the 9 enforcement hooks run from `$CLAUDE_PLUGIN_ROOT/hooks/` with session-scoped markers at `$CLAUDE_PLUGIN_DATA/markers/$SESSION_ID/` (session_id from stdin). `waves-perceive` seeds the session baseline at SessionStart to prevent metacognition floods. `hooks.json` converted to `type:command`.
+- **Verifier pattern A→B** across all 6 adversarial processes — each analyst (A) is now followed by an independent skeptical verifier (B) with two lenses (technical grep/Read + value/overengineering). B classifies (confirmed/smoke/unverifiable/gold), never vetoes; both analyses reach the main agent. Implemented inline in the 4 hooks (metacognition, blueprint-impact, phase-audit, rules-audit) and the 2 logbook-create subagents (orthogonality reviewer, integrity audit).
+- **`/waves:objectives-implement` Step 7 now uses a fresh auditor subagent (A) instead of main-agent self-audit.** The original "no subagents, preserve full context" guidance applied to implementation but mistakenly extended to the audit — the implementer cannot audit its own code without bias. At per-secondary granularity, one level of independence (a fresh auditor) is the meaningful jump; Layer C continues providing the deeper A→B audit at primary completion. Implementation, audit-finding decisions, and retry fixes remain in the main agent (they need full context).
+- **`/waves:upgrade`** reduced to incremental **artifact** migrations driven by declarative `plugin/migrations/v<from>-to-<to>.md` files and an `ai_files/.waves-version` marker (framework copy is the plugin's job now).
+- **`/waves:migrate-from-v2-to-v3`** — temporal one-time migration command (`deprecated_in: 3.2.0`).
+
+### Deprecated
+
+- **Homebrew CLI** (`brew install waves`) — frozen at 2.5.0 (last brew-compatible), with a deprecation caveat. Not removed (historical evidence).
+- **`waves upgrade` CLI** — replaced by `/plugin update` (framework) + `/waves:upgrade` (artifacts).
+
 ## [2.5.0] - 2026-05-15
 
 ### Added — Agentic project rules + universal `governing_principles`

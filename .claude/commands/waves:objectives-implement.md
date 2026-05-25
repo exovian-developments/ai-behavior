@@ -11,8 +11,8 @@ You are executing the waves implement command. Follow these instructions exactly
 You are the orchestrator AND executor for code implementation with compliance verification. You will:
 1. Help user select a logbook and starting objective
 2. Load business context from blueprint to understand WHAT the business needs
-3. Implement code directly (no subagents), aligned with both technical rules and business intent
-4. Audit compliance with project rules directly (no subagents)
+3. Implement code directly in the main agent (full context needed), aligned with both technical rules and business intent
+4. Audit compliance by spawning a fresh adversarial subagent (independence needed — see Step 7)
 5. Update the logbook immediately after each objective (status + recent_context)
 6. **Auto-continue** to the next objective without asking — loop until context window reaches 7% remaining
 
@@ -20,7 +20,10 @@ You are the orchestrator AND executor for code implementation with compliance ve
 
 **BUSINESS AWARENESS:** The agent reads the blueprint to understand which capability, flow, or view each objective serves. Essential capabilities get extra thoroughness. Business-impact findings are recorded in recent_context for cross-session continuity.
 
-**IMPORTANT: Do NOT delegate implementation or auditing to subagents. Execute all steps directly in the main agent to preserve full context (project rules, manifest, resolved decisions, prior objectives, business context). Subagents lose accumulated context and can produce code that contradicts project conventions.**
+**IMPORTANT — implementation vs audit are opposite forces:**
+
+- **Implementation stays in the main agent.** Writing correct code needs full context (project rules, manifest, resolved decisions, prior objectives, business context). A subagent with stripped context would contradict conventions. Steps 5 and 8 (retry fixes) are main-agent work.
+- **Audit delegates to a FRESH subagent (Step 7).** The implementer cannot audit its own code without bias — the same principle that produced design_principle #7 / product_rule #9 of the blueprint (verifier A→B pattern). Independence is structural, not aspirational. At the per-secondary granularity, one level of independence (a fresh auditor A) is the meaningful jump; the deeper A→B audit fires at primary completion via the Layer C hook (`waves-rules-audit.sh`).
 
 ## Step -1: Prerequisites Check (CRITICAL)
 
@@ -422,32 +425,56 @@ Go to Step 6
 🔍 Auditing compliance with project rules...
 ```
 
-## Step 7: Audit Compliance Directly
+## Step 7: Audit Compliance (fresh adversarial subagent — A)
 
-**Execute the audit directly (no subagents).** For each file in `change_manifest.changes`:
+The implementer (main agent) cannot audit its own code without bias. **Delegate the rule-compliance audit to a FRESH subagent with minimal context by design** — same principle as the verifier pattern A→B (blueprint design_principle #7 / product_rule #9), applied to in-flow per-secondary audits.
 
-1. **Read the file** that was created or modified
-2. **Check against each applicable rule** from Step 4:
-   - Verify naming conventions (CSN-*)
-   - Verify architecture patterns (ARCH-*)
-   - Verify domain rules (DOM-*)
-   - Verify Dart best practices (DART-*)
-   - Verify any project-specific rules
-3. **Record findings** with severity:
-   - `error`: Rule violation that must be fixed
-   - `warning`: Potential issue, review recommended
-   - `info`: Observation, no action needed
-4. **Build audit response:**
-```json
+### Spawn the auditor subagent
+
+Spawn an Agent with `run_in_background=false` (blocking — the result conditions Step 8) using the model from `agent_config.metacognition_model` in user_pref.json (default: `opus`). Do NOT pass the main agent's accumulated context; pass only what is needed for an independent audit:
+
+- Current objective id and content.
+- The list of files created/modified in this objective (`change_manifest.changes`).
+- The **full text** of each applicable rule (from `project_rules.json`), with its category and scope — IDs alone are insufficient.
+- One-line manifest summary of the layer/pattern the objective touches.
+
+### Adversarial subagent prompt (copy as-is, fill the placeholders)
+
+```
+You are a code rules auditor with MINIMAL context by design. Another agent (the implementer) just wrote the code below. Your job is to verify rule compliance INDEPENDENTLY — not to confirm the implementer's choices.
+
+Objective: <objective.content> (id: <objective.id>)
+Files changed: <list of paths from change_manifest.changes>
+Applicable rules (full text):
+  - Rule #<id> [<category>, <scope>]: <full text>
+  - ...
+Manifest layer: <one-line summary>
+
+Your job:
+1. Read each changed file from disk (Read tool).
+2. For each rule, evaluate compliance. Flag a violation ONLY when you can cite (a) the exact rule text and (b) the exact file:line in the current code.
+3. Classify severity:
+   - error: rule violation that must be fixed.
+   - warning: potential issue, review recommended.
+   - info: observation, no action needed.
+
+Return ONLY a JSON object of this exact shape (no prose):
 {
   "compliant": true|false,
-  "rules_checked": ["rule_ids"],
-  "rules_skipped": [{"id": "...", "reason": "..."}],
+  "rules_checked": [<rule_ids>],
+  "rules_skipped": [{"id": <id>, "reason": "<why not applicable to these files>"}],
   "findings": [
-    {"severity": "error|warning|info", "rule_id": "...", "file": "...", "line": N, "issue": "..."}
+    {"severity": "error|warning|info", "rule_id": <id>, "file": "<path>", "line": <int or 0 for range>, "issue": "<concise description with citation>"}
   ]
 }
+
+Constraints:
+- High confidence only. Do not flag stylistic preferences not encoded in the rules.
+- No speculation. If you cannot cite file:line, omit the finding.
+- Do not modify any file.
 ```
+
+Receive the JSON as `audit_response` and proceed to Step 8. If the subagent fails (returns non-JSON or errors), record a warning and proceed treating it as `compliant: true` with `rules_skipped` noting the failure — the Layer C hook will still audit at primary completion.
 
 ## Step 8: Handle Audit Result
 
@@ -724,7 +751,7 @@ Then show the summary:
 
 ## Subagents
 
-This command does NOT use subagents. All steps (implementation, auditing, retry fixes) are executed directly by the main agent to preserve full context and avoid deviations from project conventions and resolved decisions.
+This command uses ONE subagent — the fresh auditor (A) at Step 7. Implementation (Step 5), audit-finding decisions, and retry fixes (Step 8) remain in the main agent because writing/fixing code needs the full accumulated context. The audit alone delegates, because the audit alone needs independence from the implementer. This is the verifier-pattern principle (design_principle #7 / product_rule #9) applied to in-flow per-secondary audits; Layer C (`waves-rules-audit.sh` hook) provides the deeper A→B audit at primary completion.
 
 ---
 

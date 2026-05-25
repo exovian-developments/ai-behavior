@@ -6,7 +6,7 @@
     "owner": "Andrius Verde Musset",
     "created_at": "2026-05-19T00:00:00Z",
     "last_updated": "2026-05-21T00:00:00Z",
-    "status": "planning"
+    "status": "completed"
   },
   "vision": {
     "problem": "Waves 2.x duplica framework files (.claude/commands/, .claude/hooks/, ai_files/schemas/) en cada proyecto. 16 releases v2.0-v2.5 requirieron propagación manual a 18+ proyectos con riesgo de drift. git status post-upgrade ensucia el working tree con framework files.",
@@ -211,7 +211,7 @@
       "id": 5,
       "name": "Plugin release 3.0.0 + Homebrew deprecation con evidencia",
       "description": "Tag v3.0.0 del plugin con refactors de phases 2-4. Publicar al marketplace de GitHub. Último commit del repo homebrew-waves con caveat de deprecación pinned a 2.5.0.",
-      "status": "not_started",
+      "status": "abandoned",
       "depends_on": [
         4
       ],
@@ -219,29 +219,31 @@
         {
           "id": "5.1",
           "content": "Bump waves-cowork-plugin a 3.0.0 (plugin.json + marketplace.json). README.md refleja capabilities 3.0 incluyendo /waves:migrate-from-v2-to-v3 temporal.",
-          "status": "not_started"
+          "status": "completed"
         },
         {
           "id": "5.2",
           "content": "CHANGELOG.md de waves: entrada [3.0.0] con narrativa de distribution change, sección Why breaking (major bump), sección Migration path, sección Deprecated (Homebrew CLI).",
-          "status": "not_started"
+          "status": "completed"
         },
         {
           "id": "5.3",
           "content": "Último commit homebrew-waves Formula/waves.rb con caveat: '⚠️ DEPRECATED — Waves 3.0+ vía Claude Code plugin marketplace. Este formula instala 2.5.0 (último brew-compatible).'",
-          "status": "not_started"
+          "status": "abandoned"
         },
         {
           "id": "5.4",
           "content": "Commit + tag v3.0.0 en waves-cowork-plugin + push GitHub. Verificar /plugin marketplace add + install end-to-end desde Claude Code limpio.",
-          "status": "not_started"
+          "status": "abandoned"
         },
         {
           "id": "5.5",
           "content": "Commit en repo waves: bin/waves deprecated header, CHANGELOG [3.0.0], FRAMEWORK.md actualizado (Phase 7). Tag v3.0.0 — repo waves sigue como source de schemas y docs.",
-          "status": "not_started"
+          "status": "abandoned"
         }
-      ]
+      ],
+      "started_at": "2026-05-25T15:22:47Z",
+      "abandoned_at": "2026-05-25T15:22:47Z"
     },
     {
       "id": 6,
@@ -449,6 +451,11 @@
       "id": 17,
       "created_at": "2026-05-22T15:55:52Z",
       "decision": "[AUTO] Phase 4 w3 COMPLETED. Logbook phase_4.json: 1/1 primary + 4/4 secondaries achieved. Creado plugin/commands/migrate-from-v2-to-v3.md (deprecated_in 3.2.0 + banner): comando one-time que remueve framework legacy (.claude/commands/waves:*.md, .claude/hooks/waves-*.sh, ai_files/schemas/) manteniendo artefactos. Sequencing crítico install→git-clean→remove. Pre-flight: plugin completo + git tree limpio (abort si sucio; git es el único safety net, sin backup). Confirm explícito antes de remover. Crea ai_files/.waves-version. DESCUBRIMIENTO no en roadmap: cleanup quirúrgico de .claude/settings.json (entries waves huérfanas tras remover hooks) preservando permissions + hooks no-waves. Test sandbox: golden path + git-dirty abort + settings cleanup validados (artefactos intactos). single_focus (orthogonality reviewer). integrity audit del logbook pasó limpio. Archivo sin prefijo waves: (convención plugin/commands/). Next: Phase 5 (plugin release 3.0.0 + Homebrew deprecation)."
+    },
+    {
+      "id": 18,
+      "created_at": "2026-05-25T15:22:47Z",
+      "decision": "[AUTO] w3 CLOSED. Phase 5 partial: 5.1 sync + 5.2 CHANGELOG + 5.5-bin achieved; 5.3 homebrew caveat (commit/push), 5.4 publish marketplace+tag+verify, 5.5-tag MOVED TO w4. Razón: combinar release 3.0 con la capa determinista (design_principle #8 nuevo, decision #15) — externamente single jump 2.5→3.0 con governance + verification observable; internamente w3 cierra + w4 abre. Cobertura w3 sustantiva (plugin-first foundation, verifier B en 6 procesos adversariales, Step 7 audit delegado, /waves:upgrade plugin-native, /waves:migrate-from-v2-to-v3 temporal, /waves:version diagnostic) — la única deuda es el publish que se ejecutará junto con la capa determinista de w4 en el release 3.0 combinado."
     }
   ],
   "open_questions": [
@@ -579,6 +586,11 @@
       "id": 10,
       "created_at": "2026-05-22T15:55:52Z",
       "content": "Phase 4 COMPLETED. /waves:migrate-from-v2-to-v3 (comando temporal deprecated_in 3.2.0) creado + testeado en sandbox. Descubrimiento: cleanup de settings.json huérfano. Ver logbook phase_4.json. Phase 5 lista (just-in-time)."
+    },
+    {
+      "id": 11,
+      "created_at": "2026-05-25T15:22:47Z",
+      "content": "w3 CERRADA. Substantive coverage: plugin-first foundation, verifier B en 6 procesos adversariales, Step 7 audit delegado, /waves:upgrade plugin-native + migrations format, /waves:migrate-from-v2-to-v3 temporal con cleanup quirúrgico de settings.json, /waves:version diagnostic. Pendientes movidos a w4: publish a marketplace (push+tag+verify), commit/push homebrew, FRAMEWORK.md update (era Phase 7 igual). Razón del split: design_principle #8 nuevo (Demonstration over declaration) requiere capa determinista que se construye en w4; release 3.0 combina ambas waves externamente. Ver blueprint decision #15. Next: roadmap-create w4."
     }
   ],
   "history_summary": [],

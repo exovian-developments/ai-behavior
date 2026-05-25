@@ -3,6 +3,13 @@
 # waves - Structured context protocol for AI agents
 # https://github.com/exovian-developments/waves
 #
+# ⚠️ DEPRECATED as of Waves 3.0 — the Homebrew CLI is no longer the distribution
+#    channel. Waves 3.0+ installs as a Claude Code plugin:
+#      /plugin marketplace add exovian-developments/waves-cowork-plugin
+#      /plugin install waves@waves-cowork-plugin
+#    This CLI is frozen at 2.5.0 (last brew-compatible). It will not receive 3.0
+#    features. See CHANGELOG.md [3.0.0] for the migration path.
+#
 # Usage:
 #   waves init [claude|codex]  - Initialize waves in current directory
 #   waves --version            - Show version

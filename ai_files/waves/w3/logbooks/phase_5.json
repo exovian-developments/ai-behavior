@@ -33,7 +33,8 @@
             3
           ]
         },
-        "status": "not_started"
+        "status": "abandoned",
+        "abandoned_at": "2026-05-25T15:22:47Z"
       },
       {
         "id": 2,
@@ -50,7 +51,8 @@
             3
           ]
         },
-        "status": "not_started"
+        "status": "abandoned",
+        "abandoned_at": "2026-05-25T15:22:47Z"
       }
     ],
     "secondary": [
@@ -67,7 +69,8 @@
           "Apply rule #2: respetar la estructura establecida del plugin (commands/, hooks/, migrations/, skills/).",
           "Apply rule #3: REGLA-0 — sincronizar solo lo necesario, sin reorganizar estructura."
         ],
-        "status": "not_started"
+        "status": "achieved",
+        "completed_at": "2026-05-22T18:17:23Z"
       },
       {
         "id": 2,
@@ -81,7 +84,8 @@
           "Apply rule #2: usar el formato semver establecido + la estructura de plugin.json/marketplace.json.",
           "Apply rule #3: REGLA-0 KISS — solo bumps + nota de deprecación, sin reescrituras."
         ],
-        "status": "not_started"
+        "status": "achieved",
+        "completed_at": "2026-05-22T18:17:23Z"
       },
       {
         "id": 3,
@@ -96,7 +100,8 @@
           "Apply rule #2: tag semver v3.0.0 consistente con la convención de tags del proyecto.",
           "Apply rule #3: REGLA-0 — release mínimo, sin ceremonia extra."
         ],
-        "status": "not_started"
+        "status": "abandoned",
+        "abandoned_at": "2026-05-25T15:22:47Z"
       },
       {
         "id": 4,
@@ -111,7 +116,8 @@
           "Apply rule #2: seguir el formato establecido del CHANGELOG (## [version] - fecha, secciones).",
           "Apply rule #3: REGLA-0 — narrativa clara y concisa, sin relleno."
         ],
-        "status": "not_started"
+        "status": "achieved",
+        "completed_at": "2026-05-22T18:17:23Z"
       },
       {
         "id": 5,
@@ -125,7 +131,8 @@
           "Apply rule #2: respetar la estructura del Formula de Homebrew (def caveats).",
           "Apply rule #3: REGLA-0 — solo el caveat, sin tocar la lógica de instalación."
         ],
-        "status": "not_started"
+        "status": "abandoned",
+        "abandoned_at": "2026-05-25T15:22:47Z"
       }
     ]
   },
@@ -171,6 +178,26 @@
       "id": 2,
       "created_at": "2026-05-22T16:37:28Z",
       "content": "Integrity audit: PASÓ LIMPIO (0 critical, 0 warning). Verificado: decomposición multi_focus=2 primaries coincide, ids [2,3] existen, 5 secondaries con Apply rule #2 y #3 (S1-S3→P1, S4-S5→P2), sin scope vacíos, paths de sibling-repos (waves-cowork-plugin/, homebrew-waves/) y NEW (migrations/) correctamente no flagueados. Audit: ai_files/waves/w3/audits/logbook-phase_5.json."
+    },
+    {
+      "id": 3,
+      "created_at": "2026-05-22T18:17:23Z",
+      "content": "Trabajo local de Phase 5 completo (pre-publish). S1: deltas Phase 2-4 sincronizados waves/plugin/ → waves-cowork-plugin/ (9 hooks plugin-native, hooks.json type:command, migrate+upgrade commands, 6 schema-path, logbook-create verifier B, migrations/; sin hooks.json.bak cruft). S2: plugin.json externo + waves/plugin → 3.0.0; bin/waves header deprecado (CLI frozen 2.5.0); README plugin actualizado (install slash verificado, comandos /upgrade + /migrate, sección Upgrading from 2.x, version 3.0.0). S4: CHANGELOG [3.0.0] con Changed-BREAKING + Why breaking + Migration path + Added + Deprecated. S5-edit: caveat de deprecación en homebrew-waves Formula/waves.rb (header + def caveats; pinned 2.5.0, no se elimina). PENDIENTE (publish gate, requiere confirmación del usuario): S3 commit/tag v3.0.0/push de waves-cowork-plugin + tag v3.0.0 en waves + verify install; S5 commit/push de homebrew-waves. Falsa alarma resuelta: 2 refs ai_files/schemas en migrate/upgrade son intencionales (path que se remueve / nota), no carga de schema."
+    },
+    {
+      "id": 4,
+      "created_at": "2026-05-22T18:36:27Z",
+      "content": "ADICIÓN (fuera del scope original de Phase 5, pedido por el usuario durante el release): comando /waves:version (plugin/commands/version.md) — muestra la versión del plugin instalado ($CLAUDE_PLUGIN_ROOT/.claude-plugin/plugin.json .version) + la versión de artefactos del proyecto (ai_files/.waves-version) con aviso si están desalineadas. Sincronizado a waves-cowork-plugin/commands/ (19 comandos) + agregado al README. Diagnóstico útil tras /plugin install|update. Motivo: el usuario reinstaló y Claude Code reportó \"waves is already at the latest version (2.5.0)\" — el marketplace remoto sigue en 2.5.0-baseline (type:prompt) porque la 3.0.0 no está pusheada; el SessionStart error persiste hasta instalar la 3.0.0 (type:command). /waves:version permitirá confirmar qué versión está cargada."
+    },
+    {
+      "id": 5,
+      "created_at": "2026-05-22T23:16:17Z",
+      "content": "DEFECT-FIX (fuera del scope original de Phase 5, planteado por el usuario): /waves:objectives-implement Step 7 hacía self-audit con el main agent — exactamente el sesgo que el patrón A→B vino a eliminar (design_principle #7 / product_rule #9 del blueprint). La racionalidad \"preservar contexto\" aplicaba a IMPLEMENTAR pero se invertía para AUDITAR (donde el sentido es la independencia). Fix: Step 7 ahora spawnea un auditor fresco (A, blocking) con contexto mínimo por diseño (solo objetivo + diff + texto completo de rules aplicables); main agent recibe el audit response y aplica fixes (Step 8 sigue en main agent porque corregir necesita contexto pleno). Layer C hook (waves-rules-audit.sh) sigue dando el A→B completo a nivel primary. Sincronizado a las 3 copias (plugin/commands, waves-cowork-plugin/commands, .claude/commands). CHANGELOG [3.0.0] actualizado. Cobertura de A→B ahora estructuralmente completa: 6 procesos adversariales con A→B + 1 nuevo con A único (Step 7). Va en el release 3.0.0."
+    },
+    {
+      "id": 6,
+      "created_at": "2026-05-25T15:22:47Z",
+      "content": "PHASE 5 CERRADA PARCIAL. Trabajo local achieved: S1 sync (deltas Phase 2-4 → externo), S2 bump (plugin.json x2 + README + bin/waves header), S4 CHANGELOG [3.0.0]. Trabajo local de S5 (caveat homebrew Formula) escrito pero commit+push diferido. ABANDONED en este logbook (movido a w4): S3 commit/tag/push plugin externo + verify install; S5 commit/push homebrew. Razón: combinar el release 3.0 con la capa determinista (design_principle #8) en w4 — single jump 2.5→3.0 que ya incluya el principio Demonstration over declaration. Primarios P1/P2 marcados abandoned por el split (contenido declarado incluía publish; el publish no se ejecutó en w3). Los archivos locales (sync, edits, CHANGELOG) quedan en working tree esperando el publish-execution de w4."
     }
   ],
   "history_summary": [],

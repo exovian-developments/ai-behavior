@@ -4,7 +4,7 @@
     "product_codename": "waves protocol",
     "owner": "Andrius V",
     "created_at": "2026-03-04T12:00:00Z",
-    "last_updated": "2026-05-21T00:00:00Z",
+    "last_updated": "2026-05-25T15:21:56Z",
     "blueprint_type": "standard"
   },
   "philosophy": {
@@ -112,6 +112,16 @@
         "B classifies (not filters): confirmed / smoke / unverifiable / gold — and passes BOTH A's raw analysis and B's classification to the main agent",
         "Main agent decides with full context, respecting B's classifications (smoke → re-evaluate, unverifiable → own judgment, confirmed/gold → safe)"
       ]
+    },
+    {
+      "id": 8,
+      "principle": "Demonstration over declaration. An artifact is marked achieved only when there is observable executable evidence (deterministic check against acceptance criteria + adversarial review) that verifies it does what declared. LLM self-declaration is no longer a valid completion contract. Upstream of #7.",
+      "rules_preview": [
+        "No status=achieved without at least one verification_demonstration registered and verified at gate time.",
+        "Deterministic gates (stub-check, schema-validate, sandbox-run) run before adversarial subagents — cheap and infallible for what they catch.",
+        "When a deterministic gate fails, the implementer produces observable substance — never refactors to evade the gate.",
+        "Trade-off is structural: more LLM-time implementing in exchange for less human rework during QA."
+      ]
     }
   ],
   "essential_capabilities": [
@@ -157,6 +167,10 @@
     {
       "id": 7,
       "capability": "The user can install Waves once via Claude Code plugin marketplace (two slash commands: /plugin marketplace add + /plugin install) and use it across all their projects without per-project framework copies. Framework artifacts (slash commands, hooks, agents, skills, schemas) live in the plugin's directory managed by Claude Code; project-specific artifacts (blueprint.json, project_manifest.json, project_rules.json, roadmaps, logbooks) remain in each project's repository as git-commitable files. Upgrading the framework happens once for all projects via /plugin update."
+    },
+    {
+      "id": 8,
+      "capability": "The framework verifies work products demonstrate (not just declare) satisfaction of acceptance criteria. Software: stub-check + test-critic + test-writer. Agentic: stub-check on md/sh/json + behavior-critic + scenario-writer. General: substance-check + opt-in evidence-critic + scenario-writer. All gates run before status=achieved."
     }
   ],
   "non_essential_capabilities": {
@@ -534,6 +548,13 @@
       "decision": "Refine verifier pattern: B classifies (not filters), and hook passes BOTH raw analysis A + classification B to the main agent. B applies two lenses: technical (grep/Read) and value (overengineering/KISS/YAGNI check). Implemented inline, no materialized files.",
       "context": "Andrius: metacognition (A) is rich but overreaching; verifier (B) lands it into what's valuable. But B filtering with minimum context could discard gems valuable only in the main agent's full context. Solution: B classifies/annotates (not vetoes); main agent gets both raw A + B's classification, decides with full context. Simplifies B; value lens caught ECC Phase 8 + agent-file overengineering.",
       "impact_on": "All 6 adversarial subagents (metacognition, rules audit, blueprint impact, phase audit, orthogonality, integrity), hook output format, main agent decision discipline"
+    },
+    {
+      "id": 15,
+      "created_at": "2026-05-25T15:21:56Z",
+      "decision": "Semantic change of status=achieved: from \"LLM declared done + auto-audit said compliant\" to \"observable executable evidence (deterministic gate + adversarial review) verifies the declared acceptance criteria\". Materialized in w4; ships externally as Waves 3.0 combining w3+w4. Forward-only — no retroactive re-audit.",
+      "context": "Origin: Waves↔Diamond AI comparative analysis (QAT, 2026-05-22) surfaced Waves was superior in governance but lacked deterministic verification for execution. \"Code that fakes\" (stubs, hardcoded returns, circular tests) passed dart analyze + main-agent self-audit + got marked achieved — load-bearing failure mode in auto-mode. Andrius elevated the response from product_decision to design_principle: not just adding a layer, completing the framework own principle that work products must demonstrate, not just declare.",
+      "impact_on": "design_principle #8 + capability #8, logbook schemas (verification_demonstrations), project_rules (verification cat), objectives-implement + logbook-create new steps, stub-check hook, w3 close + w4 open"
     }
   ],
   "open_questions": [
@@ -561,6 +582,10 @@
   ],
   "product_roadmaps": [
     {
+      "wave": "w4",
+      "path": "waves/w4/roadmap.json"
+    },
+    {
       "wave": "w3",
       "path": "waves/w3/roadmap.json"
     },
@@ -574,6 +599,11 @@
     }
   ],
   "recent_context": [
+    {
+      "id": 9,
+      "created_at": "2026-05-25T15:21:56Z",
+      "content": "WAVE w4 OPEN + design_principle #8 (Demonstration over declaration). Origin: QAT/Diamond comparative analysis surfaced load-bearing failure mode (code that fakes passes dart analyze + auto-audit). Elevated from product_decision to design_principle (#8 upstream of #7: ensures audits exist + have substance; #7 ensures audits are independent). Semantic change of status=achieved formalized (decision #15). New essential capability #8 (deterministic + adversarial verification project-type-aware). w3 closed with Phase 5 partial (sync/bump/CHANGELOG/version.md/Step7-fix achieved; publish actions moved to w4 for combined 3.0 release). External narrative: single jump 2.5→3.0 with governance + verification layer. Internal: w3 cierra, w4 abre con feasibility/foundation/blueprint-refinement → roadmap → bitácoras."
+    },
     {
       "id": 8,
       "created_at": "2026-05-21T00:00:00Z",
